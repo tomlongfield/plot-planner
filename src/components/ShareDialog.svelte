@@ -4,6 +4,7 @@
   import { download, slug } from '../lib/files';
   import { num, t } from '../lib/i18n';
   import { buildShare, encodeShare, LINK_LIMIT } from '../lib/share';
+  import { buildStandalone } from '../lib/standalone';
   import { app } from '../lib/store.svelte';
   import Dialog from './Dialog.svelte';
 
@@ -12,6 +13,19 @@
   let includeLocation = $state(false);
   let link = $state('');
   let copied = $state(false);
+  let pageDrafts = $state(false);
+  let building = $state(false);
+
+  async function savePage() {
+    building = true;
+    try {
+      const html = await buildStandalone({ includeLocation, includeDrafts: pageDrafts });
+      download(`${slug(app.plot!.name)}.html`, html, 'text/html');
+      app.notify(t('share.pageSaved'));
+    } finally {
+      building = false;
+    }
+  }
 
   const plotIds = $derived(scope === 'plot' ? [app.plot!.id] : app.plots.map((p) => p.id));
   const payload = $derived(buildShare(app.snapshot(), plotIds, includeLocation));
@@ -55,6 +69,13 @@
     <h3>{t('share.fileTitle')}</h3>
     <p class="small">{t('share.fileHelp')}</p>
     <button class="btn primary" onclick={saveFile}>{t('share.saveFile')}</button>
+  </section>
+
+  <section class="opt">
+    <h3>{t('share.pageTitle')}</h3>
+    <p class="small">{t('share.pageHelp')}</p>
+    <label class="check"><input type="checkbox" bind:checked={pageDrafts} />{t('share.pageDrafts')}</label>
+    <button class="btn" onclick={savePage} disabled={building}>{building ? t('share.pageBuilding') : t('share.savePage')}</button>
   </section>
 
   <section class="opt">
