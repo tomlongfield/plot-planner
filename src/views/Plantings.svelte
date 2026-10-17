@@ -50,7 +50,7 @@
   });
 
   const warningsFor = (id: string) => app.warnings.filter((w) => w.plantingId === id || w.otherId === id);
-  const plotWarnings = $derived(app.warnings.filter((w) => w.plantingId));
+  const plotWarnings = $derived(app.warnings.filter((w) => w.plantingId || w.kind === 'propCapacity'));
 
   function dateCell(r: Resolved, k: 'sow' | 'plantOut' | 'harvest' | 'clear'): string {
     const w = r.windows[k];

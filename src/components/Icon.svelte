@@ -20,6 +20,8 @@
     <circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" />
   {:else if name === 'journal'}
     <path d="M6 3h11a2 2 0 012 2v14a2 2 0 01-2 2H6z" /><path d="M6 3v18M10 8h5M10 12h5" />
+  {:else if name === 'propagation'}
+    <rect x="3" y="11" width="18" height="8" rx="1.5" /><path d="M7 11v8M11 11v8M15 11v8M8 11c0-3 2-5 4-6 2 1 4 3 4 6" />
   {:else if name === 'more'}
     <circle cx="6" cy="12" r="1.3" fill="currentColor" /><circle cx="12" cy="12" r="1.3" fill="currentColor" /><circle cx="18" cy="12" r="1.3" fill="currentColor" />
   {:else if name === 'help'}

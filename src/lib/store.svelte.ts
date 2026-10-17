@@ -9,10 +9,11 @@ import { demoDataset } from './demo';
 import { setLocale, t } from './i18n';
 import { buildLibrary, bundledCrops, cropForVariety, cropName, type Library } from './library';
 import { planSpan, resolvePlantings, type Resolved } from './plantings';
+import { propagationLoad } from './propagation';
 import { generatedTasks, manualTasks, type PlanTask } from './tasks';
 import type { Area, Crop, Dataset, Feature, Planting, Plot, Site } from './types';
 
-export type View = 'month' | 'plan' | 'plantings' | 'tasks' | 'journal' | 'seeds' | 'crops' | 'settings' | 'help';
+export type View = 'month' | 'plan' | 'plantings' | 'tasks' | 'journal' | 'propagation' | 'seeds' | 'crops' | 'settings' | 'help';
 export interface Route { view: View; arg?: string }
 
 const BUNDLED = bundledCrops();
@@ -21,7 +22,7 @@ const UNDO_LIMIT = 40;
 
 function parseHash(h: string): Route {
   const [view, arg] = h.replace(/^#\/?/, '').split('/');
-  const views: View[] = ['month', 'plan', 'plantings', 'tasks', 'journal', 'seeds', 'crops', 'settings', 'help'];
+  const views: View[] = ['month', 'plan', 'plantings', 'tasks', 'journal', 'propagation', 'seeds', 'crops', 'settings', 'help'];
   return views.includes(view as View) ? { view: view as View, arg: arg ? decodeURIComponent(arg) : undefined } : { view: 'month' };
 }
 
@@ -184,7 +185,15 @@ class App {
       cropOf: this.cropOf, nameOf: this.nameOf, entries: this.data.entries, rotationYears: this.data.settings.rotationYears, today: this.today,
     });
     const seed = seedWarnings(this.data.stock, this.cropOfVariety, this.varietyName, this.today);
-    return [...plantingWarnings, ...seed];
+    // Propagation spaces over capacity in the coming months.
+    const spaces = this.data.propSpaces.filter((s) => s.siteId === this.site!.id);
+    const prop: Warning[] = propagationLoad([...this.resolved.values()], spaces, this.data.reservations, {
+      from: this.today, weeks: 26, weekStart: this.site.weekStart ?? 1, cropOf: this.cropOf, nameOf: this.nameOf,
+    }).flatMap((l) => l.over.length ? [{
+      id: `propCapacity:${l.space.id}`, kind: 'propCapacity' as const, level: 'warn' as const,
+      params: { space: l.space.name, needed: Math.max(...l.over.map((w) => w.used)), unit: t(`prop.unit.${l.space.unit}`), week: l.over[0].week, capacity: l.space.capacity },
+    }] : []);
+    return [...plantingWarnings, ...seed, ...prop];
   }
 
   private computeTasks(): PlanTask[] {

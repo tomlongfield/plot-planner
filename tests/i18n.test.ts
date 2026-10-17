@@ -16,8 +16,9 @@ const has = (k: string) => k in messages || `${k}.other` in messages;
 
 // Keys built at runtime, listed out so a missing translation fails here.
 const DYNAMIC: Record<string, string[]> = {
-  'nav.': ['month', 'plan', 'plantings', 'tasks', 'journal', 'seeds', 'crops', 'settings', 'help'],
-  'nav.short.': ['month', 'plan', 'plantings', 'tasks', 'journal', 'seeds', 'crops', 'settings'],
+  'nav.': ['month', 'plan', 'plantings', 'tasks', 'journal', 'propagation', 'seeds', 'crops', 'settings', 'help'],
+  'nav.short.': ['month', 'plan', 'plantings', 'tasks', 'journal', 'propagation', 'seeds', 'crops', 'settings'],
+  'prop.unit.': ['trays', 'modules'],
   'entryKind.': ['note', 'harvest', 'problem', 'store', 'photo', 'review'],
   'entry.new.': ['note', 'harvest', 'problem', 'store'],
   'entry.added.': ['note', 'harvest', 'problem', 'store', 'photo', 'review'],

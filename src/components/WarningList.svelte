@@ -17,6 +17,9 @@
           {#if w.kind === 'crossing'}
             <span class="muted small">{t('warn.crossing.options')}</span>
           {/if}
+          {#if w.kind === 'propCapacity' && app.route.view !== 'propagation'}
+            <button class="btn quiet small" onclick={() => app.go('propagation')}>{t('warn.open')}</button>
+          {/if}
           {#if w.plantingId && app.route.view !== 'plantings'}
             <button class="btn quiet small" onclick={() => app.go('plantings', w.plantingId)}>{t('warn.open')}</button>
           {/if}

@@ -333,3 +333,36 @@ describe('harvest totals', async () => {
     expect(t.yieldByPlanting.find((y) => y.plantingId === 'pl7')!.m2).toBeCloseTo(1.06 * 1.0 * 0.6, 3);
   });
 });
+
+describe('propagation spaces', async () => {
+  const { propagationLoad, demandIn } = await import('../src/lib/propagation');
+  const shelves = { id: 's1', siteId: 'site_demo', name: 'Shelves', capacity: 12, unit: 'trays' as const, lights: true, bottomHeat: true, modulesPerTray: 40 };
+
+  it('counts each module planting in trays from sowing to planting out', () => {
+    const d = demo();
+    const loads = propagationLoad([...resolveAll(d).values()], [shelves], [], { from: '2026-10-12', weeks: 8, cropOf, nameOf });
+    const byWeek = Object.fromEntries(loads[0].weeks.map((w) => [w.week, w.items.map((i) => i.id).sort()]));
+    // Week of 19 Oct: winter salad (sown 17 Oct) and broad beans (sown 19 Oct).
+    expect(byWeek['2026-10-19']).toEqual(['pl2', 'pl3']);
+    // Week of 2 Nov: spinach joins (sown 26 Oct).
+    expect(byWeek['2026-11-02']).toEqual(['pl2', 'pl3', 'pl5']);
+    expect(demandIn(shelves, d.plantings.find((p) => p.id === 'pl3')!)).toBe(1); // 40 plugs = 1 tray
+    expect(loads[0].over).toEqual([]);
+  });
+
+  it('flags weeks over capacity, including reservations', () => {
+    const d = demo();
+    const small = { ...shelves, capacity: 2 };
+    const res = [{ id: 'r1', propSpaceId: 's1', label: 'Curing squash', window: { from: '2026-10-26', to: '2026-11-08' }, amount: 2 }];
+    const loads = propagationLoad([...resolveAll(d).values()], [small], res, { from: '2026-10-12', weeks: 8, cropOf, nameOf });
+    expect(loads[0].over.map((w) => w.week)).toEqual(['2026-10-26', '2026-11-02']);
+  });
+
+  it('keeps plugs in their space while a late bed is cleared', () => {
+    const d = demo();
+    d.plantings = d.plantings.map((p) => (p.id === 'pl4' ? shiftPlanting(p, 14, ['clear']) : p));
+    const loads = propagationLoad([...resolveAll(d).values()], [shelves], [], { from: '2026-11-16', weeks: 4, cropOf, nameOf });
+    const spinachWeeks = loads[0].weeks.filter((w) => w.items.some((i) => i.id === 'pl5')).map((w) => w.week);
+    expect(spinachWeeks).toEqual(['2026-11-16', '2026-11-23', '2026-11-30']);
+  });
+});
