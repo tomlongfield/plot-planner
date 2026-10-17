@@ -1,0 +1,33 @@
+[
+  {
+    "id": "deploy",
+    "execute-command": "/srv/plot-planner/bin/trigger.sh",
+    "command-working-directory": "/srv/plot-planner",
+    "response-message": "Deploy queued",
+    "trigger-rule-mismatch-http-response-code": 403,
+    "trigger-rule": {
+      "and": [
+        {
+          "match": {
+            "type": "payload-hmac-sha256",
+            "secret": "CHANGE-ME: the same secret as the GitHub webhook",
+            "parameter": {
+              "source": "header",
+              "name": "X-Hub-Signature-256"
+            }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "refs/heads/main",
+            "parameter": {
+              "source": "payload",
+              "name": "ref"
+            }
+          }
+        }
+      ]
+    }
+  }
+]

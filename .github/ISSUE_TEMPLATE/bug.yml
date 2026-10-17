@@ -1,0 +1,24 @@
+name: Something's wrong
+description: Report a bug or something confusing.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: And what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to make it happen
+      placeholder: "1. Open the month view\n2. …"
+  - type: input
+    id: device
+    attributes:
+      label: Device and browser
+      placeholder: Android phone, Chrome
+  - type: markdown
+    attributes:
+      value: Please don't attach a backup file with personal details such as your plot's location.

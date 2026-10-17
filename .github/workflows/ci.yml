@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Validate crop files
+        run: npm run validate:crops
+      - name: Type check
+        run: npm run check
+      - name: Unit tests
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Size budget (JS + CSS under 300 KB compressed)
+        run: |
+          total=$(cat dist/assets/*.js dist/assets/*.css | gzip -9 | wc -c)
+          echo "Compressed JS and CSS: $((total / 1024)) KB"
+          test "$total" -lt 307200

@@ -169,6 +169,11 @@ export function harvestWindows(crop: Crop, plan: Plan, c: Climate, lat: number, 
       const spread = diffDays(start.to, start.from);
       out.harvest = { from: first, to: addDays(first, spread + (crop.harvestWindowDays ?? 21)) };
     }
+    // Frost ends the harvest of tender crops (under cover, the shifted first frost applies).
+    if (out.harvest && crop.hardiness === 'tender' && plan === 'main') {
+      const ff = seasonFirstFrost(c, season);
+      if (out.harvest.to > ff) out.harvest = { from: out.harvest.from < ff ? out.harvest.from : ff, to: ff };
+    }
   }
   const end = out.harvest?.to ?? w.harvest?.to ?? w.plantOut?.to ?? w.sow?.to;
   if (end) out.clear = { from: end, to: addDays(end, 14) };

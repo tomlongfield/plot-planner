@@ -1,0 +1,18 @@
+[Unit]
+Description=Plot planner deploy webhook (plot.tomlo.ng)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=deploy
+Group=deploy
+ExecStart=/usr/bin/webhook -hooks /srv/plot-planner/hooks.json -ip 127.0.0.1 -port 9123 -urlprefix hooks
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+# Deploys run in the background, so stopping the listener should not kill one mid-build.
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

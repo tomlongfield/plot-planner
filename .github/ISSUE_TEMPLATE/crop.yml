@@ -1,0 +1,42 @@
+name: Add or fix a crop
+description: Suggest a new crop or variety, or correct a value in the library. No coding needed.
+title: "Crop: "
+labels: [crop-library]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! Timings are written relative to local frost dates (for example "8 to 6 weeks before the last frost"), so they work anywhere.
+        In the app, Crops → the crop → **Save as file** gives you a file you can attach here.
+  - type: input
+    id: crop
+    attributes:
+      label: Crop and variety
+      placeholder: Florence fennel, variety Finale
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of change?
+      options: [New crop, New variety, Correction to an existing crop]
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What should change
+      description: Sowing and planting windows relative to frost, days to harvest, spacing, hardiness, seed-saving details, and so on.
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where you grow
+      description: Rough region and climate, so we know where the values come from.
+      placeholder: North-east England, last frost mid-May
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: A book, seed packet, trial or your own records.
