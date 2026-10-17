@@ -42,6 +42,7 @@ const DYNAMIC: Record<string, string[]> = {
   'imp.field.': ['crop', 'variety', 'supplier', 'source', 'acquired', 'useBy', 'quantity', 'status', 'organic', 'storage', 'notes', 'family', 'link', 'kind', 'ignore'],
   'imp.issue.': ['unmatched', 'typo', 'family', 'duplicate', 'dateText', 'badDate', 'newVariety'],
   'imp.error.': ['read', 'empty'],
+  'shared.error.': ['bad', 'newer'],
   'settings.restoreError.': ['json', 'format', 'newer'],
   'tasks.tab.': ['next', 'week', 'month', 'list'], 'tasks.empty.': ['next', 'week', 'month', 'list'],
   'pl.filter.': ['active', 'drafts', 'done', 'all'],

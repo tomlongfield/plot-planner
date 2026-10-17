@@ -1,6 +1,9 @@
 <script lang="ts">
   import Dialog from '../components/Dialog.svelte';
   import MonthDayInput from '../components/MonthDayInput.svelte';
+  import ShareDialog from '../components/ShareDialog.svelte';
+  import ShareImport from '../components/ShareImport.svelte';
+  import { parseShare, type SharePayload } from '../lib/share';
   import { setClimate } from '../lib/actions';
   import { emptyDataset, parseBackup } from '../lib/backup';
   import { defaultClimate, frostFreeDays } from '../lib/climate';
@@ -79,7 +82,30 @@
     app.go('plan');
   }
 
-  let deleting: Plot | null = $state(null);
+  let deleting = $state<Plot | null>(null);
+  let deletingSite = $state<{ id: string; name: string } | null>(null);
+
+  function deleteSite(id: string) {
+    const name = app.data.sites.find((s) => s.id === id)?.name ?? '';
+    app.update(t('settings.gardenDeleted', { name }), (d) => {
+      const plotIds = new Set(d.plots.filter((p) => p.siteId === id).map((p) => p.id));
+      const areaIds = new Set(d.areas.filter((a) => plotIds.has(a.plotId)).map((a) => a.id));
+      const plantingIds = new Set(d.plantings.filter((x) => plotIds.has(x.plotId)).map((x) => x.id));
+      d.sites = d.sites.filter((s) => s.id !== id);
+      d.plots = d.plots.filter((p) => !plotIds.has(p.id));
+      d.areas = d.areas.filter((a) => !plotIds.has(a.plotId));
+      d.features = d.features.filter((f) => !plotIds.has(f.plotId));
+      d.plantings = d.plantings.filter((x) => !plotIds.has(x.plotId));
+      d.tasks = d.tasks.filter((x) => !(x.plotId && plotIds.has(x.plotId)) && !(x.areaId && areaIds.has(x.areaId)));
+      d.taskStates = d.taskStates.filter((s) => !plantingIds.has(s.id.split(':')[0]));
+      d.propSpaces = d.propSpaces.filter((s) => s.siteId !== id);
+      if (d.settings.activeSiteId === id) {
+        d.settings.activeSiteId = d.sites[0]?.id;
+        d.settings.activePlotId = d.plots.find((p) => p.siteId === d.sites[0]?.id)?.id;
+      }
+    });
+    deletingSite = null;
+  }
   function deletePlot(p: Plot) {
     app.update(t('settings.plotDeleted', { name: p.name }), (d) => {
       const areaIds = new Set(d.areas.filter((a) => a.plotId === p.id).map((a) => a.id));
@@ -100,6 +126,20 @@
   isPersisted().then((p) => (persisted = p));
   let confirmReset: 'demo' | 'erase' | null = $state(null);
   let restoreError = $state('');
+  let sharing = $state(false);
+  let shared = $state<SharePayload | null>(null);
+  let shareError = $state('');
+
+  async function openShared() {
+    shareError = '';
+    const f = await pickFile('.json,application/json');
+    if (!f) return;
+    try {
+      shared = parseShare(await f.text());
+    } catch (e) {
+      shareError = t(`shared.error.${(e as Error).message === 'newer' ? 'newer' : 'bad'}`);
+    }
+  }
 
   async function restore() {
     restoreError = '';
@@ -202,8 +242,15 @@
   <section class="card stack" aria-labelledby="s-plots">
     <div class="spread"><h2 id="s-plots">{t('settings.plots')}</h2><button class="btn small" onclick={() => (plotDialog = true)}>{t('settings.addPlot')}</button></div>
     {#if app.data.plots.length}
+      {#each app.data.sites as s (s.id)}
+      {#if app.data.sites.length > 1}
+        <div class="spread site-head">
+          <h3>{s.name}{#if s.id === app.site?.id} <span class="chip">{t('settings.current')}</span>{/if}</h3>
+          {#if s.id !== app.site?.id}<button class="btn small quiet danger" onclick={() => (deletingSite = { id: s.id, name: s.name })}>{t('settings.deleteGarden')}</button>{/if}
+        </div>
+      {/if}
       <ul class="ruled list">
-        {#each app.data.plots as p (p.id)}
+        {#each app.data.plots.filter((p) => p.siteId === s.id) as p (p.id)}
           <li class="spread">
             <span><strong>{p.name}</strong> <span class="muted small">{p.widthM} × {p.lengthM} m, {t(`plotType.${p.type}`)}</span>
               {#if p.id === app.plot?.id}<span class="chip">{t('settings.current')}</span>{/if}</span>
@@ -215,6 +262,7 @@
           </li>
         {/each}
       </ul>
+      {/each}
     {:else}
       <p class="muted">{t('settings.noPlots')}</p>
     {/if}
@@ -256,6 +304,13 @@
       {#if !persisted}<button class="btn quiet" onclick={async () => (persisted = await requestPersistence())}>{t('settings.persist')}</button>{/if}
     </div>
     {#if restoreError}<p class="warning" role="alert">{restoreError}</p>{/if}
+    <h3>{t('settings.sharing')}</h3>
+    <p class="small">{t('settings.sharingHelp')}</p>
+    <div class="row">
+      {#if app.plot}<button class="btn" onclick={() => (sharing = true)}>{t('share.button')}</button>{/if}
+      <button class="btn" onclick={openShared}>{t('settings.openShared')}</button>
+    </div>
+    {#if shareError}<p class="warning" role="alert">{shareError}</p>{/if}
     <div class="row">
       <button class="btn quiet" onclick={() => (confirmReset = 'demo')}>{t('settings.loadDemo')}</button>
       <button class="btn quiet danger" onclick={() => (confirmReset = 'erase')}>{t('settings.erase')}</button>
@@ -270,6 +325,9 @@
     <p class="mono muted">{__APP_VERSION__}</p>
   </section>
 </div>
+
+{#if sharing}<ShareDialog onclose={() => (sharing = false)} />{/if}
+{#if shared}<ShareImport payload={shared} source="file" onclose={() => (shared = null)} />{/if}
 
 <Dialog open={plotDialog} title={t('settings.addPlot')} onclose={() => (plotDialog = false)}>
   <label class="field"><span>{t('settings.plotName')}</span><input bind:value={newPlot.name} placeholder={t('settings.plotNameHint')} /></label>
@@ -299,6 +357,14 @@
   {/snippet}
 </Dialog>
 
+<Dialog open={!!deletingSite} title={t('settings.deleteGardenTitle', { name: deletingSite?.name ?? '' })} onclose={() => (deletingSite = null)}>
+  <p>{t('settings.deleteGardenHelp')}</p>
+  {#snippet footer()}
+    <button class="btn quiet" onclick={() => (deletingSite = null)}>{t('settings.cancel')}</button>
+    <button class="btn primary" onclick={() => deletingSite && deleteSite(deletingSite.id)}>{t('settings.deleteGarden')}</button>
+  {/snippet}
+</Dialog>
+
 <Dialog open={!!confirmReset} title={confirmReset === 'demo' ? t('settings.loadDemo') : t('settings.erase')} onclose={() => (confirmReset = null)}>
   <p>{confirmReset === 'demo' ? t('settings.loadDemoHelp') : t('settings.eraseHelp')}</p>
   {#snippet footer()}
@@ -312,6 +378,7 @@
   .settings { display: grid; gap: 16px; max-width: 760px; }
   .list { list-style: none; margin: 0; padding: 0; }
   .list li { padding: 8px 0; }
+  .site-head { margin-top: 8px; }
   details summary { cursor: pointer; color: var(--accent); font-weight: 500; }
   details p { margin-top: 8px; }
 </style>

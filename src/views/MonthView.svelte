@@ -2,6 +2,7 @@
   // The month view: the plan for one month beside that month's jobs, or all
   // months as small multiples.
   import AreaPanel from '../components/AreaPanel.svelte';
+  import ShareDialog from '../components/ShareDialog.svelte';
   import PlanSvg from '../components/PlanSvg.svelte';
   import TaskRow from '../components/TaskRow.svelte';
   import { monthKey } from '../lib/dates';
@@ -12,6 +13,7 @@
   import { isElsewhere, tasksInMonth } from '../lib/tasks';
 
   let all = $state(false);
+  let sharing = $state(false);
   let areaId: string | null = $state(null);
   let tabEls: HTMLButtonElement[] = $state([]);
 
@@ -87,6 +89,7 @@
         {/each}
       </div>
       <button class="pill dashed" aria-pressed={all} onclick={() => (all = !all)}>{t('month.all')}</button>
+      <button class="pill" onclick={() => (sharing = true)}>{t('share.button')}</button>
     </div>
 
     {#if all}
@@ -155,6 +158,8 @@
     {/if}
   </div>
 {/if}
+
+{#if sharing}<ShareDialog onclose={() => (sharing = false)} />{/if}
 
 <style>
   .month-view { display: grid; gap: 16px; }
