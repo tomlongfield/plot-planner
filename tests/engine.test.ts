@@ -432,3 +432,30 @@ describe('seed lineage and reviews', async () => {
     expect(reviewNotesFor('garlic', entries)).toEqual([{ season: 2026, note: 'Try hardneck' }, { season: 2025, note: 'Plant earlier' }]);
   });
 });
+
+describe('shaped beds', async () => {
+  const { interiorRect, pointInPolygon, polygonFit } = await import('../src/lib/geometry');
+  const { areaM2, capacityFor } = await import('../src/lib/capacity');
+  // An L-shape: 2 m × 2 m with the top-right 1 m × 1 m missing.
+  const L: [number, number][] = [[0, 0], [1, 0], [1, 1], [2, 1], [2, 2], [0, 2]];
+
+  it('knows what is inside an L-shaped bed', () => {
+    expect(pointInPolygon([0.5, 0.5], L)).toBe(true);
+    expect(pointInPolygon([1.5, 0.5], L)).toBe(false);
+    expect(pointInPolygon([1.5, 1.5], L)).toBe(true);
+  });
+
+  it('finds the biggest upright rectangle inside, for labels', () => {
+    const [x, y, w, h] = interiorRect(L);
+    expect(w * h).toBeCloseTo(2, 1); // either the bottom 2 × 1 or the left 1 × 2
+    for (const [px, py] of [[x + 0.01, y + 0.01], [x + w - 0.01, y + h - 0.01]] as [number, number][]) expect(pointInPolygon([px, py], L)).toBe(true);
+  });
+
+  it('works out area and how many plants fit in the shape', () => {
+    const area = { id: 'L', plotId: 'p1', kind: 'bed' as const, name: 'L bed', shape: { polygon: L } };
+    expect(areaM2(area)).toBeCloseTo(3, 6);
+    expect(polygonFit(L, 0.5)).toBe(12); // 16 positions in the 2 × 2 box, minus 4 in the missing corner
+    const p = { id: 'x', plotId: 'p1', areaId: 'L', varietyId: 'kale--curly', qty: 12, qtyUnit: 'plants' as const, spacingCm: 50, method: 'module' as const, windows: {}, purpose: 'eat' as const, status: 'planned' as const, agreement: 'agreed' as const, actual: {} };
+    expect(capacityFor(p, area, lib.crops.get('kale'))).toMatchObject({ fits: 12, ok: true });
+  });
+});

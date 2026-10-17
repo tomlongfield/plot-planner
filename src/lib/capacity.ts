@@ -1,5 +1,6 @@
 // Area maths: sizes, and how many plants fit at a spacing.
 
+import { polygonFit } from './geometry';
 import type { Area, Crop, Planting, Rect } from './types';
 
 export function rectOf(a: { shape: { rect?: Rect; polygon?: [number, number][] } }): Rect {
@@ -105,6 +106,12 @@ export function capacityFor(p: Planting, area: Area, crop?: Crop): CapacityResul
     return { fits, needed: p.qty, unit, ok: p.qty <= fits, working: `${area.volumeL} L ÷ ${crop.spacing.perContainerL} L` };
   }
   if (!spacing) return undefined;
+
+  // Shaped beds: count planting positions that fall inside the outline.
+  if (area.shape.polygon?.length && !rowCount) {
+    const fits = polygonFit(area.shape.polygon, spacing / 100);
+    return { fits, needed: p.qty, unit, ok: p.qty <= fits, working: `${fits} at ${spacing} cm in the shape` };
+  }
 
   // Square-foot grids: plants per cell from the spacing, times the cells chosen.
   if (area.kind === 'grid') {

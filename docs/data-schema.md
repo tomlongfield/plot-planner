@@ -44,7 +44,7 @@ Readers should ignore unknown fields. Writers should keep fields they don't unde
 
 ### areas
 
-Growing areas. `id`, `plotId`, optional `parentId` (a section's bed), `kind` (`bed`, `section`, `rows`, `grid`, `container`), `name`, `shape` (`{ "rect": [x, y, w, h] }` or `{ "polygon": [[x, y], …] }`).
+Growing areas. `id`, `plotId`, optional `parentId` (a section's bed), `kind` (`bed`, `section`, `rows`, `grid`, `container`), `name`, `shape` (`{ "rect": [x, y, w, h] }` or, for a shaped bed, `{ "polygon": [[x, y], …] }` listing its corners in order).
 
 Optional: `rows` (count) and `rowsAxis` (`x`: rows run top to bottom; `y`: side to side), `gridCm`, `volumeL`, `protection` (`none`, `cloche`, `coldframe`, `greenhouse`, `polytunnel`, `heated`), `perennial`, `fill` (a crop category, for colouring perennial areas), `fromDate`, `toDate`.
 
