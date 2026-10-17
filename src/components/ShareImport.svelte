@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { localDate } from '../lib/dates';
   // Bring a shared plan in, as drafts in one of your plots or as a separate garden.
   // Your agreed plan doesn't change until you accept the drafts.
   import { fullDate, t } from '../lib/i18n';
@@ -41,7 +42,7 @@
 </script>
 
 <Dialog open title={t('shareIn.title')} {onclose}>
-  <p>{t('shareIn.summary', { plots: payload.plots.map((p) => p.name).join(', '), plantings: payload.plantings.length, date: fullDate(payload.sharedAt.slice(0, 10)) })}</p>
+  <p>{t('shareIn.summary', { plots: payload.plots.map((p) => p.name).join(', '), plantings: payload.plantings.length, date: fullDate(localDate(payload.sharedAt)) })}</p>
   <p class="small muted">{t('shareIn.safe')}</p>
   <label class="field"><span>{t('shareIn.from')}</span><input bind:value={from} placeholder={t('shareIn.fromHint')} /></label>
 

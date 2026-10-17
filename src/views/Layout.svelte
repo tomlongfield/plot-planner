@@ -295,15 +295,15 @@
 
   function editArea(fn: (a: Area) => void) {
     const id = area!.id;
-    app.update(null, (d) => fn(d.areas.find((a) => a.id === id)!));
+    app.update(null, (d) => { fn(d.areas.find((a) => a.id === id)!); });
   }
   function editFeature(fn: (f: Feature) => void) {
     const id = feature!.id;
-    app.update(null, (d) => fn(d.features.find((f) => f.id === id)!));
+    app.update(null, (d) => { fn(d.features.find((f) => f.id === id)!); });
   }
   function editPlot(fn: (p: NonNullable<typeof app.plot>) => void) {
     const id = plot.id;
-    app.update(null, (d) => fn(d.plots.find((p) => p.id === id)!));
+    app.update(null, (d) => { fn(d.plots.find((p) => p.id === id)!); });
   }
 
   const PROTECTIONS: Protection[] = ['none', 'cloche', 'coldframe', 'greenhouse', 'polytunnel', 'heated'];

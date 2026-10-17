@@ -12,6 +12,9 @@ import { planSpan, resolvePlantings, type Resolved } from './plantings';
 import { propagationLoad } from './propagation';
 import { generatedTasks, manualTasks, type PlanTask } from './tasks';
 import type { Area, Crop, Dataset, Feature, Planting, Plot, Site } from './types';
+import { effectiveClimate } from './climate';
+import { addDays } from './dates';
+import { fetchForecast, forecastNudges, type Nudge } from './weather';
 
 export type View = 'month' | 'timeline' | 'rotation' | 'plan' | 'plantings' | 'tasks' | 'journal' | 'propagation' | 'seeds' | 'crops' | 'settings' | 'help';
 export interface Route { view: View; arg?: string }
@@ -24,6 +27,10 @@ function parseHash(h: string): Route {
   const [view, arg] = h.replace(/^#\/?/, '').split('/');
   const views: View[] = ['month', 'timeline', 'rotation', 'plan', 'plantings', 'tasks', 'journal', 'propagation', 'seeds', 'crops', 'settings', 'help'];
   return views.includes(view as View) ? { view: view as View, arg: arg ? decodeURIComponent(arg) : undefined } : { view: 'month' };
+}
+
+export function isDataset(x: unknown): x is Dataset {
+  return !!x && typeof x === 'object' && Array.isArray((x as Dataset).plots) && Array.isArray((x as Dataset).plantings) && !!(x as Dataset).settings;
 }
 
 class App {
@@ -61,6 +68,9 @@ class App {
 
   warnings: Warning[] = $derived(this.computeWarnings());
   tasks: PlanTask[] = $derived(this.computeTasks());
+
+  /** Forecast nudges, if the grower has turned the forecast on. */
+  nudges: Nudge[] = $derived(this.computeNudges());
 
   /** Months shown in the month view. */
   months: string[] = $derived(this.computeMonths());
@@ -102,6 +112,8 @@ class App {
     setLocale(this.site?.locale ?? navigator.language ?? 'en-GB');
     this.ready = true;
     requestPersistence();
+    this.refreshForecast();
+    setInterval(() => this.refreshForecast(), 60 * 60_000);
     // Keep "today" right if the app is left open past midnight.
     setInterval(() => {
       const d = today();
@@ -122,7 +134,9 @@ class App {
   update(label: string | null, fn: (d: Dataset) => Dataset | void): void {
     const before = $state.snapshot(this.data) as Dataset;
     const result = fn(this.data);
-    if (result) this.data = result;
+    // Only a whole dataset replaces the data. An arrow like (d) => (d.x = 1) returns
+    // the assigned value, and that must never be taken as the new dataset.
+    if (isDataset(result)) this.data = result;
     this.undoStack.push({ label: label ?? '', data: before });
     if (this.undoStack.length > UNDO_LIMIT) this.undoStack.shift();
     this.undoCount = this.undoStack.length;
@@ -207,6 +221,39 @@ class App {
     const range = { from: `${addMonths(monthKey(this.today), -12)}-01`, to: `${addMonths(monthKey(this.today), 24)}-01` };
     const manual = manualTasks(this.data.tasks.filter((x) => !x.plotId || plotIds.has(x.plotId)), range, this.data.taskStates);
     return [...gen, ...manual];
+  }
+
+  /** Fetch the forecast if it's on and the last one is over three hours old. Never runs unless turned on. */
+  async refreshForecast(force = false): Promise<void> {
+    const f = this.data.settings.forecast;
+    const site = this.site;
+    if (!f?.enabled || !site || (typeof navigator !== 'undefined' && !navigator.onLine)) return;
+    if (!force && f.fetchedAt && Date.now() - Date.parse(f.fetchedAt) < 3 * 3600_000) return;
+    try {
+      const days = await fetchForecast(site.location.lat, site.location.lon);
+      // A background refresh, not the grower's edit, so it isn't an undo step.
+      this.data.settings.forecast = { enabled: true, fetchedAt: new Date().toISOString(), days };
+      this.save();
+    } catch {
+      // Offline or the service is down: keep the last forecast.
+    }
+  }
+
+  private computeNudges(): Nudge[] {
+    const f = this.data.settings.forecast;
+    if (!f?.enabled || !f.days?.length || !this.site) return [];
+    const days = f.days.filter((d) => d.date >= this.today);
+    const soon = addDays(this.today, 7);
+    // Tender crops in the ground in open beds, or going out within a week.
+    const areas = new Map(this.data.areas.map((a) => [a.id, a]));
+    const tender = this.plotResolved.filter((r) => {
+      const crop = this.cropOf(r.planting);
+      if (!crop || crop.hardiness === 'hardy' || r.planting.status === 'cleared' || r.planting.status === 'failed') return false;
+      const area = areas.get(r.planting.areaId);
+      if (effectiveClimate(this.site!.climate, area?.protection, crop.hardiness) !== this.site!.climate) return false;
+      return r.occupancy.from <= soon && r.occupancy.to >= this.today;
+    }).map((r) => this.nameOf(r.planting));
+    return forecastNudges(days, [...new Set(tender)]);
   }
 
   private computeMonths(): string[] {

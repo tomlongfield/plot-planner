@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import Dialog from '../components/Dialog.svelte';
   import MergeDialog from '../components/MergeDialog.svelte';
   import MonthDayInput from '../components/MonthDayInput.svelte';
@@ -8,6 +9,7 @@
   import { setClimate } from '../lib/actions';
   import { emptyDataset, parseBackup } from '../lib/backup';
   import { defaultClimate, frostFreeDays } from '../lib/climate';
+  import { localDate } from '../lib/dates';
   import { clearDataset, isPersisted, requestPersistence } from '../lib/db';
   import { demoDataset } from '../lib/demo';
   import { downloadBackup, pickFile } from '../lib/files';
@@ -15,6 +17,7 @@
   import { uid } from '../lib/ids';
   import { app } from '../lib/store.svelte';
   import type { Climate, Direction, Plot, PlotType } from '../lib/types';
+  import { ATTRIBUTION, climateFromEstimate, lookupFrostDates, searchPlaces, type FrostEstimate, type Place } from '../lib/weather';
 
   const site = $derived(app.site);
 
@@ -22,16 +25,77 @@
   let climate: Climate = $state(defaultClimate('N'));
   let lat = $state(0);
   let lon = $state(0);
+  // Reset the drafts only when the stored site location or climate really changes,
+  // not on every edit elsewhere (which would wipe a looked-up estimate).
+  const siteKey = $derived(site ? `${site.id}|${JSON.stringify(site.climate)}|${site.location.lat}|${site.location.lon}` : '');
   $effect(() => {
-    if (site) {
+    void siteKey;
+    untrack(() => {
+      if (!site) return;
       climate = { ...site.climate };
       lat = site.location.lat;
       lon = site.location.lon;
-    }
+    });
   });
   const climateChanged = $derived(
     !!site && (climate.lastFrost !== site.climate.lastFrost || climate.firstFrost !== site.climate.firstFrost || climate.hemisphere !== site.climate.hemisphere),
   );
+
+  // ── Optional online lookups ──
+  let placeQuery = $state('');
+  let places = $state<Place[]>([]);
+  let lookupBusy = $state(false);
+  let lookupError = $state('');
+  let estimate = $state<FrostEstimate | null>(null);
+  let safer = $state(true);
+  /** Climate as it came from a lookup, so applying it keeps that source unless edited. */
+  let fromLookup = $state<Climate | null>(null);
+
+  async function findPlace() {
+    lookupError = '';
+    lookupBusy = true;
+    try {
+      places = await searchPlaces(placeQuery.trim(), (site?.locale ?? 'en').split('-')[0]);
+      if (!places.length) lookupError = t('lookup.noPlaces');
+    } catch {
+      lookupError = t('lookup.failed');
+    } finally {
+      lookupBusy = false;
+    }
+  }
+
+  function choosePlace(p: Place) {
+    lat = Math.round(p.lat * 100) / 100;
+    lon = Math.round(p.lon * 100) / 100;
+    editSite((s) => (s.location = { label: p.label, lat, lon }));
+    places = [];
+    placeQuery = '';
+  }
+
+  async function lookUpFrost() {
+    lookupError = '';
+    lookupBusy = true;
+    estimate = null;
+    try {
+      estimate = await lookupFrostDates(lat, lon, climate.hemisphere, app.today);
+    } catch (e) {
+      lookupError = (e as Error).message === 'nodata' ? t('lookup.noData') : t('lookup.failed');
+    } finally {
+      lookupBusy = false;
+    }
+  }
+
+  function useEstimate() {
+    if (!estimate) return;
+    climate = climateFromEstimate(estimate, climate.hemisphere, safer);
+    fromLookup = { ...climate };
+    estimate = null;
+  }
+
+  function setForecast(on: boolean) {
+    app.update(on ? t('weather.on') : t('weather.off'), (d) => { d.settings.forecast = on ? { enabled: true } : { enabled: false }; });
+    if (on) app.refreshForecast(true);
+  }
 
   function setHemisphere(h: 'N' | 'S') {
     if (h === climate.hemisphere) return;
@@ -46,7 +110,9 @@
       const s = d.sites.find((x) => x.id === site.id)!;
       s.location = { ...s.location, lat, lon };
     });
-    setClimate(site.id, { ...climate, source: 'user', userEdited: true });
+    const looked = fromLookup && fromLookup.lastFrost === climate.lastFrost && fromLookup.firstFrost === climate.firstFrost && fromLookup.hemisphere === climate.hemisphere;
+    setClimate(site.id, looked ? { ...fromLookup!, userEdited: false } : { ...climate, source: 'user', userEdited: true });
+    fromLookup = null;
   }
 
   function saveLocation() {
@@ -59,7 +125,7 @@
 
   function editSite(fn: (s: NonNullable<typeof site>) => void) {
     if (!site) return;
-    app.update(null, (d) => fn(d.sites.find((x) => x.id === site.id)!));
+    app.update(null, (d) => { fn(d.sites.find((x) => x.id === site.id)!); });
   }
 
   // ── Plots ──
@@ -148,7 +214,7 @@
     if (!f) return;
     try {
       const d = parseBackup(await f.text(), __APP_VERSION__);
-      app.replace(d, t('settings.restored', { date: d.meta.lastBackupAt ? fullDate(d.meta.lastBackupAt.slice(0, 10)) : f.name }));
+      app.replace(d, t('settings.restored', { date: d.meta.lastBackupAt ? fullDate(localDate(d.meta.lastBackupAt)) : f.name }));
     } catch (e) {
       restoreError = t(`settings.restoreError.${(e as Error).message}`);
     }
@@ -195,6 +261,18 @@
         <label class="field"><span>{t('settings.lon')}</span><input type="number" step="0.01" min="-180" max="180" bind:value={lon} onchange={saveLocation} /></label>
       </div>
       <p class="help small muted">{t('settings.latHelp')}</p>
+      <details>
+        <summary>{t('lookup.findPlace')}</summary>
+        <p class="small muted">{t('lookup.placePrivacy')}</p>
+        <form class="row" onsubmit={(e) => { e.preventDefault(); if (placeQuery.trim()) findPlace(); }}>
+          <input type="search" bind:value={placeQuery} placeholder={t('lookup.placeHint')} aria-label={t('lookup.findPlace')} style="flex:1;min-width:10em" />
+          <button class="btn" type="submit" disabled={lookupBusy || !placeQuery.trim()}>{t('lookup.search')}</button>
+        </form>
+        {#if places.length}
+          <ul class="ruled list">{#each places as p}<li class="spread"><span>{p.label} <span class="mono muted small">{p.lat.toFixed(2)}, {p.lon.toFixed(2)}</span></span><button class="btn small" onclick={() => choosePlace(p)}>{t('lookup.use')}</button></li>{/each}</ul>
+          <p class="small muted">{t('weather.attribution')} <a href={ATTRIBUTION.url} rel="noopener">{ATTRIBUTION.name}</a></p>
+        {/if}
+      </details>
     </section>
 
     <section class="card stack" aria-labelledby="s-frost">
@@ -216,6 +294,24 @@
         <summary>{t('settings.frostHelpTitle')}</summary>
         <p class="small">{t('settings.frostHelp')}</p>
       </details>
+      <p class="small muted">{t('settings.frostSource', { source: site.climate.source === 'user' || site.climate.source === 'default' ? t('settings.sourceYou') : site.climate.source })}</p>
+      <div class="lookup">
+        <button class="btn small" onclick={lookUpFrost} disabled={lookupBusy}>{lookupBusy ? t('lookup.busy') : t('lookup.frost')}</button>
+        <span class="small muted">{t('lookup.frostPrivacy', { lat: lat.toFixed(2), lon: lon.toFixed(2) })}</span>
+      </div>
+      {#if lookupError}<p class="warning" role="alert">{lookupError}</p>{/if}
+      {#if estimate}
+        <div class="estimate card">
+          <p>{t('lookup.result', { years: estimate.years })}</p>
+          <label class="check"><input type="radio" name="est" checked={safer} onchange={() => (safer = true)} />
+            <span>{t('lookup.safer', { last: estimate.safeLastFrost, first: estimate.safeFirstFrost })}</span></label>
+          <label class="check"><input type="radio" name="est" checked={!safer} onchange={() => (safer = false)} />
+            <span>{t('lookup.typical', { last: estimate.lastFrost, first: estimate.firstFrost })}</span></label>
+          <p class="small muted">{t('lookup.range', { a: estimate.lastRange[0], b: estimate.lastRange[1], c: estimate.firstRange[0], d: estimate.firstRange[1] })}</p>
+          <p class="small muted">{estimate.source}. {t('lookup.groundFrost')} {t('weather.attribution')} <a href={ATTRIBUTION.url} rel="noopener">{ATTRIBUTION.name}</a>.</p>
+          <div class="row"><button class="btn primary small" onclick={useEstimate}>{t('lookup.useDates')}</button><button class="btn quiet small" onclick={() => (estimate = null)}>{t('settings.cancel')}</button></div>
+        </div>
+      {/if}
       {#if climateChanged}
         <div class="warning info">
           <span>{t('settings.frostApplyHelp')}
@@ -226,6 +322,13 @@
           </span>
         </div>
       {/if}
+    </section>
+
+    <section class="card stack" aria-labelledby="s-weather">
+      <h2 id="s-weather">{t('weather.title')}</h2>
+      <p class="small">{t('weather.intro')}</p>
+      <label class="check"><input type="checkbox" checked={!!app.data.settings.forecast?.enabled} onchange={(e) => setForecast(e.currentTarget.checked)} />{t('weather.toggle')}</label>
+      {#if app.data.settings.forecast?.fetchedAt}<p class="small muted">{t('weather.fetched', { date: fullDate(localDate(app.data.settings.forecast.fetchedAt)) })}</p>{/if}
     </section>
 
     <section class="card stack" aria-labelledby="s-units">
@@ -309,7 +412,7 @@
     <p>{t('settings.dataIntro')}</p>
     <p class="small muted">{t('settings.mergeHelp')}</p>
     <p class="small muted">
-      {app.data.meta.lastBackupAt ? t('settings.lastBackup', { date: fullDate(app.data.meta.lastBackupAt.slice(0, 10)) }) : t('settings.neverBackedUp')}
+      {app.data.meta.lastBackupAt ? t('settings.lastBackup', { date: fullDate(localDate(app.data.meta.lastBackupAt)) }) : t('settings.neverBackedUp')}
       {persisted ? t('settings.persisted') : t('settings.notPersisted')}
     </p>
     <div class="row">
@@ -396,5 +499,7 @@
   .list li { padding: 8px 0; }
   .site-head { margin-top: 8px; }
   details summary { cursor: pointer; color: var(--accent); font-weight: 500; }
+  .lookup { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .estimate { display: grid; gap: 8px; }
   details p { margin-top: 8px; }
 </style>

@@ -90,6 +90,19 @@
 
 {#if app.plot}
   <div class="month-view">
+    {#if app.nudges.length}
+      <ul class="nudges" aria-label={t('weather.nudges')}>
+        {#each app.nudges as n}
+          <li class="warning" class:info={n.kind !== 'frost'}>
+            <span>{n.kind === 'frost' ? t('weather.frost', { date: dayMonth(n.date), min: n.minC, names: n.tender.slice(0, 3).join(', ') })
+              : n.kind === 'dry' ? t('weather.dry', { days: n.days })
+              : n.kind === 'wind' ? t('weather.wind', { date: dayMonth(n.date), gust: n.gustKmh })
+              : t('weather.heat', { date: dayMonth(n.date), max: n.maxC })}</span>
+          </li>
+        {/each}
+        <li class="small muted attribution">{t('weather.attribution')} <a href="https://open-meteo.com/" rel="noopener">Open-Meteo.com</a></li>
+      </ul>
+    {/if}
     <div class="spread top">
       <ViewSwitch />
       <span class="row">
@@ -205,6 +218,7 @@
 <style>
   .month-view { display: grid; gap: 16px; }
   .top { gap: 8px; }
+  .nudges { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
   .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 360px)); gap: 20px; }
   .compare figure { margin: 0; display: grid; gap: 6px; }
   .week { display: grid; gap: 4px; margin-top: 10px; }

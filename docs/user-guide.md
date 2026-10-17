@@ -10,6 +10,16 @@ The plot planner keeps your growing plan in your browser. There's no account and
 4. **Draw your beds.** In **Layout**, add beds and drag them into place, or type the numbers, which is easier on a phone. Drag a corner to resize. Split a bed into sections along its length, or divide a section into rows for interplanting. Add fences, paths, sheds, water butts and compost bays.
 5. **Add plantings.** Choose a crop and variety, where it goes and how you'll raise it. The dates are worked out for you. Change any date and it stays as you set it.
 
+### Looking things up (optional)
+
+You never have to go online, but two lookups can save time. Each happens only when you press its button or tick its box.
+
+- **Find a place** (Settings → Site) searches a town name to fill in your location. It sends only the words you type.
+- **Look up for me** (Settings → Frost dates) works out your frost dates from ten years of local daily temperatures. You see the *safer* dates (frost-free in nine years out of ten) and the *typical* ones, with where they came from, and choose before anything changes. It sends only your coordinates.
+- **Weather forecast** (Settings → Weather forecast) is off until you turn it on. Then the month view warns of frost when tender crops are out, dry spells, strong wind and heat.
+
+All three use [Open-Meteo](https://open-meteo.com/), which is free and needs no account.
+
 ## The month view
 
 - Each area is coloured by what is growing that month, with its name and a line or two about what's happening.
@@ -64,4 +74,4 @@ After the first visit the planner works with no signal. On a phone, use your bro
 
 ## Privacy
 
-There are no accounts, cookies, analytics or adverts, and the planner makes no requests to other websites. What you enter stays on your device unless you save a file and share it yourself.
+There are no accounts, cookies, analytics or adverts. The planner makes no requests to other websites unless you use one of the optional lookups above. What you enter stays on your device unless you save a file and share it yourself.
