@@ -1,0 +1,47 @@
+{
+  "id": "rhubarb",
+  "names": {
+    "en": [
+      "Rhubarb"
+    ]
+  },
+  "family": "Polygonaceae",
+  "species": "Rheum × hybridum",
+  "category": "fruit",
+  "lifecycle": "perennial",
+  "hardiness": "hardy",
+  "rotationGroup": "perennial",
+  "timing": [
+    {
+      "kind": "plantOut",
+      "anchor": "firstFrost",
+      "fromOffsetDays": 20,
+      "toOffsetDays": 140
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -60,
+      "toOffsetDays": 45
+    }
+  ],
+  "daysToHarvest": 365,
+  "harvestWindowDays": 100,
+  "spacing": {
+    "gridCm": 90
+  },
+  "notes": "Don't pick in the first year. Stop picking by midsummer.",
+  "varieties": [
+    {
+      "id": "rhubarb--timperley-early",
+      "cropId": "rhubarb",
+      "name": "Timperley Early",
+      "seedType": "unknown"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

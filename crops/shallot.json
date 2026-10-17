@@ -1,0 +1,59 @@
+{
+  "id": "shallot",
+  "names": {
+    "en": [
+      "Shallot"
+    ]
+  },
+  "family": "Amaryllidaceae",
+  "species": "Allium cepa var. aggregatum",
+  "category": "allium",
+  "lifecycle": "perennial",
+  "hardiness": "hardy",
+  "rotationGroup": "alliums",
+  "care": [
+    "cure"
+  ],
+  "timing": [
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -90,
+      "toOffsetDays": -50
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 50,
+      "toOffsetDays": 90
+    }
+  ],
+  "daysToHarvest": 150,
+  "harvestWindowDays": 30,
+  "dayLength": "long",
+  "spacing": {
+    "inRowCm": 15,
+    "betweenRowsCm": 30,
+    "gridCm": 20
+  },
+  "seedSaving": {
+    "pollination": "self",
+    "crosses": "rarely"
+  },
+  "pests": [
+    "onion fly"
+  ],
+  "varieties": [
+    {
+      "id": "shallot--sets",
+      "cropId": "shallot",
+      "name": "Shallot sets",
+      "seedType": "unknown"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

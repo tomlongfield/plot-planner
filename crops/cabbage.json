@@ -1,0 +1,96 @@
+{
+  "id": "cabbage",
+  "names": {
+    "en": [
+      "Cabbage"
+    ]
+  },
+  "family": "Brassicaceae",
+  "species": "Brassica oleracea",
+  "category": "brassica",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "minTempC": -10,
+  "rotationGroup": "brassicas",
+  "care": [
+    "net"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -60,
+      "toOffsetDays": 20
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -25,
+      "toOffsetDays": 60
+    },
+    {
+      "kind": "overwinter",
+      "anchor": "firstFrost",
+      "fromOffsetDays": -80,
+      "toOffsetDays": -60
+    }
+  ],
+  "moduleDays": 35,
+  "maxModuleDays": 50,
+  "daysToHarvest": 120,
+  "harvestWindowDays": 45,
+  "propagation": {
+    "seedsPerModule": 1,
+    "germTempC": 12
+  },
+  "spacing": {
+    "inRowCm": 40,
+    "betweenRowsCm": 45,
+    "gridCm": 40
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 1000,
+    "minPlants": 20
+  },
+  "pests": [
+    "cabbage white caterpillars",
+    "pigeons",
+    "clubroot",
+    "flea beetle",
+    "cabbage root fly"
+  ],
+  "varieties": [
+    {
+      "id": "cabbage--spring",
+      "cropId": "cabbage",
+      "name": "Spring cabbage",
+      "seedType": "OP"
+    },
+    {
+      "id": "cabbage--summer",
+      "cropId": "cabbage",
+      "name": "Summer cabbage",
+      "seedType": "OP"
+    },
+    {
+      "id": "cabbage--savoy",
+      "cropId": "cabbage",
+      "name": "Savoy cabbage",
+      "seedType": "OP"
+    },
+    {
+      "id": "cabbage--red",
+      "cropId": "cabbage",
+      "name": "Red cabbage",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

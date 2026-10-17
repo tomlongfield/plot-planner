@@ -1,0 +1,348 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/tomlongfield/plot-planner/schema/crop.schema.json",
+  "title": "Crop",
+  "description": "One crop in the plot planner library. Timings are offsets in days from local frost dates, so one file works for any location.",
+  "type": "object",
+  "required": [
+    "id",
+    "names",
+    "family",
+    "species",
+    "category",
+    "lifecycle",
+    "hardiness",
+    "timing",
+    "rotationGroup"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "anchor": {
+      "enum": [
+        "lastFrost",
+        "firstFrost",
+        "soilTemp",
+        "dayLength",
+        "fixed"
+      ]
+    },
+    "monthDay": {
+      "type": "string",
+      "pattern": "^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+    },
+    "timingRule": {
+      "type": "object",
+      "required": [
+        "kind",
+        "anchor"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "sowIndoor",
+            "sowOutdoor",
+            "plantOut",
+            "overwinter",
+            "harvest"
+          ]
+        },
+        "anchor": {
+          "$ref": "#/definitions/anchor"
+        },
+        "fromOffsetDays": {
+          "type": "integer",
+          "minimum": -400,
+          "maximum": 400
+        },
+        "toAnchor": {
+          "$ref": "#/definitions/anchor"
+        },
+        "toOffsetDays": {
+          "type": "integer",
+          "minimum": -400,
+          "maximum": 400
+        },
+        "threshold": {
+          "type": "number"
+        },
+        "fixedFrom": {
+          "$ref": "#/definitions/monthDay"
+        },
+        "fixedTo": {
+          "$ref": "#/definitions/monthDay"
+        },
+        "protectionShiftDays": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 120
+        }
+      }
+    },
+    "variety": {
+      "type": "object",
+      "required": [
+        "id",
+        "cropId",
+        "name",
+        "seedType"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+--[a-z0-9-]+$"
+        },
+        "cropId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "seedType": {
+          "enum": [
+            "OP",
+            "F1",
+            "unknown"
+          ]
+        },
+        "overrides": {
+          "type": "object"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Matches the file name."
+    },
+    "names": {
+      "type": "object",
+      "description": "Names by language code. The first name is the main one; the rest are alternatives used when matching imports.",
+      "required": [
+        "en"
+      ],
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "minItems": 1
+      }
+    },
+    "family": {
+      "type": "string"
+    },
+    "species": {
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "allium",
+        "leaf",
+        "brassica",
+        "legume",
+        "root",
+        "fruiting",
+        "cucurbit",
+        "herb",
+        "fruit",
+        "flower"
+      ]
+    },
+    "lifecycle": {
+      "enum": [
+        "annual",
+        "biennial",
+        "perennial"
+      ]
+    },
+    "hardiness": {
+      "enum": [
+        "tender",
+        "half-hardy",
+        "hardy"
+      ]
+    },
+    "minTempC": {
+      "type": "number"
+    },
+    "timing": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/timingRule"
+      }
+    },
+    "moduleDays": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "maxModuleDays": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "daysToHarvest": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Days from sowing (or planting cloves, sets or crowns) to first harvest."
+    },
+    "harvestWindowDays": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "frostFreeDaysNeeded": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "dayLength": {
+      "enum": [
+        "short",
+        "long",
+        "neutral"
+      ]
+    },
+    "propagation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "seedsPerModule": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "moduleSize": {
+          "type": "string"
+        },
+        "germTempC": {
+          "type": "number"
+        },
+        "bottomHeat": {
+          "type": "boolean"
+        },
+        "light": {
+          "type": "string"
+        }
+      }
+    },
+    "spacing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inRowCm": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "betweenRowsCm": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "gridCm": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "perContainerL": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "seedSaving": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pollination": {
+          "enum": [
+            "self",
+            "insect",
+            "wind"
+          ]
+        },
+        "crosses": {
+          "enum": [
+            "rarely",
+            "sometimes",
+            "readily"
+          ]
+        },
+        "isolationM": {
+          "type": "number",
+          "minimum": 0
+        },
+        "minPlants": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "seedLifeYears": {
+      "type": "number",
+      "minimum": 0
+    },
+    "rotationGroup": {
+      "type": "string"
+    },
+    "pests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "varieties": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/variety"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "note"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "care": {
+      "type": "array",
+      "description": "Jobs this crop usually needs; the app turns these into tasks.",
+      "items": {
+        "enum": [
+          "support",
+          "net",
+          "mesh",
+          "fleece",
+          "earth-up",
+          "thin",
+          "pinch-out",
+          "cure",
+          "chit"
+        ]
+      },
+      "uniqueItems": true
+    }
+  }
+}

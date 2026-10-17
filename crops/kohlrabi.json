@@ -1,0 +1,74 @@
+{
+  "id": "kohlrabi",
+  "names": {
+    "en": [
+      "Kohlrabi"
+    ]
+  },
+  "family": "Brassicaceae",
+  "species": "Brassica oleracea",
+  "category": "brassica",
+  "lifecycle": "annual",
+  "hardiness": "half-hardy",
+  "rotationGroup": "brassicas",
+  "care": [
+    "net"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -45,
+      "toOffsetDays": 60
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -20,
+      "toOffsetDays": 80
+    },
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -14,
+      "toAnchor": "firstFrost",
+      "toOffsetDays": -70
+    }
+  ],
+  "moduleDays": 25,
+  "maxModuleDays": 35,
+  "daysToHarvest": 60,
+  "harvestWindowDays": 21,
+  "spacing": {
+    "inRowCm": 20,
+    "betweenRowsCm": 30,
+    "gridCm": 20
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 1000,
+    "minPlants": 20
+  },
+  "pests": [
+    "cabbage white caterpillars",
+    "pigeons",
+    "clubroot",
+    "flea beetle",
+    "cabbage root fly"
+  ],
+  "varieties": [
+    {
+      "id": "kohlrabi--azur-star",
+      "cropId": "kohlrabi",
+      "name": "Azur Star",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

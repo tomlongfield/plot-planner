@@ -1,0 +1,98 @@
+{
+  "id": "pea",
+  "names": {
+    "en": [
+      "Pea",
+      "Garden pea"
+    ]
+  },
+  "family": "Fabaceae",
+  "species": "Pisum sativum",
+  "category": "legume",
+  "lifecycle": "annual",
+  "hardiness": "hardy",
+  "minTempC": -5,
+  "rotationGroup": "legumes",
+  "care": [
+    "support",
+    "net"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -60,
+      "toOffsetDays": -21
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -35,
+      "toOffsetDays": 0
+    },
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -40,
+      "toOffsetDays": 45
+    },
+    {
+      "kind": "overwinter",
+      "anchor": "firstFrost",
+      "fromOffsetDays": -10,
+      "toOffsetDays": 10
+    }
+  ],
+  "moduleDays": 21,
+  "maxModuleDays": 30,
+  "daysToHarvest": 80,
+  "harvestWindowDays": 30,
+  "propagation": {
+    "seedsPerModule": 3,
+    "moduleSize": "guttering or deep cells",
+    "germTempC": 10
+  },
+  "spacing": {
+    "inRowCm": 5,
+    "betweenRowsCm": 60,
+    "gridCm": 8
+  },
+  "seedLifeYears": 3,
+  "seedSaving": {
+    "pollination": "self",
+    "crosses": "rarely",
+    "isolationM": 3,
+    "minPlants": 20
+  },
+  "pests": [
+    "pea moth",
+    "mice",
+    "pigeons",
+    "powdery mildew"
+  ],
+  "varieties": [
+    {
+      "id": "pea--kelvedon",
+      "cropId": "pea",
+      "name": "Kelvedon Wonder",
+      "seedType": "OP"
+    },
+    {
+      "id": "pea--sugar-snap",
+      "cropId": "pea",
+      "name": "Sugar snap pea",
+      "seedType": "OP"
+    },
+    {
+      "id": "pea--mangetout",
+      "cropId": "pea",
+      "name": "Mangetout",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

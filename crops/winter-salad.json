@@ -1,0 +1,70 @@
+{
+  "id": "winter-salad",
+  "names": {
+    "en": [
+      "Winter salad mix",
+      "Winter salad"
+    ]
+  },
+  "family": "Mixed",
+  "species": "mixed",
+  "category": "leaf",
+  "lifecycle": "annual",
+  "hardiness": "hardy",
+  "minTempC": -6,
+  "rotationGroup": "salads",
+  "care": [
+    "fleece"
+  ],
+  "timing": [
+    {
+      "kind": "overwinter",
+      "anchor": "firstFrost",
+      "fromOffsetDays": -15,
+      "toOffsetDays": 5
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -89,
+      "toOffsetDays": -15
+    }
+  ],
+  "moduleDays": 24,
+  "maxModuleDays": 40,
+  "daysToHarvest": 60,
+  "harvestWindowDays": 60,
+  "propagation": {
+    "seedsPerModule": 4,
+    "germTempC": 10
+  },
+  "spacing": {
+    "inRowCm": 15,
+    "betweenRowsCm": 20,
+    "gridCm": 15
+  },
+  "seedLifeYears": 3,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "sometimes",
+    "minPlants": 10
+  },
+  "pests": [
+    "slugs",
+    "pigeons"
+  ],
+  "notes": "Mustards, mizuna, land cress, winter lettuce and lamb's lettuce. Fleece in hard frost.",
+  "varieties": [
+    {
+      "id": "winter-salad--mix",
+      "cropId": "winter-salad",
+      "name": "Winter salad mix",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "id": "tomato",
+  "names": {
+    "en": [
+      "Tomato"
+    ]
+  },
+  "family": "Solanaceae",
+  "species": "Solanum lycopersicum",
+  "category": "fruiting",
+  "lifecycle": "annual",
+  "hardiness": "tender",
+  "minTempC": 5,
+  "rotationGroup": "potatoes",
+  "care": [
+    "support",
+    "pinch-out"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -70,
+      "toOffsetDays": -49
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 7,
+      "toOffsetDays": 28
+    }
+  ],
+  "moduleDays": 56,
+  "maxModuleDays": 80,
+  "daysToHarvest": 130,
+  "harvestWindowDays": 80,
+  "frostFreeDaysNeeded": 100,
+  "propagation": {
+    "seedsPerModule": 1,
+    "moduleSize": "pot on to 9 cm",
+    "germTempC": 20,
+    "bottomHeat": true,
+    "light": "strong light or grow lights"
+  },
+  "spacing": {
+    "inRowCm": 45,
+    "betweenRowsCm": 60,
+    "gridCm": 45
+  },
+  "seedLifeYears": 5,
+  "seedSaving": {
+    "pollination": "self",
+    "crosses": "rarely",
+    "isolationM": 3,
+    "minPlants": 6
+  },
+  "pests": [
+    "blight",
+    "blossom end rot",
+    "whitefly"
+  ],
+  "varieties": [
+    {
+      "id": "tomato--gardeners-delight",
+      "cropId": "tomato",
+      "name": "Gardener's Delight",
+      "seedType": "OP"
+    },
+    {
+      "id": "tomato--sungold",
+      "cropId": "tomato",
+      "name": "Sungold",
+      "seedType": "F1"
+    },
+    {
+      "id": "tomato--san-marzano",
+      "cropId": "tomato",
+      "name": "San Marzano",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "blackcurrant",
+  "names": {
+    "en": [
+      "Blackcurrant",
+      "Currant"
+    ]
+  },
+  "family": "Grossulariaceae",
+  "species": "Ribes nigrum",
+  "category": "fruit",
+  "lifecycle": "perennial",
+  "hardiness": "hardy",
+  "rotationGroup": "perennial",
+  "timing": [
+    {
+      "kind": "plantOut",
+      "anchor": "firstFrost",
+      "fromOffsetDays": 20,
+      "toOffsetDays": 120
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 50,
+      "toOffsetDays": 90
+    }
+  ],
+  "daysToHarvest": 365,
+  "harvestWindowDays": 30,
+  "spacing": {
+    "inRowCm": 150,
+    "betweenRowsCm": 180
+  },
+  "pests": [
+    "big bud mite",
+    "birds"
+  ],
+  "notes": "Take hardwood cuttings in late autumn.",
+  "varieties": [
+    {
+      "id": "blackcurrant--ben-sarek",
+      "cropId": "blackcurrant",
+      "name": "Ben Sarek",
+      "seedType": "unknown"
+    },
+    {
+      "id": "blackcurrant--redcurrant",
+      "cropId": "blackcurrant",
+      "name": "Redcurrant",
+      "seedType": "unknown",
+      "overrides": {
+        "species": "Ribes rubrum"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

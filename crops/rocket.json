@@ -1,0 +1,71 @@
+{
+  "id": "rocket",
+  "names": {
+    "en": [
+      "Rocket",
+      "Arugula"
+    ]
+  },
+  "family": "Brassicaceae",
+  "species": "Eruca vesicaria",
+  "category": "leaf",
+  "lifecycle": "annual",
+  "hardiness": "hardy",
+  "rotationGroup": "brassicas",
+  "timing": [
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -30,
+      "toAnchor": "firstFrost",
+      "toOffsetDays": -30
+    },
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -50,
+      "toOffsetDays": 60
+    }
+  ],
+  "moduleDays": 21,
+  "maxModuleDays": 30,
+  "daysToHarvest": 40,
+  "harvestWindowDays": 30,
+  "propagation": {
+    "seedsPerModule": 5
+  },
+  "spacing": {
+    "inRowCm": 10,
+    "betweenRowsCm": 20,
+    "gridCm": 10
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 800,
+    "minPlants": 20
+  },
+  "pests": [
+    "flea beetle"
+  ],
+  "varieties": [
+    {
+      "id": "rocket--salad",
+      "cropId": "rocket",
+      "name": "Salad rocket",
+      "seedType": "OP"
+    },
+    {
+      "id": "rocket--wild",
+      "cropId": "rocket",
+      "name": "Wild rocket",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

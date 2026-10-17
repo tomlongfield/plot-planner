@@ -1,0 +1,58 @@
+{
+  "id": "raspberry",
+  "names": {
+    "en": [
+      "Raspberry"
+    ]
+  },
+  "family": "Rosaceae",
+  "species": "Rubus idaeus",
+  "category": "fruit",
+  "lifecycle": "perennial",
+  "hardiness": "hardy",
+  "rotationGroup": "perennial",
+  "timing": [
+    {
+      "kind": "plantOut",
+      "anchor": "firstFrost",
+      "fromOffsetDays": 20,
+      "toOffsetDays": 120
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 50,
+      "toOffsetDays": 140
+    }
+  ],
+  "daysToHarvest": 365,
+  "harvestWindowDays": 60,
+  "spacing": {
+    "inRowCm": 45,
+    "betweenRowsCm": 180
+  },
+  "pests": [
+    "raspberry beetle",
+    "birds"
+  ],
+  "notes": "Autumn-fruiting canes: cut all to the ground in late winter, or leave some for an early crop as well.",
+  "varieties": [
+    {
+      "id": "raspberry--autumn-bliss",
+      "cropId": "raspberry",
+      "name": "Autumn raspberry (Autumn Bliss)",
+      "seedType": "unknown"
+    },
+    {
+      "id": "raspberry--glen-ample",
+      "cropId": "raspberry",
+      "name": "Summer raspberry (Glen Ample)",
+      "seedType": "unknown"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

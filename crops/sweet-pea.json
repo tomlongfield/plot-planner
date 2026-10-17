@@ -1,0 +1,75 @@
+{
+  "id": "sweet-pea",
+  "names": {
+    "en": [
+      "Sweet pea"
+    ]
+  },
+  "family": "Fabaceae",
+  "species": "Lathyrus odoratus",
+  "category": "flower",
+  "lifecycle": "annual",
+  "hardiness": "hardy",
+  "rotationGroup": "legumes",
+  "care": [
+    "support",
+    "pinch-out"
+  ],
+  "timing": [
+    {
+      "kind": "overwinter",
+      "anchor": "firstFrost",
+      "fromOffsetDays": -5,
+      "toOffsetDays": 20
+    },
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -90,
+      "toOffsetDays": -50
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -35,
+      "toOffsetDays": -7
+    }
+  ],
+  "moduleDays": 40,
+  "maxModuleDays": 150,
+  "daysToHarvest": 110,
+  "harvestWindowDays": 70,
+  "propagation": {
+    "seedsPerModule": 2,
+    "moduleSize": "root trainers"
+  },
+  "spacing": {
+    "inRowCm": 20,
+    "betweenRowsCm": 60,
+    "gridCm": 20
+  },
+  "seedLifeYears": 3,
+  "seedSaving": {
+    "pollination": "self",
+    "crosses": "rarely",
+    "isolationM": 3,
+    "minPlants": 6
+  },
+  "pests": [
+    "mice",
+    "slugs"
+  ],
+  "varieties": [
+    {
+      "id": "sweet-pea--cupani",
+      "cropId": "sweet-pea",
+      "name": "Cupani",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

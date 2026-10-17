@@ -1,0 +1,83 @@
+{
+  "id": "garlic",
+  "names": {
+    "en": [
+      "Garlic"
+    ]
+  },
+  "family": "Amaryllidaceae",
+  "species": "Allium sativum",
+  "category": "allium",
+  "lifecycle": "perennial",
+  "hardiness": "hardy",
+  "minTempC": -15,
+  "rotationGroup": "alliums",
+  "care": [
+    "cure"
+  ],
+  "timing": [
+    {
+      "kind": "overwinter",
+      "anchor": "firstFrost",
+      "fromOffsetDays": -35,
+      "toOffsetDays": 25
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -100,
+      "toOffsetDays": -60
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 30,
+      "toOffsetDays": 65
+    }
+  ],
+  "daysToHarvest": 240,
+  "harvestWindowDays": 30,
+  "dayLength": "long",
+  "spacing": {
+    "inRowCm": 15,
+    "betweenRowsCm": 30,
+    "gridCm": 15
+  },
+  "seedLifeYears": 1,
+  "seedSaving": {
+    "pollination": "self",
+    "crosses": "rarely",
+    "minPlants": 1
+  },
+  "pests": [
+    "rust",
+    "white rot",
+    "allium leaf miner"
+  ],
+  "notes": "Needs a cold spell to form cloves. Plant cloves pointed end up, tips just below the surface.",
+  "varieties": [
+    {
+      "id": "garlic--softneck",
+      "cropId": "garlic",
+      "name": "Garlic (softneck)",
+      "seedType": "OP"
+    },
+    {
+      "id": "garlic--hardneck",
+      "cropId": "garlic",
+      "name": "Garlic (hardneck)",
+      "seedType": "OP"
+    },
+    {
+      "id": "garlic--elephant",
+      "cropId": "garlic",
+      "name": "Elephant garlic",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

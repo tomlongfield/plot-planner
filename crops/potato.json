@@ -1,0 +1,80 @@
+{
+  "id": "potato",
+  "names": {
+    "en": [
+      "Potato"
+    ]
+  },
+  "family": "Solanaceae",
+  "species": "Solanum tuberosum",
+  "category": "root",
+  "lifecycle": "annual",
+  "hardiness": "half-hardy",
+  "minTempC": 0,
+  "rotationGroup": "potatoes",
+  "care": [
+    "chit",
+    "earth-up"
+  ],
+  "timing": [
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -45,
+      "toOffsetDays": -10
+    }
+  ],
+  "daysToHarvest": 100,
+  "harvestWindowDays": 40,
+  "frostFreeDaysNeeded": 90,
+  "spacing": {
+    "inRowCm": 35,
+    "betweenRowsCm": 65,
+    "gridCm": 40
+  },
+  "seedSaving": {
+    "pollination": "self",
+    "crosses": "rarely"
+  },
+  "pests": [
+    "blight",
+    "slugs",
+    "scab",
+    "eelworm"
+  ],
+  "notes": "Chit seed potatoes for 4 to 6 weeks before planting. Earth up as shoots appear.",
+  "varieties": [
+    {
+      "id": "potato--first-early",
+      "cropId": "potato",
+      "name": "First early potato",
+      "seedType": "unknown",
+      "overrides": {
+        "daysToHarvest": 80
+      }
+    },
+    {
+      "id": "potato--second-early",
+      "cropId": "potato",
+      "name": "Second early potato",
+      "seedType": "unknown",
+      "overrides": {
+        "daysToHarvest": 100
+      }
+    },
+    {
+      "id": "potato--maincrop",
+      "cropId": "potato",
+      "name": "Maincrop potato",
+      "seedType": "unknown",
+      "overrides": {
+        "daysToHarvest": 130
+      }
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

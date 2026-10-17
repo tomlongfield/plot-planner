@@ -1,0 +1,64 @@
+{
+  "id": "parsnip",
+  "names": {
+    "en": [
+      "Parsnip"
+    ]
+  },
+  "family": "Apiaceae",
+  "species": "Pastinaca sativa",
+  "category": "root",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "minTempC": -15,
+  "rotationGroup": "roots",
+  "care": [
+    "thin"
+  ],
+  "timing": [
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -45,
+      "toOffsetDays": 15
+    },
+    {
+      "kind": "harvest",
+      "anchor": "firstFrost",
+      "fromOffsetDays": 0,
+      "toOffsetDays": 150
+    }
+  ],
+  "daysToHarvest": 150,
+  "harvestWindowDays": 120,
+  "spacing": {
+    "inRowCm": 15,
+    "betweenRowsCm": 30,
+    "gridCm": 15
+  },
+  "seedLifeYears": 1,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 800,
+    "minPlants": 20
+  },
+  "pests": [
+    "canker",
+    "carrot fly"
+  ],
+  "notes": "Use fresh seed every year. Slow to germinate.",
+  "varieties": [
+    {
+      "id": "parsnip--tender-and-true",
+      "cropId": "parsnip",
+      "name": "Tender and True",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

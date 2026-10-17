@@ -1,0 +1,56 @@
+{
+  "id": "turnip",
+  "names": {
+    "en": [
+      "Turnip"
+    ]
+  },
+  "family": "Brassicaceae",
+  "species": "Brassica rapa",
+  "category": "root",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "rotationGroup": "brassicas",
+  "care": [
+    "thin"
+  ],
+  "timing": [
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -30,
+      "toAnchor": "firstFrost",
+      "toOffsetDays": -50
+    }
+  ],
+  "daysToHarvest": 60,
+  "harvestWindowDays": 30,
+  "spacing": {
+    "inRowCm": 15,
+    "betweenRowsCm": 25,
+    "gridCm": 15
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 1000,
+    "minPlants": 20
+  },
+  "pests": [
+    "flea beetle"
+  ],
+  "varieties": [
+    {
+      "id": "turnip--milan-purple",
+      "cropId": "turnip",
+      "name": "Milan Purple Top",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

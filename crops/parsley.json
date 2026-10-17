@@ -1,0 +1,77 @@
+{
+  "id": "parsley",
+  "names": {
+    "en": [
+      "Parsley"
+    ]
+  },
+  "family": "Apiaceae",
+  "species": "Petroselinum crispum",
+  "category": "herb",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "rotationGroup": "roots",
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -60,
+      "toOffsetDays": 30
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -14,
+      "toOffsetDays": 60
+    },
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 0,
+      "toAnchor": "firstFrost",
+      "toOffsetDays": -80
+    }
+  ],
+  "moduleDays": 40,
+  "maxModuleDays": 55,
+  "daysToHarvest": 80,
+  "harvestWindowDays": 180,
+  "propagation": {
+    "seedsPerModule": 4,
+    "germTempC": 18
+  },
+  "spacing": {
+    "inRowCm": 20,
+    "betweenRowsCm": 30,
+    "gridCm": 20
+  },
+  "seedLifeYears": 2,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 800,
+    "minPlants": 20
+  },
+  "pests": [
+    "carrot fly"
+  ],
+  "varieties": [
+    {
+      "id": "parsley--flat-leaf",
+      "cropId": "parsley",
+      "name": "Flat-leaf parsley",
+      "seedType": "OP"
+    },
+    {
+      "id": "parsley--curled",
+      "cropId": "parsley",
+      "name": "Curled parsley",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

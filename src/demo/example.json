@@ -1,0 +1,431 @@
+{
+  "site": {
+    "name": "Example site",
+    "location": {
+      "lat": 54.2,
+      "lon": -1.3,
+      "label": "Example town"
+    },
+    "climate": {
+      "hemisphere": "N",
+      "lastFrost": "05-15",
+      "firstFrost": "10-20",
+      "source": "user"
+    },
+    "units": "metric",
+    "locale": "en-GB"
+  },
+  "plot": {
+    "id": "p1",
+    "name": "Example plot",
+    "type": "allotment",
+    "widthM": 4,
+    "lengthM": 8,
+    "topDirection": "W",
+    "endDate": "2027-09-30"
+  },
+  "features": [
+    {
+      "type": "fence",
+      "label": "Fence",
+      "shape": {
+        "line": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            8
+          ]
+        ]
+      },
+      "side": "S"
+    },
+    {
+      "type": "fence",
+      "label": "Fence",
+      "shape": {
+        "line": [
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            0
+          ]
+        ]
+      },
+      "side": "W"
+    },
+    {
+      "type": "tools",
+      "label": "Tool store",
+      "shape": {
+        "rect": [
+          0,
+          0,
+          1.37,
+          0.49
+        ]
+      }
+    }
+  ],
+  "areas": [
+    {
+      "id": "a",
+      "kind": "bed",
+      "name": "Bed A",
+      "shape": {
+        "rect": [
+          0,
+          1.49,
+          1.0,
+          6.25
+        ]
+      }
+    },
+    {
+      "id": "a1",
+      "parentId": "a",
+      "kind": "section",
+      "name": "A west",
+      "shape": {
+        "rect": [
+          0,
+          1.49,
+          1.0,
+          2.41
+        ]
+      }
+    },
+    {
+      "id": "a2",
+      "parentId": "a",
+      "kind": "section",
+      "name": "A middle",
+      "shape": {
+        "rect": [
+          0,
+          3.9,
+          1.0,
+          1.1
+        ]
+      }
+    },
+    {
+      "id": "a3",
+      "parentId": "a",
+      "kind": "section",
+      "name": "A east",
+      "shape": {
+        "rect": [
+          0,
+          5.5,
+          1.0,
+          2.24
+        ]
+      }
+    },
+    {
+      "id": "f",
+      "kind": "bed",
+      "name": "Fruit",
+      "perennial": true,
+      "shape": {
+        "rect": [
+          1.37,
+          0,
+          2.63,
+          1.99
+        ]
+      }
+    },
+    {
+      "id": "b",
+      "kind": "bed",
+      "name": "Bed B",
+      "shape": {
+        "rect": [
+          1.37,
+          2.24,
+          2.63,
+          2.25
+        ]
+      }
+    },
+    {
+      "id": "c",
+      "kind": "bed",
+      "name": "Bed C",
+      "shape": {
+        "rect": [
+          1.37,
+          4.74,
+          1.05,
+          3.0
+        ]
+      }
+    },
+    {
+      "id": "d",
+      "kind": "bed",
+      "name": "Bed D",
+      "shape": {
+        "rect": [
+          2.94,
+          4.74,
+          1.06,
+          3.0
+        ]
+      }
+    },
+    {
+      "id": "d1",
+      "parentId": "d",
+      "kind": "section",
+      "name": "D west",
+      "shape": {
+        "rect": [
+          2.94,
+          4.74,
+          1.06,
+          1.0
+        ]
+      }
+    },
+    {
+      "id": "d2",
+      "parentId": "d",
+      "kind": "section",
+      "name": "D middle",
+      "shape": {
+        "rect": [
+          2.94,
+          5.74,
+          1.06,
+          1.0
+        ]
+      }
+    },
+    {
+      "id": "d3",
+      "parentId": "d",
+      "kind": "rows",
+      "name": "D east",
+      "rows": 5,
+      "shape": {
+        "rect": [
+          2.94,
+          6.74,
+          1.06,
+          1.0
+        ]
+      }
+    }
+  ],
+  "plantings": [
+    {
+      "id": "pl1",
+      "areaId": "b",
+      "variety": "Garlic (softneck)",
+      "qty": 42,
+      "qtyUnit": "cloves",
+      "windows": {
+        "plantOut": [
+          "2026-10-15",
+          "2026-10-15"
+        ],
+        "clear": [
+          "2027-06-15",
+          "2027-07-15"
+        ]
+      },
+      "status": "growing",
+      "agreement": "agreed"
+    },
+    {
+      "id": "pl2",
+      "areaId": "a1",
+      "variety": "Broad bean",
+      "qty": 28,
+      "qtyUnit": "plugs",
+      "method": "module",
+      "windows": {
+        "sow": [
+          "2026-10-19",
+          "2026-10-31"
+        ],
+        "plantOut": [
+          "2026-11-09",
+          "2026-11-30"
+        ],
+        "clear": [
+          "2027-06-01",
+          "2027-06-30"
+        ]
+      },
+      "agreement": "agreed"
+    },
+    {
+      "id": "pl3",
+      "areaId": "a3",
+      "variety": "Winter salad mix",
+      "qty": 40,
+      "qtyUnit": "plugs",
+      "method": "module",
+      "windows": {
+        "sow": [
+          "2026-10-17",
+          "2026-10-22"
+        ],
+        "plantOut": [
+          "2026-11-10",
+          "2026-11-20"
+        ],
+        "harvest": [
+          "2027-02-15",
+          "2027-04-30"
+        ]
+      },
+      "agreement": "agreed"
+    },
+    {
+      "id": "pl4",
+      "areaId": "d1",
+      "variety": "Fennel",
+      "windows": {
+        "clear": [
+          "2026-11-20",
+          "2026-11-30"
+        ]
+      },
+      "status": "growing",
+      "agreement": "agreed"
+    },
+    {
+      "id": "pl5",
+      "areaId": "d1",
+      "variety": "Winter spinach",
+      "qty": 18,
+      "qtyUnit": "plugs",
+      "followsPlantingId": "pl4",
+      "windows": {
+        "plantOut": [
+          "2026-11-23",
+          "2026-12-06"
+        ],
+        "harvest": [
+          "2027-02-20",
+          "2027-04-30"
+        ]
+      },
+      "agreement": "agreed"
+    },
+    {
+      "id": "pl6",
+      "areaId": "d3",
+      "rows": [
+        2,
+        4
+      ],
+      "variety": "Spring onion (overwintering)",
+      "status": "growing",
+      "agreement": "agreed"
+    },
+    {
+      "id": "pl7",
+      "areaId": "d3",
+      "rows": [
+        1,
+        3,
+        5
+      ],
+      "variety": "Garlic (softneck)",
+      "qty": 18,
+      "qtyUnit": "cloves",
+      "interplanted": true,
+      "windows": {
+        "plantOut": [
+          "2026-12-01",
+          "2027-01-15"
+        ]
+      },
+      "agreement": "agreed"
+    },
+    {
+      "id": "pl8",
+      "areaId": "a2",
+      "variety": "Onion",
+      "qty": 12,
+      "qtyUnit": "clumps",
+      "perClump": 3,
+      "spacingCm": 30,
+      "method": "module",
+      "windows": {
+        "sow": [
+          "2027-01-15",
+          "2027-02-05"
+        ],
+        "plantOut": [
+          "2027-03-25",
+          "2027-04-10"
+        ]
+      },
+      "agreement": "agreed"
+    },
+    {
+      "id": "pl9",
+      "areaId": "c",
+      "variety": "Salad chicory",
+      "qty": 10,
+      "qtyUnit": "plants",
+      "windows": {
+        "plantOut": [
+          "2027-07-01",
+          "2027-07-15"
+        ]
+      },
+      "agreement": "draft"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Prune autumn raspberries for two crops",
+      "areaId": "f",
+      "type": "job",
+      "window": [
+        "2027-02-01",
+        "2027-02-28"
+      ]
+    },
+    {
+      "title": "Take hardwood cuttings of currants",
+      "areaId": "f",
+      "type": "job",
+      "window": [
+        "2026-11-15",
+        "2026-12-20"
+      ]
+    },
+    {
+      "title": "Order seed for next season",
+      "place": "admin",
+      "type": "order",
+      "window": [
+        "2026-11-01",
+        "2026-12-15"
+      ]
+    }
+  ],
+  "propagationSpaces": [
+    {
+      "name": "Grow-light shelves",
+      "capacity": 12,
+      "unit": "trays",
+      "lights": true,
+      "bottomHeat": true
+    }
+  ]
+}

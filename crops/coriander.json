@@ -1,0 +1,70 @@
+{
+  "id": "coriander",
+  "names": {
+    "en": [
+      "Coriander",
+      "Cilantro"
+    ]
+  },
+  "family": "Apiaceae",
+  "species": "Coriandrum sativum",
+  "category": "herb",
+  "lifecycle": "annual",
+  "hardiness": "half-hardy",
+  "rotationGroup": "roots",
+  "timing": [
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -20,
+      "toAnchor": "firstFrost",
+      "toOffsetDays": -45
+    },
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -40,
+      "toOffsetDays": 30
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -14,
+      "toOffsetDays": 50
+    }
+  ],
+  "moduleDays": 21,
+  "maxModuleDays": 28,
+  "daysToHarvest": 45,
+  "harvestWindowDays": 30,
+  "dayLength": "long",
+  "propagation": {
+    "seedsPerModule": 5,
+    "germTempC": 15
+  },
+  "spacing": {
+    "inRowCm": 10,
+    "betweenRowsCm": 25,
+    "gridCm": 10
+  },
+  "seedLifeYears": 3,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 800,
+    "minPlants": 20
+  },
+  "varieties": [
+    {
+      "id": "coriander--calypso",
+      "cropId": "coriander",
+      "name": "Calypso",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

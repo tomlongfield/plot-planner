@@ -1,0 +1,87 @@
+{
+  "id": "sweetcorn",
+  "names": {
+    "en": [
+      "Sweetcorn",
+      "Corn",
+      "Maize"
+    ]
+  },
+  "family": "Poaceae",
+  "species": "Zea mays",
+  "category": "fruiting",
+  "lifecycle": "annual",
+  "hardiness": "tender",
+  "minTempC": 2,
+  "rotationGroup": "misc",
+  "care": [
+    "fleece"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -28,
+      "toOffsetDays": -10
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 7,
+      "toOffsetDays": 28
+    },
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 7,
+      "toOffsetDays": 21
+    }
+  ],
+  "moduleDays": 25,
+  "maxModuleDays": 35,
+  "daysToHarvest": 100,
+  "harvestWindowDays": 21,
+  "frostFreeDaysNeeded": 100,
+  "propagation": {
+    "seedsPerModule": 1,
+    "moduleSize": "root trainers",
+    "germTempC": 18,
+    "bottomHeat": true
+  },
+  "spacing": {
+    "inRowCm": 40,
+    "betweenRowsCm": 40,
+    "gridCm": 40
+  },
+  "seedLifeYears": 2,
+  "seedSaving": {
+    "pollination": "wind",
+    "crosses": "readily",
+    "isolationM": 400,
+    "minPlants": 100
+  },
+  "pests": [
+    "mice",
+    "badgers"
+  ],
+  "notes": "Plant in blocks, not rows, so the wind pollinates the cobs.",
+  "varieties": [
+    {
+      "id": "sweetcorn--incredible",
+      "cropId": "sweetcorn",
+      "name": "Incredible",
+      "seedType": "F1"
+    },
+    {
+      "id": "sweetcorn--golden-bantam",
+      "cropId": "sweetcorn",
+      "name": "Golden Bantam",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

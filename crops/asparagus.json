@@ -1,0 +1,52 @@
+{
+  "id": "asparagus",
+  "names": {
+    "en": [
+      "Asparagus"
+    ]
+  },
+  "family": "Asparagaceae",
+  "species": "Asparagus officinalis",
+  "category": "fruit",
+  "lifecycle": "perennial",
+  "hardiness": "hardy",
+  "rotationGroup": "perennial",
+  "timing": [
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -45,
+      "toOffsetDays": -20
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -20,
+      "toOffsetDays": 40
+    }
+  ],
+  "daysToHarvest": 730,
+  "harvestWindowDays": 60,
+  "spacing": {
+    "inRowCm": 45,
+    "betweenRowsCm": 90
+  },
+  "pests": [
+    "asparagus beetle",
+    "slugs"
+  ],
+  "notes": "Plant crowns in a weed-free bed. No cutting until the third spring.",
+  "varieties": [
+    {
+      "id": "asparagus--gijnlim",
+      "cropId": "asparagus",
+      "name": "Gijnlim",
+      "seedType": "F1"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

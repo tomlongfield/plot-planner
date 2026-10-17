@@ -1,0 +1,68 @@
+{
+  "id": "basil",
+  "names": {
+    "en": [
+      "Basil"
+    ]
+  },
+  "family": "Lamiaceae",
+  "species": "Ocimum basilicum",
+  "category": "herb",
+  "lifecycle": "annual",
+  "hardiness": "tender",
+  "minTempC": 10,
+  "rotationGroup": "misc",
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -45,
+      "toOffsetDays": 30
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 14,
+      "toOffsetDays": 60
+    }
+  ],
+  "moduleDays": 40,
+  "maxModuleDays": 55,
+  "daysToHarvest": 70,
+  "harvestWindowDays": 70,
+  "frostFreeDaysNeeded": 90,
+  "propagation": {
+    "seedsPerModule": 4,
+    "germTempC": 22,
+    "bottomHeat": true
+  },
+  "spacing": {
+    "inRowCm": 20,
+    "betweenRowsCm": 25,
+    "gridCm": 20
+  },
+  "seedLifeYears": 5,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 150,
+    "minPlants": 10
+  },
+  "pests": [
+    "slugs",
+    "aphids"
+  ],
+  "varieties": [
+    {
+      "id": "basil--genovese",
+      "cropId": "basil",
+      "name": "Genovese",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

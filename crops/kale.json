@@ -1,0 +1,91 @@
+{
+  "id": "kale",
+  "names": {
+    "en": [
+      "Kale",
+      "Borecole"
+    ]
+  },
+  "family": "Brassicaceae",
+  "species": "Brassica oleracea",
+  "category": "brassica",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "minTempC": -15,
+  "rotationGroup": "brassicas",
+  "care": [
+    "net"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -14,
+      "toOffsetDays": 30
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 20,
+      "toOffsetDays": 70
+    },
+    {
+      "kind": "harvest",
+      "anchor": "firstFrost",
+      "fromOffsetDays": -60,
+      "toOffsetDays": 150
+    }
+  ],
+  "moduleDays": 35,
+  "maxModuleDays": 50,
+  "daysToHarvest": 90,
+  "harvestWindowDays": 180,
+  "propagation": {
+    "seedsPerModule": 1,
+    "germTempC": 12
+  },
+  "spacing": {
+    "inRowCm": 45,
+    "betweenRowsCm": 60,
+    "gridCm": 45
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 1000,
+    "minPlants": 20
+  },
+  "pests": [
+    "cabbage white caterpillars",
+    "pigeons",
+    "clubroot",
+    "flea beetle",
+    "cabbage root fly"
+  ],
+  "varieties": [
+    {
+      "id": "kale--cavolo-nero",
+      "cropId": "kale",
+      "name": "Cavolo nero",
+      "seedType": "OP"
+    },
+    {
+      "id": "kale--red-russian",
+      "cropId": "kale",
+      "name": "Red Russian",
+      "seedType": "OP"
+    },
+    {
+      "id": "kale--curly",
+      "cropId": "kale",
+      "name": "Curly kale",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

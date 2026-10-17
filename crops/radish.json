@@ -1,0 +1,63 @@
+{
+  "id": "radish",
+  "names": {
+    "en": [
+      "Radish"
+    ]
+  },
+  "family": "Brassicaceae",
+  "species": "Raphanus sativus",
+  "category": "root",
+  "lifecycle": "annual",
+  "hardiness": "hardy",
+  "rotationGroup": "brassicas",
+  "care": [
+    "thin"
+  ],
+  "timing": [
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -45,
+      "toAnchor": "firstFrost",
+      "toOffsetDays": -30
+    }
+  ],
+  "daysToHarvest": 30,
+  "harvestWindowDays": 14,
+  "spacing": {
+    "inRowCm": 3,
+    "betweenRowsCm": 15,
+    "gridCm": 5
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 800,
+    "minPlants": 20
+  },
+  "pests": [
+    "flea beetle",
+    "slugs"
+  ],
+  "varieties": [
+    {
+      "id": "radish--french-breakfast",
+      "cropId": "radish",
+      "name": "French Breakfast",
+      "seedType": "OP"
+    },
+    {
+      "id": "radish--winter",
+      "cropId": "radish",
+      "name": "Winter radish (mooli)",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

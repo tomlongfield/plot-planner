@@ -1,0 +1,99 @@
+{
+  "id": "broad-bean",
+  "names": {
+    "en": [
+      "Broad bean",
+      "Fava bean"
+    ]
+  },
+  "family": "Fabaceae",
+  "species": "Vicia faba",
+  "category": "legume",
+  "lifecycle": "annual",
+  "hardiness": "hardy",
+  "minTempC": -10,
+  "rotationGroup": "legumes",
+  "care": [
+    "support",
+    "pinch-out"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -90,
+      "toOffsetDays": -60
+    },
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -75,
+      "toOffsetDays": -30
+    },
+    {
+      "kind": "overwinter",
+      "anchor": "firstFrost",
+      "fromOffsetDays": -5,
+      "toOffsetDays": 15
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 5,
+      "toOffsetDays": 45
+    }
+  ],
+  "moduleDays": 21,
+  "maxModuleDays": 35,
+  "daysToHarvest": 100,
+  "harvestWindowDays": 30,
+  "propagation": {
+    "seedsPerModule": 1,
+    "moduleSize": "deep root trainers",
+    "germTempC": 10
+  },
+  "spacing": {
+    "inRowCm": 20,
+    "betweenRowsCm": 45,
+    "gridCm": 20
+  },
+  "seedLifeYears": 3,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 1000,
+    "minPlants": 20
+  },
+  "pests": [
+    "blackfly",
+    "chocolate spot",
+    "pea and bean weevil"
+  ],
+  "notes": "Pinch out tips when the first pods set to deter blackfly.",
+  "varieties": [
+    {
+      "id": "broad-bean--broad-bean",
+      "cropId": "broad-bean",
+      "name": "Broad bean",
+      "seedType": "OP"
+    },
+    {
+      "id": "broad-bean--aquadulce",
+      "cropId": "broad-bean",
+      "name": "Aquadulce Claudia",
+      "seedType": "OP",
+      "notes": "Hardy, good for autumn sowing."
+    },
+    {
+      "id": "broad-bean--the-sutton",
+      "cropId": "broad-bean",
+      "name": "The Sutton",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

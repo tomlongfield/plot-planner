@@ -1,0 +1,90 @@
+{
+  "id": "spinach",
+  "names": {
+    "en": [
+      "Spinach"
+    ]
+  },
+  "family": "Amaranthaceae",
+  "species": "Spinacia oleracea",
+  "category": "leaf",
+  "lifecycle": "annual",
+  "hardiness": "hardy",
+  "minTempC": -8,
+  "rotationGroup": "salads",
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -60,
+      "toOffsetDays": -20
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -30,
+      "toOffsetDays": 0
+    },
+    {
+      "kind": "overwinter",
+      "anchor": "firstFrost",
+      "fromOffsetDays": -50,
+      "toOffsetDays": 0
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -85,
+      "toOffsetDays": -15
+    }
+  ],
+  "moduleDays": 28,
+  "maxModuleDays": 40,
+  "daysToHarvest": 50,
+  "harvestWindowDays": 40,
+  "dayLength": "long",
+  "propagation": {
+    "seedsPerModule": 3,
+    "germTempC": 10
+  },
+  "spacing": {
+    "inRowCm": 15,
+    "betweenRowsCm": 30,
+    "gridCm": 15
+  },
+  "seedLifeYears": 3,
+  "seedSaving": {
+    "pollination": "wind",
+    "crosses": "readily",
+    "isolationM": 2000,
+    "minPlants": 40
+  },
+  "pests": [
+    "downy mildew",
+    "slugs"
+  ],
+  "notes": "Bolts in long, hot days. Best sown for spring or autumn and winter crops.",
+  "varieties": [
+    {
+      "id": "spinach--spinach",
+      "cropId": "spinach",
+      "name": "Spinach",
+      "seedType": "OP"
+    },
+    {
+      "id": "spinach--winter",
+      "cropId": "spinach",
+      "name": "Winter spinach",
+      "seedType": "OP",
+      "overrides": {
+        "hardiness": "hardy"
+      },
+      "notes": "A winter-hardy variety such as Giant Winter."
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "id": "carrot",
+  "names": {
+    "en": [
+      "Carrot"
+    ]
+  },
+  "family": "Apiaceae",
+  "species": "Daucus carota",
+  "category": "root",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "minTempC": -5,
+  "rotationGroup": "roots",
+  "care": [
+    "mesh",
+    "thin"
+  ],
+  "timing": [
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -30,
+      "toAnchor": "firstFrost",
+      "toOffsetDays": -90
+    }
+  ],
+  "daysToHarvest": 80,
+  "harvestWindowDays": 90,
+  "spacing": {
+    "inRowCm": 5,
+    "betweenRowsCm": 20,
+    "gridCm": 7
+  },
+  "seedLifeYears": 3,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 800,
+    "minPlants": 50
+  },
+  "pests": [
+    "carrot fly"
+  ],
+  "notes": "Sow direct. Cover with fine mesh against carrot fly.",
+  "varieties": [
+    {
+      "id": "carrot--early-nantes",
+      "cropId": "carrot",
+      "name": "Early Nantes",
+      "seedType": "OP"
+    },
+    {
+      "id": "carrot--autumn-king",
+      "cropId": "carrot",
+      "name": "Autumn King",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

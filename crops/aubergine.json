@@ -1,0 +1,69 @@
+{
+  "id": "aubergine",
+  "names": {
+    "en": [
+      "Aubergine",
+      "Eggplant"
+    ]
+  },
+  "family": "Solanaceae",
+  "species": "Solanum melongena",
+  "category": "fruiting",
+  "lifecycle": "annual",
+  "hardiness": "tender",
+  "minTempC": 10,
+  "rotationGroup": "potatoes",
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -90,
+      "toOffsetDays": -70
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 14,
+      "toOffsetDays": 35
+    }
+  ],
+  "moduleDays": 80,
+  "maxModuleDays": 100,
+  "daysToHarvest": 170,
+  "harvestWindowDays": 45,
+  "frostFreeDaysNeeded": 130,
+  "propagation": {
+    "seedsPerModule": 1,
+    "germTempC": 24,
+    "bottomHeat": true
+  },
+  "spacing": {
+    "inRowCm": 50,
+    "betweenRowsCm": 60,
+    "gridCm": 50
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "self",
+    "crosses": "rarely",
+    "isolationM": 3,
+    "minPlants": 6
+  },
+  "pests": [
+    "red spider mite",
+    "aphids"
+  ],
+  "varieties": [
+    {
+      "id": "aubergine--black-beauty",
+      "cropId": "aubergine",
+      "name": "Black Beauty",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

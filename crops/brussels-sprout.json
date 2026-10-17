@@ -1,0 +1,75 @@
+{
+  "id": "brussels-sprout",
+  "names": {
+    "en": [
+      "Brussels sprout"
+    ]
+  },
+  "family": "Brassicaceae",
+  "species": "Brassica oleracea",
+  "category": "brassica",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "minTempC": -15,
+  "rotationGroup": "brassicas",
+  "care": [
+    "net",
+    "support"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -50,
+      "toOffsetDays": -10
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 0,
+      "toOffsetDays": 35
+    },
+    {
+      "kind": "harvest",
+      "anchor": "firstFrost",
+      "fromOffsetDays": 10,
+      "toOffsetDays": 130
+    }
+  ],
+  "moduleDays": 40,
+  "maxModuleDays": 55,
+  "daysToHarvest": 200,
+  "harvestWindowDays": 100,
+  "spacing": {
+    "inRowCm": 60,
+    "betweenRowsCm": 75,
+    "gridCm": 60
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 1000,
+    "minPlants": 20
+  },
+  "pests": [
+    "cabbage white caterpillars",
+    "pigeons",
+    "clubroot",
+    "flea beetle",
+    "cabbage root fly"
+  ],
+  "varieties": [
+    {
+      "id": "brussels-sprout--brodie",
+      "cropId": "brussels-sprout",
+      "name": "Brodie",
+      "seedType": "F1"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

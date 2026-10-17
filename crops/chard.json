@@ -1,0 +1,80 @@
+{
+  "id": "chard",
+  "names": {
+    "en": [
+      "Chard",
+      "Swiss chard",
+      "Perpetual spinach"
+    ]
+  },
+  "family": "Amaranthaceae",
+  "species": "Beta vulgaris",
+  "category": "leaf",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "minTempC": -8,
+  "rotationGroup": "roots",
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -45,
+      "toOffsetDays": 45
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -14,
+      "toOffsetDays": 75
+    },
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -14,
+      "toOffsetDays": 80
+    }
+  ],
+  "moduleDays": 28,
+  "maxModuleDays": 40,
+  "daysToHarvest": 60,
+  "harvestWindowDays": 200,
+  "propagation": {
+    "seedsPerModule": 1,
+    "germTempC": 12
+  },
+  "spacing": {
+    "inRowCm": 30,
+    "betweenRowsCm": 40,
+    "gridCm": 30
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "wind",
+    "crosses": "readily",
+    "isolationM": 1600,
+    "minPlants": 20
+  },
+  "pests": [
+    "leaf miner",
+    "slugs"
+  ],
+  "varieties": [
+    {
+      "id": "chard--bright-lights",
+      "cropId": "chard",
+      "name": "Bright Lights",
+      "seedType": "OP"
+    },
+    {
+      "id": "chard--perpetual",
+      "cropId": "chard",
+      "name": "Perpetual spinach",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

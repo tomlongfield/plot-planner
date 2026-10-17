@@ -1,0 +1,84 @@
+{
+  "id": "beetroot",
+  "names": {
+    "en": [
+      "Beetroot",
+      "Beet"
+    ]
+  },
+  "family": "Amaranthaceae",
+  "species": "Beta vulgaris",
+  "category": "root",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "minTempC": -5,
+  "rotationGroup": "roots",
+  "care": [
+    "thin"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -50,
+      "toOffsetDays": 30
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -21,
+      "toOffsetDays": 60
+    },
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -14,
+      "toAnchor": "firstFrost",
+      "toOffsetDays": -80
+    }
+  ],
+  "moduleDays": 28,
+  "maxModuleDays": 35,
+  "daysToHarvest": 70,
+  "harvestWindowDays": 40,
+  "propagation": {
+    "seedsPerModule": 4,
+    "germTempC": 10
+  },
+  "spacing": {
+    "inRowCm": 10,
+    "betweenRowsCm": 25,
+    "gridCm": 30
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "wind",
+    "crosses": "readily",
+    "isolationM": 1600,
+    "minPlants": 20
+  },
+  "pests": [
+    "leaf miner",
+    "birds"
+  ],
+  "notes": "Each seed is a cluster. Multisow 4 per module and plant clumps.",
+  "varieties": [
+    {
+      "id": "beetroot--boltardy",
+      "cropId": "beetroot",
+      "name": "Boltardy",
+      "seedType": "OP"
+    },
+    {
+      "id": "beetroot--chioggia",
+      "cropId": "beetroot",
+      "name": "Chioggia",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

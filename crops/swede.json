@@ -1,0 +1,57 @@
+{
+  "id": "swede",
+  "names": {
+    "en": [
+      "Swede",
+      "Rutabaga"
+    ]
+  },
+  "family": "Brassicaceae",
+  "species": "Brassica napus",
+  "category": "root",
+  "lifecycle": "biennial",
+  "hardiness": "hardy",
+  "rotationGroup": "brassicas",
+  "care": [
+    "thin"
+  ],
+  "timing": [
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 0,
+      "toOffsetDays": 40
+    }
+  ],
+  "daysToHarvest": 120,
+  "harvestWindowDays": 90,
+  "spacing": {
+    "inRowCm": 25,
+    "betweenRowsCm": 40,
+    "gridCm": 25
+  },
+  "seedLifeYears": 4,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 1000,
+    "minPlants": 20
+  },
+  "pests": [
+    "flea beetle",
+    "clubroot"
+  ],
+  "varieties": [
+    {
+      "id": "swede--marian",
+      "cropId": "swede",
+      "name": "Marian",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

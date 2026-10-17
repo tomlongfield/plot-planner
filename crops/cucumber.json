@@ -1,0 +1,77 @@
+{
+  "id": "cucumber",
+  "names": {
+    "en": [
+      "Cucumber"
+    ]
+  },
+  "family": "Cucurbitaceae",
+  "species": "Cucumis sativus",
+  "category": "cucurbit",
+  "lifecycle": "annual",
+  "hardiness": "tender",
+  "minTempC": 10,
+  "rotationGroup": "cucurbits",
+  "care": [
+    "support"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -30,
+      "toOffsetDays": 0
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 7,
+      "toOffsetDays": 35
+    }
+  ],
+  "moduleDays": 25,
+  "maxModuleDays": 35,
+  "daysToHarvest": 70,
+  "harvestWindowDays": 60,
+  "frostFreeDaysNeeded": 90,
+  "propagation": {
+    "seedsPerModule": 1,
+    "germTempC": 22,
+    "bottomHeat": true
+  },
+  "spacing": {
+    "inRowCm": 45,
+    "betweenRowsCm": 90,
+    "gridCm": 45
+  },
+  "seedLifeYears": 5,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 800,
+    "minPlants": 6
+  },
+  "pests": [
+    "red spider mite",
+    "powdery mildew"
+  ],
+  "varieties": [
+    {
+      "id": "cucumber--marketmore",
+      "cropId": "cucumber",
+      "name": "Marketmore",
+      "seedType": "OP"
+    },
+    {
+      "id": "cucumber--outdoor-ridge",
+      "cropId": "cucumber",
+      "name": "Ridge cucumber",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

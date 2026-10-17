@@ -1,0 +1,64 @@
+{
+  "id": "chives",
+  "names": {
+    "en": [
+      "Chives"
+    ]
+  },
+  "family": "Amaryllidaceae",
+  "species": "Allium schoenoprasum",
+  "category": "herb",
+  "lifecycle": "perennial",
+  "hardiness": "hardy",
+  "rotationGroup": "perennial",
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -60,
+      "toOffsetDays": 0
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -14,
+      "toOffsetDays": 60
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -45,
+      "toOffsetDays": 120
+    }
+  ],
+  "moduleDays": 50,
+  "maxModuleDays": 70,
+  "daysToHarvest": 90,
+  "harvestWindowDays": 180,
+  "propagation": {
+    "seedsPerModule": 8
+  },
+  "spacing": {
+    "gridCm": 25
+  },
+  "seedLifeYears": 2,
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily",
+    "isolationM": 800,
+    "minPlants": 10
+  },
+  "varieties": [
+    {
+      "id": "chives--common",
+      "cropId": "chives",
+      "name": "Chives",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

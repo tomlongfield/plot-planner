@@ -1,0 +1,61 @@
+{
+  "id": "strawberry",
+  "names": {
+    "en": [
+      "Strawberry"
+    ]
+  },
+  "family": "Rosaceae",
+  "species": "Fragaria × ananassa",
+  "category": "fruit",
+  "lifecycle": "perennial",
+  "hardiness": "hardy",
+  "rotationGroup": "perennial",
+  "care": [
+    "net"
+  ],
+  "timing": [
+    {
+      "kind": "plantOut",
+      "anchor": "firstFrost",
+      "fromOffsetDays": -60,
+      "toOffsetDays": -20
+    },
+    {
+      "kind": "harvest",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 15,
+      "toOffsetDays": 75
+    }
+  ],
+  "daysToHarvest": 270,
+  "harvestWindowDays": 45,
+  "spacing": {
+    "inRowCm": 35,
+    "betweenRowsCm": 75,
+    "gridCm": 35
+  },
+  "seedSaving": {
+    "pollination": "insect",
+    "crosses": "readily"
+  },
+  "pests": [
+    "birds",
+    "slugs",
+    "grey mould"
+  ],
+  "notes": "Replace plants every three to four years. Pot up runners in summer.",
+  "varieties": [
+    {
+      "id": "strawberry--cambridge-favourite",
+      "cropId": "strawberry",
+      "name": "Cambridge Favourite",
+      "seedType": "unknown"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}

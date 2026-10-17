@@ -1,0 +1,91 @@
+{
+  "id": "french-bean",
+  "names": {
+    "en": [
+      "French bean",
+      "Green bean",
+      "Dwarf bean",
+      "Climbing bean"
+    ]
+  },
+  "family": "Fabaceae",
+  "species": "Phaseolus vulgaris",
+  "category": "legume",
+  "lifecycle": "annual",
+  "hardiness": "tender",
+  "minTempC": 2,
+  "rotationGroup": "legumes",
+  "care": [
+    "support"
+  ],
+  "timing": [
+    {
+      "kind": "sowIndoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": -28,
+      "toOffsetDays": -10
+    },
+    {
+      "kind": "plantOut",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 7,
+      "toOffsetDays": 28
+    },
+    {
+      "kind": "sowOutdoor",
+      "anchor": "lastFrost",
+      "fromOffsetDays": 7,
+      "toOffsetDays": 50
+    }
+  ],
+  "moduleDays": 21,
+  "maxModuleDays": 30,
+  "daysToHarvest": 75,
+  "harvestWindowDays": 50,
+  "frostFreeDaysNeeded": 90,
+  "propagation": {
+    "seedsPerModule": 1,
+    "germTempC": 16
+  },
+  "spacing": {
+    "inRowCm": 15,
+    "betweenRowsCm": 45,
+    "gridCm": 20
+  },
+  "seedLifeYears": 3,
+  "seedSaving": {
+    "pollination": "self",
+    "crosses": "rarely",
+    "isolationM": 3,
+    "minPlants": 10
+  },
+  "pests": [
+    "slugs",
+    "bean seed fly"
+  ],
+  "varieties": [
+    {
+      "id": "french-bean--dwarf",
+      "cropId": "french-bean",
+      "name": "Dwarf French bean",
+      "seedType": "OP"
+    },
+    {
+      "id": "french-bean--climbing",
+      "cropId": "french-bean",
+      "name": "Climbing French bean",
+      "seedType": "OP"
+    },
+    {
+      "id": "french-bean--borlotti",
+      "cropId": "french-bean",
+      "name": "Borlotti",
+      "seedType": "OP"
+    }
+  ],
+  "sources": [
+    {
+      "note": "Starter library defaults, typical of temperate UK and northern European practice, expressed relative to local frost dates. Check against your own seed packets and local knowledge."
+    }
+  ]
+}
