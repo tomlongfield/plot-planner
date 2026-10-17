@@ -171,7 +171,7 @@
         onkeydown={(e) => interactive && !isParent && keydown(e, a.id)}
         onpointerdown={(e) => onitemdown?.(e, 'area', a.id, geo)}
       >
-        <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={cell?.fill ?? 'var(--c-empty)'} class="area-shape" rx={mini ? 1.5 : 3} />
+        <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={cell?.fill ?? (a.perennial ? `var(--c-${a.fill ?? 'static'})` : 'var(--c-empty)')} class="area-shape" rx={mini ? 1.5 : 3} />
         {#if cell?.rowFills && a.rows}
           {@const axisX = (a.rowsAxis ?? 'x') === 'x'}
           {#each cell.rowFills as rf, i}

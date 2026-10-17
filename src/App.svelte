@@ -9,8 +9,8 @@
   import Plantings from './views/Plantings.svelte';
   import Seeds from './views/Seeds.svelte';
   import Settings from './views/Settings.svelte';
-  import Shared from './views/Shared.svelte';
   import Tasks from './views/Tasks.svelte';
+  import Help from './views/Help.svelte';
 
   const NAV: { view: View; icon: string }[] = [
     { view: 'month', icon: 'month' },
@@ -41,7 +41,6 @@
   });
   let dismissedBackup = $state(false);
   const openWarnings = $derived(app.warnings.filter((w) => w.level === 'warn').length);
-  const shared = $derived(typeof location !== 'undefined' && location.hash.startsWith('#share='));
 
   function cycleTheme() {
     const order = ['system', 'light', 'dark'] as const;
@@ -63,8 +62,6 @@
 
 {#if !app.ready}
   <div class="loading" aria-busy="true">{t('app.loading')}</div>
-{:else if shared}
-  <Shared />
 {:else}
   <header class="top">
     <div class="brand">
@@ -91,7 +88,8 @@
       {/each}
     </nav>
     <div class="row tools">
-      <button class="btn quiet small" onclick={() => app.undo()} disabled={!app.undoStack.length} title={t('app.undoHint')}>{t('app.undo')}</button>
+      <a class="btn quiet small" href="#/help" aria-current={app.route.view === 'help' ? 'page' : undefined}>{t('nav.help')}</a>
+      <button class="btn quiet small" onclick={() => app.undo()} disabled={!app.undoCount} title={t('app.undoHint')}>{t('app.undo')}</button>
       <button class="btn quiet small" onclick={cycleTheme} aria-label={t('app.theme', { theme: t(`theme.${app.data.settings.theme}`) })}>
         <Icon name={app.data.settings.theme === 'dark' ? 'moon' : app.data.settings.theme === 'light' ? 'sun' : 'auto'} />
       </button>
@@ -112,7 +110,7 @@
   {/if}
 
   <main id="main" tabindex="-1">
-    {#if !app.plot && app.route.view !== 'settings' && app.route.view !== 'crops'}
+    {#if !app.plot && app.route.view !== 'settings' && app.route.view !== 'crops' && app.route.view !== 'help'}
       <div class="empty card">
         <h2>{t('app.noPlot')}</h2>
         <p>{t('app.noPlotHelp')}</p>
@@ -125,6 +123,7 @@
     {:else if app.route.view === 'seeds'}<Seeds />
     {:else if app.route.view === 'crops'}<Crops />
     {:else if app.route.view === 'settings'}<Settings />
+    {:else if app.route.view === 'help'}<Help />
     {/if}
   </main>
 
@@ -141,7 +140,7 @@
 {#if app.toast}
   <div class="toast" role="status">
     <span>{app.toast.message}</span>
-    {#if app.toast.undo && app.undoStack.length}<button class="btn small quiet" onclick={() => app.undo()}>{t('app.undo')}</button>{/if}
+    {#if app.toast.undo && app.undoCount}<button class="btn small quiet" onclick={() => app.undo()}>{t('app.undo')}</button>{/if}
   </div>
 {/if}
 

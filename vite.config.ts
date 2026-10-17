@@ -1,6 +1,7 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { join, relative } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
@@ -19,7 +20,10 @@ function serviceWorker(): Plugin {
     name: 'plot-planner-sw',
     apply: 'build',
     generateBundle(_, bundle) {
-      const files = Object.keys(bundle).filter((f) => !f.endsWith('.map') && f !== 'sw.js');
+      // Built files plus everything copied from public/ (manifest, icons, licences).
+      const pub = new URL('./public', import.meta.url).pathname;
+      const walk = (d: string): string[] => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : [relative(pub, join(d, f))]));
+      const files = [...Object.keys(bundle), ...walk(pub)].filter((f) => !f.endsWith('.map') && f !== 'sw.js');
       const template = readFileSync(new URL('./src/sw.js', import.meta.url), 'utf8');
       this.emitFile({
         type: 'asset',

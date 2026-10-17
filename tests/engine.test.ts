@@ -133,6 +133,13 @@ describe('resolving timing rules', () => {
     expect(w.harvest!.from >= '2027-02-01').toBe(true);
   });
 
+  it('ends tender crops at the first frost', () => {
+    const w = resolveWindows(lib.crops.get('tomato')!, 'main', 'module', place, 2027);
+    expect(w.harvest!.to).toBe('2027-10-20');
+    const tunnel = resolveWindows(lib.crops.get('tomato')!, 'main', 'module', { ...place, protection: 'polytunnel' }, 2027);
+    expect(tunnel.harvest!.to <= '2027-11-17').toBe(true);
+  });
+
   it('picks the next season whose window is still open', () => {
     const tomato = lib.crops.get('tomato')!;
     expect(nextSeason(tomato, 'main', 'module', place, NOW)).toBe(2027);
@@ -291,6 +298,14 @@ describe('the example plot', () => {
     const sow = tasks.find((t) => t.id === 'pl2:sow')!;
     expect(sow.place).toBe('propagation');
     expect(sow.window).toEqual({ from: '2026-10-19', to: '2026-10-31' });
+  });
+
+  it('waits for spring before supporting overwintered broad beans', () => {
+    const d = demo();
+    const resolved = [...resolveAll(d).values()];
+    const tasks = generatedTasks(resolved, { areas: new Map(d.areas.map((a) => [a.id, a])), climate: UK, cropOf, nameOf, t: (k) => k, lat: 54.2 }, []);
+    const support = tasks.find((t) => t.id === 'pl2:support')!;
+    expect(support.window.from > '2027-02-01').toBe(true);
   });
 
   it('keeps today', () => expect(addDays(NOW, 0)).toBe(NOW));

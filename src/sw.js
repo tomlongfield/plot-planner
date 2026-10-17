@@ -33,9 +33,11 @@ self.addEventListener('fetch', (event) => {
         const copy = res.clone();
         if (res.ok) caches.open(CACHE).then((c) => c.put(new URL('./', SCOPE).href, copy));
         return res;
-      }).catch(() => caches.match(new URL('./', SCOPE).href)),
+      }).catch(() => caches.match(new URL('./', SCOPE).href, { ignoreVary: true })),
     );
     return;
   }
-  event.respondWith(caches.match(req).then((hit) => hit || fetch(req)));
+  // Static files: cache first. Ignore Vary, because hosts send "Vary: Origin" or
+  // "Vary: Accept-Encoding" and the browser's requests carry headers the precache didn't.
+  event.respondWith(caches.match(req, { ignoreVary: true }).then((hit) => hit || fetch(req)));
 });

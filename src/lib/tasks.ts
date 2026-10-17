@@ -1,7 +1,7 @@
 // Tasks: generated from plantings, plus the grower's own. Generated tasks are
 // never stored; only their done/skipped state is, keyed by a stable id.
 
-import { effectiveClimate, seasonLastFrost, seasonOf } from './climate';
+import { effectiveClimate, isSlowGrowth, seasonLastFrost, seasonOf } from './climate';
 import { addDays, diffDays, minDate, overlaps, weekOf, type MonthKey, monthEnd, monthStart } from './dates';
 import { OPEN_START, type Resolved } from './plantings';
 import type { Agreement, Area, Climate, Crop, ISODate, Planting, Task, TaskPlace, TaskState, TaskStatus, TaskType, Window } from './types';
@@ -38,6 +38,16 @@ interface GenContext {
   cropOf: (p: Planting) => Crop | undefined;
   nameOf: (p: Planting) => string;
   t: Translate;
+  /** Latitude, so jobs that depend on growth wait out the short days. */
+  lat?: number;
+}
+
+/** Move a job that needs active growth past any short-day lull. */
+function whenGrowing(w: Window, lat: number | undefined): Window {
+  if (lat == null || !isSlowGrowth(lat, w.from)) return w;
+  let d = w.from;
+  for (let i = 0; i < 240 && isSlowGrowth(lat, d); i++) d = addDays(d, 1);
+  return { from: d, to: addDays(d, Math.max(7, diffDays(w.to, w.from))) };
 }
 
 const DONE_BY_STATUS: Record<Planting['status'], GenKind[]> = {
@@ -88,12 +98,12 @@ export function tasksForPlanting(r: Resolved, ctx: GenContext): PlanTask[] {
   }
   if (care.has('chit') && w.plantOut) add('chit', 'home', 'job', { from: addDays(w.plantOut.from, -42), to: addDays(w.plantOut.from, -28) });
   if (w.plantOut && (p.method !== 'direct' || !w.sow)) {
-    if (care.has('support')) add('support', 'plot', 'job', { from: addDays(w.plantOut.from, -7), to: w.plantOut.from });
+    if (care.has('support')) add('support', 'plot', 'job', whenGrowing({ from: addDays(w.plantOut.from, -7), to: w.plantOut.from }, ctx.lat));
     add('plantOut', 'plot', 'plant', w.plantOut, plural(p.qty, p.qtyUnit));
     if (care.has('net')) add('net', 'plot', 'job', { from: w.plantOut.from, to: addDays(w.plantOut.to, 1) });
     if (care.has('mesh')) add('mesh', 'plot', 'job', { from: w.plantOut.from, to: addDays(w.plantOut.to, 1) });
-    if (care.has('earth-up')) add('earthUp', 'plot', 'job', { from: addDays(w.plantOut.from, 28), to: addDays(w.plantOut.to, 56) });
-    if (care.has('pinch-out')) add('pinchOut', 'plot', 'job', { from: addDays(w.plantOut.from, 42), to: addDays(w.plantOut.to, 70) });
+    if (care.has('earth-up')) add('earthUp', 'plot', 'job', whenGrowing({ from: addDays(w.plantOut.from, 28), to: addDays(w.plantOut.to, 56) }, ctx.lat));
+    if (care.has('pinch-out')) add('pinchOut', 'plot', 'job', whenGrowing({ from: addDays(w.plantOut.from, 42), to: addDays(w.plantOut.to, 70) }, ctx.lat));
     // Fleece for anything frost-tender going out within two weeks of the last frost.
     if (crop && crop.hardiness !== 'hardy') {
       const c = effectiveClimate(ctx.climate, area?.protection, crop.hardiness);

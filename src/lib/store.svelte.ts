@@ -12,7 +12,7 @@ import { planSpan, resolvePlantings, type Resolved } from './plantings';
 import { generatedTasks, manualTasks, type PlanTask } from './tasks';
 import type { Area, Crop, Dataset, Feature, Planting, Plot, Site } from './types';
 
-export type View = 'month' | 'plan' | 'plantings' | 'tasks' | 'seeds' | 'crops' | 'settings';
+export type View = 'month' | 'plan' | 'plantings' | 'tasks' | 'seeds' | 'crops' | 'settings' | 'help';
 export interface Route { view: View; arg?: string }
 
 const BUNDLED = bundledCrops();
@@ -21,7 +21,7 @@ const UNDO_LIMIT = 40;
 
 function parseHash(h: string): Route {
   const [view, arg] = h.replace(/^#\/?/, '').split('/');
-  const views: View[] = ['month', 'plan', 'plantings', 'tasks', 'seeds', 'crops', 'settings'];
+  const views: View[] = ['month', 'plan', 'plantings', 'tasks', 'seeds', 'crops', 'settings', 'help'];
   return views.includes(view as View) ? { view: view as View, arg: arg ? decodeURIComponent(arg) : undefined } : { view: 'month' };
 }
 
@@ -31,6 +31,8 @@ class App {
   route: Route = $state(parseHash(typeof location !== 'undefined' ? location.hash : ''));
   toast: { message: string; undo?: boolean; id: number } | null = $state(null);
   undoStack: { label: string; data: Dataset }[] = [];
+  /** How many steps can be undone (the stack itself isn't reactive, to keep snapshots cheap). */
+  undoCount = $state(0);
   today = $state(today());
   /** Set when the stored data fails to load, so we never overwrite it. */
   loadError = $state<string | null>(null);
@@ -117,8 +119,26 @@ class App {
     if (result) this.data = result;
     this.undoStack.push({ label: label ?? '', data: before });
     if (this.undoStack.length > UNDO_LIMIT) this.undoStack.shift();
+    this.undoCount = this.undoStack.length;
     this.save();
     if (label) this.notify(label, true);
+  }
+
+  /** Record a change already made live (e.g. a drag), so it can be undone as one step. */
+  commit(label: string | null, before: Dataset): void {
+    this.undoStack.push({ label: label ?? '', data: before });
+    if (this.undoStack.length > UNDO_LIMIT) this.undoStack.shift();
+    this.undoCount = this.undoStack.length;
+    this.save();
+  }
+
+  /** Change data live without an undo step; pair with `commit`. */
+  live(fn: (d: Dataset) => void): void {
+    fn(this.data);
+  }
+
+  snapshot(): Dataset {
+    return $state.snapshot(this.data) as Dataset;
   }
 
   /** Replace everything, e.g. on restore. */
@@ -129,6 +149,7 @@ class App {
 
   undo(): void {
     const last = this.undoStack.pop();
+    this.undoCount = this.undoStack.length;
     if (!last) return;
     this.data = last.data;
     this.save();
@@ -166,7 +187,7 @@ class App {
     const plotIds = new Set(this.plots.map((p) => p.id));
     const gen = generatedTasks(
       [...this.resolved.values()],
-      { areas: new Map(this.data.areas.map((a) => [a.id, a])), climate: this.site.climate, cropOf: this.cropOf, nameOf: this.nameOf, t },
+      { areas: new Map(this.data.areas.map((a) => [a.id, a])), climate: this.site.climate, cropOf: this.cropOf, nameOf: this.nameOf, t, lat: this.site.location.lat },
       this.data.taskStates,
     );
     const range = { from: `${addMonths(monthKey(this.today), -12)}-01`, to: `${addMonths(monthKey(this.today), 24)}-01` };

@@ -3,7 +3,6 @@
 import { toBackup } from './backup';
 import { t } from './i18n';
 import { app } from './store.svelte';
-import type { Dataset } from './types';
 
 export function download(name: string, content: string | Blob, type = 'application/json'): void {
   const blob = content instanceof Blob ? content : new Blob([content], { type });
@@ -22,7 +21,7 @@ export function slug(s: string): string {
 }
 
 export function downloadBackup(): void {
-  const data = $state.snapshot(app.data) as Dataset;
+  const data = app.snapshot();
   const stamp = new Date().toISOString().slice(0, 10);
   download(`plot-planner-backup-${stamp}.json`, JSON.stringify(toBackup(data), null, 1));
   app.update(null, (d) => { d.meta.lastBackupAt = new Date().toISOString(); });
