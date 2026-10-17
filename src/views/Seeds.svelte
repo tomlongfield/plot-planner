@@ -10,6 +10,12 @@
   import type { StockLot, StockStatus } from '../lib/types';
 
   let editing: { lot?: StockLot } | null = $state(null);
+  // #/seeds/<lotId> opens that lot, e.g. straight after saving seed from a planting.
+  $effect(() => {
+    const id = app.route.arg;
+    const lot = id ? app.data.stock.find((s) => s.id === id) : undefined;
+    if (lot) editing = { lot };
+  });
   let importing = $state(false);
   let query = $state('');
   let showUsed = $state(false);
@@ -105,7 +111,7 @@
   {/if}
 </div>
 
-{#if editing}<LotEditor lot={editing.lot} onclose={() => (editing = null)} />{/if}
+{#if editing}<LotEditor lot={editing.lot} onclose={() => { editing = null; if (app.route.arg) app.go('seeds'); }} />{/if}
 {#if importing}<ImportWizard onclose={() => (importing = false)} />{/if}
 
 <style>

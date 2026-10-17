@@ -404,3 +404,31 @@ describe('grids and containers', async () => {
     expect(capacityFor(p, pot, tomato)).toMatchObject({ fits: 2, ok: false });
   });
 });
+
+describe('seed lineage and reviews', async () => {
+  const { lineage, descendants, reviewNotesFor } = await import('../src/lib/lineage');
+  const lot = (id: string, parentPlantingId?: string) => ({ id, varietyId: 'broad-bean--broad-bean', kind: 'seed' as const, source: 'saved' as const, status: 'plenty' as const, germTests: [], parentPlantingId });
+  const pl = (id: string, stockLotId?: string) => ({ id, plotId: 'p1', areaId: 'a1', varietyId: 'broad-bean--broad-bean', stockLotId, windows: {}, purpose: 'seed' as const, status: 'cleared' as const, agreement: 'agreed' as const, actual: {} });
+
+  it('follows a saved line back through the generations', () => {
+    // bought → grown 2024 → saved → grown 2025 → saved → grown 2026 → saved
+    const stock = [lot('bought'), lot('s24', 'g24'), lot('s25', 'g25'), lot('s26', 'g26')];
+    const plantings = [pl('g24', 'bought'), pl('g25', 's24'), pl('g26', 's25')];
+    expect(lineage('s26', stock, plantings).map((g) => `${g.lot.id}<${g.from?.id ?? ''}`)).toEqual(['s26<g26', 's25<g25', 's24<g24', 'bought<']);
+    expect(descendants('bought', stock, plantings).map((s) => s.id)).toEqual(['s24', 's25', 's26']);
+  });
+
+  it('stops on a loop rather than running forever', () => {
+    const stock = [lot('a', 'pb'), lot('b', 'pa')];
+    const plantings = [pl('pa', 'a'), pl('pb', 'b')];
+    expect(lineage('a', stock, plantings).map((g) => g.lot.id)).toEqual(['a', 'b']);
+  });
+
+  it('finds review notes for a crop, newest first', () => {
+    const entries = [
+      { id: 'r1', date: '2025-11-01', kind: 'review' as const, review: { season: 2025, worked: '', failed: '', next: [{ cropId: 'garlic', note: 'Plant earlier' }] } },
+      { id: 'r2', date: '2026-11-01', kind: 'review' as const, review: { season: 2026, worked: '', failed: '', next: [{ cropId: 'garlic', note: 'Try hardneck' }, { note: 'More compost' }] } },
+    ];
+    expect(reviewNotesFor('garlic', entries)).toEqual([{ season: 2026, note: 'Try hardneck' }, { season: 2025, note: 'Plant earlier' }]);
+  });
+});

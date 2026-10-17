@@ -213,7 +213,7 @@ export function crossingWarnings(ctx: CheckContext): Warning[] {
       }
       if (distance != null && iso && distance >= iso) continue;
       out.push({ id: `crossing:${a.planting.id}:${b.planting.id}`, kind: 'crossing', level: 'warn', plantingId: a.planting.id, otherId: b.planting.id,
-        params: { a: ctx.nameOf(a.planting), b: ctx.nameOf(b.planting), species: ca.species, isolation: iso, distance: distance ?? '', from: fa.from > fb.from ? fa.from : fb.from } });
+        params: { a: ctx.nameOf(a.planting), b: ctx.nameOf(b.planting), species: ca.species, isolation: iso, distance: distance ?? '', from: fa.from > fb.from ? fa.from : fb.from, to: fa.to < fb.to ? fa.to : fb.to } });
     }
   }
   return out;

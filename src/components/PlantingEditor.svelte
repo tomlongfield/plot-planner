@@ -7,6 +7,7 @@
   import { dayMonth, range, t, tn } from '../lib/i18n';
   import { uid } from '../lib/ids';
   import { cropName, varietiesOf } from '../lib/library';
+  import { reviewNotesFor } from '../lib/lineage';
   import { resolvePlantings } from '../lib/plantings';
   import { availablePlans, defaultMethod, nextSeason, resolveWindows, type Plan } from '../lib/resolve';
   import { app } from '../lib/store.svelte';
@@ -112,6 +113,16 @@
   const needsHeat = $derived(p.bottomHeat ?? varietyCrop?.propagation?.bottomHeat ?? false);
   const lots = $derived(app.data.stock.filter((s) => s.varietyId === p.varietyId && s.status !== 'used'));
   const valid = $derived(!!p.varietyId && !!p.areaId);
+  const notes = $derived(cropId ? reviewNotesFor(cropId, app.data.entries).slice(0, 3) : []);
+
+  function saveSeed() {
+    const id = uid('lot');
+    app.update(t('pe.seedSaved', { name: app.nameOf(p) }), (d) => {
+      d.stock.push({ id, varietyId: p.varietyId, kind: 'seed', source: 'saved', acquired: app.today, status: 'plenty', parentPlantingId: p.id, germTests: [] });
+    });
+    onclose();
+    app.go('seeds', id);
+  }
 
   function save() {
     const out = $state.snapshot(p) as Planting;
@@ -145,6 +156,12 @@
         {#each varieties as v (v.id)}<option value={v.id}>{v.name}{v.seedType === 'F1' ? ' (F1)' : ''}</option>{/each}
       </select></label>
   </div>
+
+  {#if notes.length}
+    <div class="notes">
+      {#each notes as n}<p class="small"><span class="mono-label">{t('pe.reviewNote', { season: n.season })}</span> {n.note}</p>{/each}
+    </div>
+  {/if}
 
   <div class="grid2">
     <label class="field"><span>{t('pe.area')}</span>
@@ -297,6 +314,9 @@
   {#snippet footer()}
     {#if !isNew}
       <button class="btn quiet danger" onclick={() => (confirmDelete = true)}>{t('pe.delete')}</button>
+      {#if planting && planting.purpose !== 'eat' && (planting.status === 'harvesting' || planting.status === 'cleared' || planting.status === 'growing')}
+        <button class="btn" onclick={saveSeed}>{t('pe.saveSeed')}</button>
+      {/if}
       {#if nextStatus && planting?.agreement === 'agreed'}
         <button class="btn" onclick={() => { setPlantingStatus(p.id, nextStatus); onclose(); }}>{t(`pe.mark.${nextStatus}`)}</button>
       {/if}
@@ -326,6 +346,8 @@
   .cell.on { background: var(--accent); color: var(--surface); border-color: var(--accent); }
   .warnings { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
   .grow { flex: 1; }
+  .notes { border-left: 3px solid var(--t-sow); padding: 2px 0 2px 12px; display: grid; gap: 4px; }
+  .notes p { margin: 0; }
   .actual + .actual::before { content: ', '; }
   @media (max-width: 520px) {
     .date-grid { grid-template-columns: 1fr 1fr auto; }

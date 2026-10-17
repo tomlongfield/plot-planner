@@ -6,6 +6,7 @@
   import { range, t, tn } from '../lib/i18n';
   import { uid } from '../lib/ids';
   import { bundledCrops, cropName, varietiesOf } from '../lib/library';
+  import { reviewNotesFor } from '../lib/lineage';
   import { availablePlans, defaultMethod, nextSeason, resolveWindows } from '../lib/resolve';
   import { app } from '../lib/store.svelte';
   import type { Category, Crop, Variety } from '../lib/types';
@@ -127,6 +128,9 @@
         <p class="muted"><em>{c.species}</em>, {c.family}. {t(`lifecycle.${c.lifecycle}`)}, {t(`hardiness.${c.hardiness}`).toLowerCase()}{c.minTempC != null ? ` (${t('crop.minTemp', { temp: c.minTempC })})` : ''}.</p>
         {#if c.names.en.length > 1}<p class="small muted">{t('crop.alsoCalled', { names: c.names.en.slice(1).join(', ') })}</p>{/if}
         {#if c.notes}<p>{c.notes}</p>{/if}
+        {#each reviewNotesFor(c.id, app.data.entries) as n}
+          <p class="review-note small"><span class="mono-label">{t('pe.reviewNote', { season: n.season })}</span> {n.note}</p>
+        {/each}
 
         <h3>{t('crop.timing')}</h3>
         <dl class="facts">
@@ -237,6 +241,7 @@
   .varieties { list-style: none; margin: 0; padding: 0; }
   .varieties li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--line); }
   .actions { margin-top: 16px; }
+  .review-note { border-left: 3px solid var(--t-sow); padding-left: 12px; margin: 0; }
   .source { margin-top: 12px; }
   @media (max-width: 760px) {
     .cols { grid-template-columns: 1fr; }

@@ -3,6 +3,7 @@
   import { t } from '../lib/i18n';
   import { uid } from '../lib/ids';
   import { cropName, varietiesOf } from '../lib/library';
+  import { descendants, lineage } from '../lib/lineage';
   import { app } from '../lib/store.svelte';
   import type { StockKind, StockLot, StockSource, StockStatus } from '../lib/types';
   import { untrack } from 'svelte';
@@ -45,6 +46,9 @@
   const SOURCES: StockSource[] = ['bought', 'saved', 'gift', 'swap', 'unknown'];
   const STATUSES: StockStatus[] = ['plenty', 'low', 'used'];
   const valid = $derived(!!x.varietyId && (x.varietyId !== '__new' || !!newVariety.trim()));
+  const line = $derived(isNew ? [] : lineage(x.id, app.data.stock, app.data.plantings));
+  const later = $derived(isNew ? [] : descendants(x.id, app.data.stock, app.data.plantings));
+  const lotLabel = (l: StockLot) => `${t(`source.${l.source}`)}${l.supplier ? `, ${l.supplier}` : ''}${l.acquired ? `, ${l.acquired.slice(0, 4)}` : ''}`;
   const savedFrom = $derived(app.data.plantings.filter((p) => p.varietyId === x.varietyId && p.purpose !== 'eat'));
 </script>
 
@@ -91,6 +95,20 @@
       </select>
       <span class="help">{t('lot.parentHelp')}</span></label>
   {/if}
+  {#if line.length > 1 || line[0]?.from || later.length}
+    <section class="line">
+      <h3>{t('lot.line')}</h3>
+      <ol>
+        {#each line as g, i (g.lot.id)}
+          <li>
+            <span class="mono-label">{i === 0 ? t('lot.thisLot') : t('lot.generation', { n: i })}</span>
+            {lotLabel(g.lot)}{#if g.from}, {t('lot.savedFrom', { name: app.nameOf(g.from), area: app.areaName(g.from.areaId) })}{/if}
+          </li>
+        {/each}
+      </ol>
+      {#if later.length}<p class="small muted">{t('lot.later', { n: later.length })}</p>{/if}
+    </section>
+  {/if}
   <fieldset class="tests">
     <legend class="mono-label">{t('lot.germTests')}</legend>
     {#each x.germTests as g, i}
@@ -117,5 +135,7 @@
 </Dialog>
 
 <style>
+  .line ol { margin: 6px 0 0; padding-left: 0; list-style: none; display: grid; gap: 4px; }
+  .line li { border-left: 2px solid var(--line); padding-left: 10px; }
   .tests { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 0; display: grid; gap: 8px; }
 </style>
