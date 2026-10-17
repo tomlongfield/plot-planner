@@ -4,6 +4,7 @@ import { addDays, diffDays, today } from './dates';
 import { t } from './i18n';
 import { uid } from './ids';
 import { acceptDrafts, rejectDrafts, setAreaProtection, setSiteClimate } from './ops';
+import { settleImports } from './share';
 import { app } from './store.svelte';
 import type { PlanTask } from './tasks';
 import type { Climate, Dataset, Planting, PlantingStatus, Protection, TaskStatus, Windows } from './types';
@@ -95,11 +96,11 @@ export function shiftWindow(id: string, key: keyof Windows, days: number): void 
 }
 
 export function acceptDraft(ids: { plantings?: string[]; tasks?: string[] }): void {
-  app.update(t('toast.draftAccepted'), (d) => acceptDrafts(d, ids));
+  app.update(t('toast.draftAccepted'), (d) => settleImports(acceptDrafts($snapshot(d), ids)));
 }
 
 export function rejectDraft(ids: { plantings?: string[]; tasks?: string[] }): void {
-  app.update(t('toast.draftRejected'), (d) => rejectDrafts(d, ids));
+  app.update(t('toast.draftRejected'), (d) => settleImports(rejectDrafts($snapshot(d), ids)));
 }
 
 export function setClimate(siteId: string, climate: Climate): void {

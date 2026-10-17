@@ -11,6 +11,7 @@
   import Settings from './views/Settings.svelte';
   import Tasks from './views/Tasks.svelte';
   import Help from './views/Help.svelte';
+  import Shared from './views/Shared.svelte';
 
   const NAV: { view: View; icon: string }[] = [
     { view: 'month', icon: 'month' },
@@ -62,18 +63,32 @@
 
 {#if !app.ready}
   <div class="loading" aria-busy="true">{t('app.loading')}</div>
+{:else if app.shareFragment}
+  <Shared fragment={app.shareFragment} />
 {:else}
   <header class="top">
     <div class="brand">
       <span class="wordmark">{t('app.name')}</span>
-      {#if app.plots.length > 1}
+      {#if app.data.plots.length > 1}
         <select
           class="plot-switch"
           aria-label={t('app.switchPlot')}
           value={app.plot?.id}
-          onchange={(e) => app.update(null, (d) => { d.settings.activePlotId = e.currentTarget.value; })}
+          onchange={(e) => {
+            const id = e.currentTarget.value;
+            app.update(null, (d) => {
+              d.settings.activePlotId = id;
+              d.settings.activeSiteId = d.plots.find((p) => p.id === id)?.siteId;
+            });
+          }}
         >
-          {#each app.data.plots as p (p.id)}<option value={p.id}>{p.name}</option>{/each}
+          {#if app.data.sites.length > 1}
+            {#each app.data.sites as s (s.id)}
+              <optgroup label={s.name}>{#each app.data.plots.filter((p) => p.siteId === s.id) as p (p.id)}<option value={p.id}>{p.name}</option>{/each}</optgroup>
+            {/each}
+          {:else}
+            {#each app.data.plots as p (p.id)}<option value={p.id}>{p.name}</option>{/each}
+          {/if}
         </select>
       {:else if app.plot}
         <span class="plot-name">{app.plot.name}</span>

@@ -29,6 +29,8 @@ class App {
   data: Dataset = $state(emptyDataset(APP_VERSION));
   ready = $state(false);
   route: Route = $state(parseHash(typeof location !== 'undefined' ? location.hash : ''));
+  /** Set when the page was opened from a shared link (#share=…). */
+  shareFragment: string | null = $state(typeof location !== 'undefined' && location.hash.startsWith('#share=') ? location.hash : null);
   toast: { message: string; undo?: boolean; id: number } | null = $state(null);
   undoStack: { label: string; data: Dataset }[] = [];
   /** How many steps can be undone (the stack itself isn't reactive, to keep snapshots cheap). */
@@ -79,7 +81,10 @@ class App {
   // ── Loading and saving ─────────────────────────────────
 
   async init(): Promise<void> {
-    window.addEventListener('hashchange', () => (this.route = parseHash(location.hash)));
+    window.addEventListener('hashchange', () => {
+      if (location.hash.startsWith('#share=')) this.shareFragment = location.hash;
+      else this.route = parseHash(location.hash);
+    });
     try {
       const stored = await loadDataset();
       if (stored && (stored.plots?.length || stored.sites?.length)) {
