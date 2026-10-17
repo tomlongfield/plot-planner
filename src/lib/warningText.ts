@@ -1,7 +1,7 @@
 import type { Warning } from './checks';
 import { fullDate, t } from './i18n';
 
-const DATE_KEYS = new Set(['from', 'until', 'end', 'date', 'lastFrost', 'acquired', 'useBy']);
+const DATE_KEYS = new Set(['from', 'until', 'end', 'date', 'lastFrost', 'acquired', 'useBy', 'week']);
 
 /** The words for a warning, in the current language. */
 export function warningText(w: Warning): string {

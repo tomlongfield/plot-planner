@@ -107,6 +107,8 @@
   });
 
   const sameArea = $derived(app.data.plantings.filter((x) => x.id !== p.id && x.plotId === p.plotId && x.areaId === p.areaId));
+  const spaces = $derived(app.data.propSpaces.filter((s) => s.siteId === app.site?.id));
+  const needsHeat = $derived(p.bottomHeat ?? varietyCrop?.propagation?.bottomHeat ?? false);
   const lots = $derived(app.data.stock.filter((s) => s.varietyId === p.varietyId && s.status !== 'used'));
   const valid = $derived(!!p.varietyId && !!p.areaId);
 
@@ -221,6 +223,13 @@
     <div class="grid2">
       <label class="field"><span>{t('pe.seedsPerCell')}</span><input type="number" min="1" bind:value={p.seedsPerCell} placeholder={String(varietyCrop?.propagation?.seedsPerModule ?? 1)} /></label>
       <label class="check"><input type="checkbox" checked={p.bottomHeat ?? varietyCrop?.propagation?.bottomHeat ?? false} onchange={(e) => (p.bottomHeat = e.currentTarget.checked)} />{t('pe.bottomHeat')}</label>
+      {#if spaces.length}
+        <label class="field"><span>{t('pe.space')}</span>
+          <select value={p.propagationSpaceId ?? ''} onchange={(e) => (p.propagationSpaceId = e.currentTarget.value || undefined)}>
+            <option value="">{t('pe.spaceDefault', { name: spaces[0].name })}</option>
+            {#each spaces as s (s.id)}<option value={s.id}>{s.name}{needsHeat && !s.bottomHeat ? ` (${t('pe.noHeat')})` : ''}</option>{/each}
+          </select></label>
+      {/if}
     </div>
   {/if}
 

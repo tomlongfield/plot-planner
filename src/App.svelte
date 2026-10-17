@@ -12,6 +12,7 @@
   import Tasks from './views/Tasks.svelte';
   import Help from './views/Help.svelte';
   import Journal from './views/Journal.svelte';
+  import Propagation from './views/Propagation.svelte';
   import Shared from './views/Shared.svelte';
 
   const NAV: { view: View; icon: string }[] = [
@@ -20,6 +21,7 @@
     { view: 'plantings', icon: 'plantings' },
     { view: 'plan', icon: 'plan' },
     { view: 'journal', icon: 'journal' },
+    { view: 'propagation', icon: 'propagation' },
     { view: 'seeds', icon: 'seeds' },
     { view: 'crops', icon: 'crops' },
     { view: 'settings', icon: 'settings' },
@@ -143,6 +145,7 @@
     {:else if app.route.view === 'plantings'}<Plantings />
     {:else if app.route.view === 'tasks'}<Tasks />
     {:else if app.route.view === 'journal'}<Journal />
+    {:else if app.route.view === 'propagation'}<Propagation />
     {:else if app.route.view === 'seeds'}<Seeds />
     {:else if app.route.view === 'crops'}<Crops />
     {:else if app.route.view === 'settings'}<Settings />
