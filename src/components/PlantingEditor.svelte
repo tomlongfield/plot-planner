@@ -2,7 +2,7 @@
   // Add or edit a planting. Dates are worked out from the crop's rules and the
   // site's frost dates until the grower changes one by hand.
   import { deletePlanting, savePlanting, setPlantingStatus } from '../lib/actions';
-  import { capacityFor, spacingFor } from '../lib/capacity';
+  import { capacityFor, gridCells, spacingFor } from '../lib/capacity';
   import { allPlotWarnings } from '../lib/checks';
   import { dayMonth, range, t, tn } from '../lib/i18n';
   import { uid } from '../lib/ids';
@@ -107,6 +107,7 @@
   });
 
   const sameArea = $derived(app.data.plantings.filter((x) => x.id !== p.id && x.plotId === p.plotId && x.areaId === p.areaId));
+  const sameAreaCells = $derived(new Set(sameArea.filter((x) => x.status !== 'cleared' && x.status !== 'failed').flatMap((x) => x.cells ?? [])));
   const spaces = $derived(app.data.propSpaces.filter((s) => s.siteId === app.site?.id));
   const needsHeat = $derived(p.bottomHeat ?? varietyCrop?.propagation?.bottomHeat ?? false);
   const lots = $derived(app.data.stock.filter((s) => s.varietyId === p.varietyId && s.status !== 'used'));
@@ -117,6 +118,7 @@
     if (!out.qty) delete out.qty;
     if (!out.spacingCm) delete out.spacingCm;
     if (!out.rows?.length) delete out.rows;
+    if (!out.cells?.length || area?.kind !== 'grid') delete out.cells;
     savePlanting(out, isNew);
     onclose();
   }
@@ -151,6 +153,24 @@
           <option value={a.id}>{a.parentId ? `  ${a.name}` : a.name}{parentIds.has(a.id) ? ` ${t('pe.wholeBed')}` : ''}</option>
         {/each}
       </select></label>
+    {#if area?.kind === 'grid'}
+      {@const g = gridCells(area)}
+      <fieldset class="field cells">
+        <legend class="mono-label">{t('pe.cells', { n: p.cells?.length ?? 0 })}</legend>
+        <div class="cell-grid" style="grid-template-columns: repeat({g.cols}, 28px)">
+          {#each Array.from({ length: g.cols * g.rows }, (_, i) => i + 1) as c}
+            {@const taken = sameAreaCells.has(c)}
+            <button type="button" class="cell" class:on={p.cells?.includes(c)} class:taken aria-pressed={p.cells?.includes(c) ?? false}
+              aria-label={t('pe.cell', { n: c })} title={taken ? t('pe.cellTaken') : ''}
+              onclick={() => {
+                const set = new Set(p.cells ?? []);
+                set.has(c) ? set.delete(c) : set.add(c);
+                p.cells = [...set].sort((a, b) => a - b);
+              }}>{c}</button>
+          {/each}
+        </div>
+      </fieldset>
+    {/if}
     {#if area?.kind === 'rows' && area.rows}
       <fieldset class="field rows">
         <legend class="mono-label">{t('pe.rows')}</legend>
@@ -298,7 +318,11 @@
   .dates > .btn { justify-self: start; }
   .date-grid { display: grid; grid-template-columns: 7.5em 1fr 1fr auto; gap: 6px 8px; align-items: center; }
   .span2 { grid-column: span 2; }
-  .rows { border: 0; padding: 0; margin: 0; }
+  .rows, .cells { border: 0; padding: 0; margin: 0; }
+  .cell-grid { display: grid; gap: 3px; }
+  .cell { width: 28px; height: 28px; padding: 0; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); font: 400 10px var(--font-mono); color: var(--muted); cursor: pointer; }
+  .cell.taken { background: repeating-linear-gradient(135deg, var(--surface) 0 3px, var(--line) 3px 5px); }
+  .cell.on { background: var(--accent); color: var(--surface); border-color: var(--accent); }
   .warnings { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
   .grow { flex: 1; }
   .actual + .actual::before { content: ', '; }

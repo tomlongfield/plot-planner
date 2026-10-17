@@ -30,7 +30,8 @@
   "spacing": {
     "inRowCm": 35,
     "betweenRowsCm": 65,
-    "gridCm": 40
+    "gridCm": 40,
+    "perContainerL": 30
   },
   "seedSaving": {
     "pollination": "self",

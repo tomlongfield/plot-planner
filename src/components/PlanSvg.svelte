@@ -2,7 +2,7 @@
   // The plot drawn to scale, in its own orientation, with compass labels on all
   // four sides. Used for the month view, the small multiples and the layout editor.
   import type { Snippet } from 'svelte';
-  import { rectOf } from '../lib/capacity';
+  import { gridCells, rectOf } from '../lib/capacity';
   import { fonts } from '../lib/fonts.svelte';
   import { t } from '../lib/i18n';
   import type { Cell } from '../lib/monthview';
@@ -171,7 +171,7 @@
         onkeydown={(e) => interactive && !isParent && keydown(e, a.id)}
         onpointerdown={(e) => onitemdown?.(e, 'area', a.id, geo)}
       >
-        <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={cell?.fill ?? (a.perennial ? `var(--c-${a.fill ?? 'static'})` : 'var(--c-empty)')} class="area-shape" rx={mini ? 1.5 : 3} />
+        <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={a.kind === 'grid' && cell?.cellFills ? 'var(--c-empty)' : (cell?.fill ?? (a.perennial ? `var(--c-${a.fill ?? 'static'})` : 'var(--c-empty)'))} class="area-shape" class:pot={a.kind === 'container'} rx={a.kind === 'container' ? Math.min(b.w, b.h) / 3 : mini ? 1.5 : 3} />
         {#if cell?.rowFills && a.rows}
           {@const axisX = (a.rowsAxis ?? 'x') === 'x'}
           {#each cell.rowFills as rf, i}
@@ -180,6 +180,13 @@
             {:else}
               <rect x={b.x} y={b.y + (b.h / a.rows) * i} width={b.w} height={b.h / a.rows} fill={rf ?? 'var(--c-empty)'} class="row-strip" />
             {/if}
+          {/each}
+        {:else if a.kind === 'grid'}
+          {@const g = gridCells(a)}
+          {#each Array.from({ length: g.cols * g.rows }) as _, i}
+            {@const cx = b.x + (i % g.cols) * g.size * geo.s}
+            {@const cy = b.y + Math.floor(i / g.cols) * g.size * geo.s}
+            <rect x={cx} y={cy} width={g.size * geo.s} height={g.size * geo.s} fill={cell?.cellFills?.[i] ?? 'transparent'} class="grid-cell" />
           {/each}
         {:else if a.kind === 'rows' && a.rows && !mini}
           {#each Array.from({ length: a.rows - 1 }) as _, i}
@@ -233,6 +240,8 @@
   .area-shape { stroke: color-mix(in srgb, var(--ink) 22%, transparent); stroke-width: 0.8; }
   .parent > .area-shape { stroke: color-mix(in srgb, var(--ink) 35%, transparent); }
   .row-strip { stroke: color-mix(in srgb, var(--ink) 18%, transparent); stroke-width: 0.6; }
+  .grid-cell { stroke: color-mix(in srgb, var(--ink) 18%, transparent); stroke-width: 0.6; }
+  .pot { stroke-width: 1.4; }
   .row-line { stroke: color-mix(in srgb, var(--ink) 20%, transparent); stroke-width: 0.6; stroke-dasharray: 2 2; }
   .changes { fill: none; stroke: var(--new); stroke-width: 2; }
   .draft { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 3; }

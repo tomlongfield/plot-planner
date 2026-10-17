@@ -2,6 +2,25 @@
 
 All notable changes are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.0] - 2026-10-18
+
+Phase 2.
+
+### Added
+- Share a plan as a file or a read-only link (the plan travels in the link's `#fragment`, so nothing reaches a server). Shared plans arrive as drafts in one of your plots or as a separate garden. Location is included only if you tick the box.
+- Journal: notes and photos, harvest log with totals by crop, plot and year and yield per square metre, problems that feed rotation warnings, and stored produce.
+- Propagation spaces with weekly occupancy against capacity, reservations, and over-capacity warnings.
+- Timeline (Gantt) view per area with successions joined and frost dates marked; rotation grid by year; a week-by-week slider and an agreed-against-drafts comparison on the month view.
+- Square-foot grids (plantings choose squares) and container capacity by volume.
+- CSV export of plantings, tasks and harvests.
+
+### Changed
+- On phones the navigation shows Month, Tasks, Plantings and Journal, with the rest under More.
+- The header plot switcher lists plots across gardens.
+
+### Fixed
+- The reference nginx config's Content Security Policy keywords are quoted (and tested).
+
 ## [0.1.0] - 2026-10-17
 
 The first release: the core planner (phase 1).

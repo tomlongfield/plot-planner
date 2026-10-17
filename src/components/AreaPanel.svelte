@@ -47,6 +47,7 @@
           <span class="mono muted">{span(r)}</span>
           {#if r.planting.areaId !== areaId}<span class="muted small">{app.areaName(r.planting.areaId)}</span>{/if}
           {#if r.planting.rows?.length}<span class="muted small">{t('area.rows', { rows: r.planting.rows.join(', ') })}</span>{/if}
+          {#if r.planting.cells?.length}<span class="muted small">{t('area.cells', { cells: r.planting.cells.join(', ') })}</span>{/if}
           {#if cap}<span class="muted small">{t('area.capacity', { needed: cap.needed, fits: cap.fits, unit: tn(`unit.${cap.unit}`, cap.fits).replace(/^[\d.,\s]+/, ''), working: cap.working })}</span>{/if}
           {#if r.waitingDays}<span class="chip warn">{t('area.waiting', { days: r.waitingDays })}</span>{/if}
         </li>

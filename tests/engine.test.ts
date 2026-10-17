@@ -366,3 +366,41 @@ describe('propagation spaces', async () => {
     expect(spinachWeeks).toEqual(['2026-11-16', '2026-11-23', '2026-11-30']);
   });
 });
+
+describe('grids and containers', async () => {
+  const { capacityFor, gridCells } = await import('../src/lib/capacity');
+  const grid = { id: 'g', plotId: 'p1', kind: 'grid' as const, name: 'Square foot bed', gridCm: 30, shape: { rect: [0, 0, 1.2, 1.2] as [number, number, number, number] } };
+  const base = { plotId: 'p1', areaId: 'g', method: 'module' as const, purpose: 'eat' as const, status: 'planned' as const, agreement: 'agreed' as const, actual: {}, qtyUnit: 'plants' as const };
+
+  it('divides a grid area into cells', () => {
+    expect(gridCells(grid)).toEqual({ cols: 4, rows: 4, size: 0.3 });
+  });
+
+  it('fits plants per square by spacing, times the squares chosen', () => {
+    // Carrots at 7 cm: 4 × 4 = 16 per 30 cm square.
+    const carrots = { ...base, id: 'c', varietyId: 'carrot--early-nantes', cells: [1, 2], qty: 32, windows: {} };
+    expect(capacityFor(carrots, grid, lib.crops.get('carrot'))).toMatchObject({ fits: 32, ok: true });
+    expect(capacityFor({ ...carrots, qty: 33 }, grid, lib.crops.get('carrot'))!.ok).toBe(false);
+    // Kale at 45 cm still gets one per square.
+    const kale = { ...base, id: 'k', varietyId: 'kale--curly', cells: [5], qty: 1, windows: {} };
+    expect(capacityFor(kale, grid, lib.crops.get('kale'))).toMatchObject({ fits: 1, ok: true });
+  });
+
+  it('lets plantings share a grid on different squares', () => {
+    const d = demo();
+    d.areas.push(grid);
+    const w = { plantOut: { from: '2027-05-01', to: '2027-05-05' }, clear: { from: '2027-08-01', to: '2027-08-10' } };
+    d.plantings.push({ ...base, id: 'g1', varietyId: 'lettuce--cos', cells: [1, 2], qty: 2, windows: w });
+    d.plantings.push({ ...base, id: 'g2', varietyId: 'beetroot--boltardy', cells: [3, 4], qty: 2, windows: w });
+    expect(allPlotWarnings(ctxFor(d)).filter((x) => x.kind === 'conflict')).toEqual([]);
+    d.plantings.find((p) => p.id === 'g2')!.cells = [2, 3];
+    expect(allPlotWarnings(ctxFor(d)).filter((x) => x.kind === 'conflict')).toHaveLength(1);
+  });
+
+  it('fits container plants by volume when the crop says how much each needs', () => {
+    const pot = { id: 'pot', plotId: 'p1', kind: 'container' as const, name: 'Pot', volumeL: 40, shape: { rect: [0, 0, 0.4, 0.4] as [number, number, number, number] } };
+    const tomato = { ...lib.crops.get('tomato')!, spacing: { ...lib.crops.get('tomato')!.spacing, perContainerL: 15 } };
+    const p = { ...base, id: 't', areaId: 'pot', varietyId: 'tomato--sungold', qty: 3, windows: {} };
+    expect(capacityFor(p, pot, tomato)).toMatchObject({ fits: 2, ok: false });
+  });
+});

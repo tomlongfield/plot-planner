@@ -39,7 +39,8 @@
     "seedsPerModule": 8
   },
   "spacing": {
-    "gridCm": 25
+    "gridCm": 25,
+    "perContainerL": 2
   },
   "seedLifeYears": 2,
   "seedSaving": {
