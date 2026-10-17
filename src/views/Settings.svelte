@@ -2,7 +2,7 @@
   import Dialog from '../components/Dialog.svelte';
   import MonthDayInput from '../components/MonthDayInput.svelte';
   import { setClimate } from '../lib/actions';
-  import { parseBackup } from '../lib/backup';
+  import { emptyDataset, parseBackup } from '../lib/backup';
   import { defaultClimate, frostFreeDays } from '../lib/climate';
   import { clearDataset, isPersisted, requestPersistence } from '../lib/db';
   import { demoDataset } from '../lib/demo';
@@ -117,7 +117,6 @@
     if (kind === 'demo') app.replace(demoDataset(app.lib), t('settings.demoLoaded'));
     else {
       await clearDataset();
-      const { emptyDataset } = await import('../lib/backup');
       app.replace(emptyDataset(__APP_VERSION__), t('settings.erased'));
     }
     confirmReset = null;
