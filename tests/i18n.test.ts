@@ -20,6 +20,8 @@ const DYNAMIC: Record<string, string[]> = {
   'nav.short.': ['month', 'plan', 'plantings', 'tasks', 'journal', 'propagation', 'seeds', 'crops', 'settings'],
   'prop.unit.': ['trays', 'modules'],
   'views.': ['month', 'timeline', 'rotation'],
+  'merge.kind.': ['theirs', 'mine', 'changed'],
+  'merge.store.': ['sites', 'plots', 'areas', 'features', 'plantings', 'tasks', 'taskStates', 'stock', 'cropOverrides', 'varieties', 'propSpaces', 'reservations', 'entries'],
   'tl.': ['lastFrost', 'firstFrost'],
   'entryKind.': ['note', 'harvest', 'problem', 'store', 'photo', 'review'],
   'entry.new.': ['note', 'harvest', 'problem', 'store'],

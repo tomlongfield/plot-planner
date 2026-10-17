@@ -7,7 +7,8 @@
   import { untrack } from 'svelte';
   import Dialog from './Dialog.svelte';
 
-  let { payload, source, onclose, ondone }: { payload: SharePayload; source: 'file' | 'link'; onclose: () => void; ondone?: () => void } = $props();
+  let props: { payload: SharePayload; source: 'file' | 'link'; onclose: () => void; ondone?: () => void } = $props();
+  const { payload, source, onclose, ondone } = $derived(props);
 
   let mode: 'plot' | 'garden' = $state(app.plot ? 'plot' : 'garden');
   let sharedPlotId = $state(untrack(() => payload.plots[0]?.id ?? ''));
@@ -22,6 +23,7 @@
 
   function go() {
     const d = app.snapshot();
+    const payload = $state.snapshot(props.payload) as SharePayload;
     if (mode === 'garden') {
       const r = importAsGarden(d, payload, source, from.trim() || undefined);
       const firstPlot = r.data.plots.find((p) => p.siteId === r.siteId);

@@ -118,6 +118,7 @@
     if (!out.qty) delete out.qty;
     if (!out.spacingCm) delete out.spacingCm;
     if (!out.rows?.length) delete out.rows;
+    if (!out.interplanted) delete out.interplanted;
     if (!out.cells?.length || area?.kind !== 'grid') delete out.cells;
     savePlanting(out, isNew);
     onclose();
