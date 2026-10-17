@@ -6,7 +6,9 @@
   import { OPEN_END, OPEN_START, type Resolved } from '../lib/plantings';
   import { app } from '../lib/store.svelte';
   import { area as fmtArea } from '../lib/units';
+  import EntryEditor from './EntryEditor.svelte';
   import WarningList from './WarningList.svelte';
+  import type { Entry } from '../lib/types';
 
   let { areaId, month, onclose }: { areaId: string; month: string; onclose: () => void } = $props();
 
@@ -20,6 +22,9 @@
   const next = $derived(here.filter((r) => r.occupancy.from > m.to));
   const past = $derived(here.filter((r) => r.occupancy.to < m.from).reverse());
   const warnings = $derived(app.warnings.filter((w) => w.areaId && ids.has(w.areaId)));
+  let logging: Partial<Entry> | null = $state(null);
+  const recent = $derived(app.data.entries.filter((e) => e.areaId && ids.has(e.areaId)).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5));
+  const growing = $derived(now.find((r) => r.planting.agreement === 'agreed'));
 
   function span(r: Resolved): string {
     const from = r.occupancy.from === OPEN_START ? '' : r.occupancy.from;
@@ -63,6 +68,11 @@
     <p class="muted small">
       {fmtArea(areaM2(area), app.units)}{#if area.protection && area.protection !== 'none'}, {t(`protection.${area.protection}`)}{/if}
     </p>
+    <div class="row">
+      <button class="btn small" onclick={() => (logging = { kind: 'harvest', areaId, plantingId: growing?.planting.id })}>{t('journal.addHarvest')}</button>
+      <button class="btn small quiet" onclick={() => (logging = { kind: 'note', areaId, plantingId: growing?.planting.id })}>{t('journal.addNote')}</button>
+      <button class="btn small quiet" onclick={() => (logging = { kind: 'problem', areaId })}>{t('journal.addProblem')}</button>
+    </div>
     <WarningList {warnings} />
     <h3>{t('area.now')}</h3>
     {@render list(now, t('area.nothingNow'))}
@@ -70,8 +80,17 @@
     {@render list(next, t('area.nothingNext'))}
     <h3>{t('area.history')}</h3>
     {@render list(past, t('area.noHistory'))}
+    {#if recent.length}
+      <h3>{t('area.journal')}</h3>
+      <ul class="ruled">
+        {#each recent as e (e.id)}
+          <li><span class="mono muted">{e.date}</span> <span>{t(`entryKind.${e.kind}`)}{e.problem ? `: ${e.problem.name}` : ''}{e.text ? `: ${e.text}` : ''}</span></li>
+        {/each}
+      </ul>
+    {/if}
   </section>
 {/if}
+{#if logging}<EntryEditor preset={{ ...logging, plotId: app.plot?.id }} onclose={() => (logging = null)} />{/if}
 
 <style>
   .panel { display: grid; gap: 10px; align-content: start; }

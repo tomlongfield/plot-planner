@@ -16,8 +16,14 @@ const has = (k: string) => k in messages || `${k}.other` in messages;
 
 // Keys built at runtime, listed out so a missing translation fails here.
 const DYNAMIC: Record<string, string[]> = {
-  'nav.': ['month', 'plan', 'plantings', 'tasks', 'seeds', 'crops', 'settings', 'help'],
-  'nav.short.': ['month', 'plan', 'plantings', 'tasks', 'seeds', 'crops', 'settings'],
+  'nav.': ['month', 'plan', 'plantings', 'tasks', 'journal', 'seeds', 'crops', 'settings', 'help'],
+  'nav.short.': ['month', 'plan', 'plantings', 'tasks', 'journal', 'seeds', 'crops', 'settings'],
+  'entryKind.': ['note', 'harvest', 'problem', 'store', 'photo', 'review'],
+  'entry.new.': ['note', 'harvest', 'problem', 'store'],
+  'entry.added.': ['note', 'harvest', 'problem', 'store', 'photo', 'review'],
+  'severity.': ['1', '2', '3'],
+  'journal.tab.': ['all', 'note', 'harvest', 'problem', 'store'],
+  'journal.empty.': ['all', 'note', 'harvest', 'problem', 'store'],
   'dir.': ['N', 'E', 'S', 'W'], 'dir.long.': ['N', 'E', 'S', 'W'],
   'kind.': ['bed', 'section', 'rows', 'grid', 'container'],
   'protection.': ['none', 'cloche', 'coldframe', 'greenhouse', 'polytunnel', 'heated'],

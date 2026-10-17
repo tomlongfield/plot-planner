@@ -2,6 +2,7 @@
   import TaskEditor from '../components/TaskEditor.svelte';
   import TaskRow from '../components/TaskRow.svelte';
   import { addMonths, monthKey, monthsBetween } from '../lib/dates';
+  import { tasksCSV } from '../lib/exports';
   import { download, slug } from '../lib/files';
   import { monthYear, t } from '../lib/i18n';
   import { toICS } from '../lib/ics';
@@ -39,6 +40,7 @@
   <div class="spread">
     <h1>{t('nav.tasks')}</h1>
     <span class="row">
+      <button class="btn" onclick={() => download(`${slug(app.plot?.name ?? 'plot')}-tasks.csv`, tasksCSV(shown, app), 'text/csv')}>{t('seeds.export')}</button>
       <button class="btn" onclick={exportICS}>{t('tasks.ics')}</button>
       <button class="btn primary" onclick={() => (editing = {})}>{t('te.add')}</button>
     </span>
