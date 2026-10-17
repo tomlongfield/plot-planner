@@ -86,6 +86,8 @@ export interface Area {
   volumeL?: number;
   protection?: Protection;
   perennial?: boolean;
+  /** Colour for a perennial area when no planting is recorded in it. */
+  fill?: Category;
   fromDate?: ISODate;
   toDate?: ISODate;
 }

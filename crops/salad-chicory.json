@@ -60,6 +60,13 @@
   "notes": "Sow in early summer. Earlier sowings tend to bolt.",
   "varieties": [
     {
+      "id": "salad-chicory--mixed",
+      "cropId": "salad-chicory",
+      "name": "Salad chicory",
+      "seedType": "OP",
+      "notes": "Any red or green salad chicory."
+    },
+    {
       "id": "salad-chicory--radicchio",
       "cropId": "salad-chicory",
       "name": "Radicchio",

@@ -23,7 +23,7 @@ const VARIETY_IDS: Record<string, string> = {
   'Winter spinach': 'spinach--winter',
   'Spring onion (overwintering)': 'spring-onion--overwintering',
   Onion: 'onion--bulb',
-  'Salad chicory': 'salad-chicory--radicchio',
+  'Salad chicory': 'salad-chicory--mixed',
 };
 
 /** Whole years to move the example so it starts in the current (or coming) autumn. */
@@ -58,7 +58,7 @@ export function demoDataset(lib: Library, now: string = todayISO(), opts: { fill
   } as Dataset['plots'][number];
 
   const features: Feature[] = ex.features.map((f, i) => ({ ...f, id: `feat_${i + 1}`, plotId }) as Feature);
-  const areas: Area[] = ex.areas.map((a) => ({ ...a, plotId }) as Area);
+  const areas: Area[] = ex.areas.map((a) => ({ ...a, plotId, ...(a.perennial ? { fill: 'fruit' } : {}) }) as Area);
   const place = { climate: site.climate, lat: site.location.lat };
 
   const plantings: Planting[] = ex.plantings.map((e) => {

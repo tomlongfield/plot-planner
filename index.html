@@ -3,12 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Plan your allotment, garden or growing space month by month. Free, open source, offline, no sign-up." />
+    <meta name="theme-color" content="#eef1ea" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#131915" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
     <title>Plot planner</title>
   </head>
   <body>
-    <main style="font-family: system-ui; padding: 2rem; max-width: 40rem">
-      <h1>Plot planner</h1>
-      <p>Coming soon.</p>
-    </main>
+    <div id="app"></div>
+    <noscript>Plot planner needs JavaScript. Everything runs in your browser and nothing is sent anywhere.</noscript>
+    <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
