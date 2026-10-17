@@ -1,5 +1,6 @@
 <script lang="ts">
   import Dialog from '../components/Dialog.svelte';
+  import MergeDialog from '../components/MergeDialog.svelte';
   import MonthDayInput from '../components/MonthDayInput.svelte';
   import ShareDialog from '../components/ShareDialog.svelte';
   import ShareImport from '../components/ShareImport.svelte';
@@ -153,6 +154,18 @@
     }
   }
 
+  let merging = $state<import('../lib/types').Dataset | null>(null);
+  async function mergeFile() {
+    restoreError = '';
+    const f = await pickFile('.json,application/json');
+    if (!f) return;
+    try {
+      merging = parseBackup(await f.text(), __APP_VERSION__);
+    } catch (e) {
+      restoreError = t(`settings.restoreError.${(e as Error).message}`);
+    }
+  }
+
   async function reset(kind: 'demo' | 'erase') {
     if (kind === 'demo') app.replace(demoDataset(app.lib), t('settings.demoLoaded'));
     else {
@@ -294,6 +307,7 @@
   <section class="card stack" aria-labelledby="s-data">
     <h2 id="s-data">{t('settings.data')}</h2>
     <p>{t('settings.dataIntro')}</p>
+    <p class="small muted">{t('settings.mergeHelp')}</p>
     <p class="small muted">
       {app.data.meta.lastBackupAt ? t('settings.lastBackup', { date: fullDate(app.data.meta.lastBackupAt.slice(0, 10)) }) : t('settings.neverBackedUp')}
       {persisted ? t('settings.persisted') : t('settings.notPersisted')}
@@ -301,6 +315,7 @@
     <div class="row">
       <button class="btn primary" onclick={downloadBackup}>{t('settings.backupNow')}</button>
       <button class="btn" onclick={restore}>{t('settings.restore')}</button>
+      <button class="btn" onclick={mergeFile}>{t('settings.merge')}</button>
       {#if !persisted}<button class="btn quiet" onclick={async () => (persisted = await requestPersistence())}>{t('settings.persist')}</button>{/if}
     </div>
     {#if restoreError}<p class="warning" role="alert">{restoreError}</p>{/if}
@@ -326,6 +341,7 @@
   </section>
 </div>
 
+{#if merging}<MergeDialog theirs={merging} onclose={() => (merging = null)} />{/if}
 {#if sharing}<ShareDialog onclose={() => (sharing = false)} />{/if}
 {#if shared}<ShareImport payload={shared} source="file" onclose={() => (shared = null)} />{/if}
 
