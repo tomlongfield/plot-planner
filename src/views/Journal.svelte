@@ -1,5 +1,6 @@
 <script lang="ts">
   import EntryEditor from '../components/EntryEditor.svelte';
+  import ReviewEditor from '../components/ReviewEditor.svelte';
   import { harvestsCSV } from '../lib/exports';
   import { download } from '../lib/files';
   import { fullDate, monthYear, num, t } from '../lib/i18n';
@@ -13,12 +14,13 @@
   let tab: Tab = $state('all');
   let editing: { entry?: Entry; preset?: Partial<Entry> } | null = $state(null);
   let year = $state('');
+  let reviewing = $state<{ entry?: Entry } | null>(null);
 
   const plantings = $derived(new Map(app.data.plantings.map((p) => [p.id, p])));
   const areas = $derived(new Map(app.data.areas.map((a) => [a.id, a])));
   const entries = $derived(
     app.data.entries
-      .filter((e) => tab === 'all' ? e.kind !== 'review' : e.kind === tab)
+      .filter((e) => tab === 'all' || e.kind === tab)
       .filter((e) => !e.plotId || app.plots.some((p) => p.id === e.plotId))
       .sort((a, b) => b.date.localeCompare(a.date)),
   );
@@ -50,6 +52,7 @@
   <div class="spread">
     <h1>{t('nav.journal')}</h1>
     <span class="row">
+      <button class="btn" onclick={() => (reviewing = {})}>{t('review.write')}</button>
       <button class="btn" onclick={() => (editing = { preset: { kind: 'problem' } })}>{t('journal.addProblem')}</button>
       <button class="btn" onclick={() => (editing = { preset: { kind: 'harvest' } })}>{t('journal.addHarvest')}</button>
       <button class="btn primary" onclick={() => (editing = { preset: { kind: 'note' } })}>{t('journal.addNote')}</button>
@@ -57,7 +60,7 @@
   </div>
 
   <div class="tabs" role="tablist" aria-label={t('journal.show')}>
-    {#each ['all', 'note', 'harvest', 'problem', 'store'] as k (k)}
+    {#each ['all', 'note', 'harvest', 'problem', 'store', 'review'] as k (k)}
       <button class="pill" role="tab" aria-selected={tab === k} onclick={() => (tab = k as Tab)}>{t(`journal.tab.${k}`)}</button>
     {/each}
   </div>
@@ -120,7 +123,7 @@
       <h2 class="mh">{monthYear(g.month)}</h2>
       <div class="ruled">
         {#each g.items as e (e.id)}
-          <button class="entry" onclick={() => (editing = { entry: e })}>
+          <button class="entry" onclick={() => (e.kind === 'review' ? (reviewing = { entry: e }) : (editing = { entry: e }))}>
             <span class="when mono">{fullDate(e.date)}</span>
             <span class="what">
               <span class="head">
@@ -129,6 +132,12 @@
                 {#if e.kind === 'store'}<strong>{[e.grams ? fmtWeight(e.grams, app.units) : '', e.count ? num(e.count) : ''].filter(Boolean).join(', ')}</strong>{/if}
                 <span class="muted">{label(e)}</span>
               </span>
+              {#if e.kind === 'review' && e.review}
+                <strong>{t('review.title', { season: e.review.season })}</strong>
+                {#if e.review.worked}<span class="text"><span class="muted">{t('review.workedShort')}</span> {e.review.worked}</span>{/if}
+                {#if e.review.failed}<span class="text"><span class="muted">{t('review.failedShort')}</span> {e.review.failed}</span>{/if}
+                {#each e.review.next as n}<span class="text">→ {n.cropId ? `${app.lib.crops.get(n.cropId) ? cropName(app.lib.crops.get(n.cropId)!) : n.cropId}: ` : ''}{n.note}</span>{/each}
+              {/if}
               {#if e.text}<span class="text">{e.text}</span>{/if}
               {#if e.media?.length}<span class="thumbs">{#each e.media.slice(0, 4) as src}<img {src} alt="" />{/each}</span>{/if}
             </span>
@@ -140,6 +149,7 @@
   {/each}
 </div>
 
+{#if reviewing}<ReviewEditor entry={reviewing.entry} onclose={() => (reviewing = null)} />{/if}
 {#if editing}<EntryEditor entry={editing.entry} preset={editing.preset} onclose={() => (editing = null)} />{/if}
 
 <style>

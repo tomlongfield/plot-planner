@@ -90,6 +90,9 @@ export function demoDataset(lib: Library, now: string = todayISO(), opts: { fill
     place: (t.place as Task['place']) ?? 'plot', type: t.type as Task['type'], title: t.title, window: win(t.window),
     status: 'todo', agreement: 'agreed',
   }));
+  // The broad beans are grown from seed saved last year.
+  const beans = plantings.find((p) => p.id === 'pl2');
+  if (beans) beans.stockLotId = 'lot_demo_1';
   // Yearly jobs in the fruit bed recur.
   for (const t of tasks) if (t.areaId === 'f') t.recurrence = { every: 1, unit: 'year' };
 

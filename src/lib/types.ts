@@ -290,6 +290,8 @@ export interface Entry {
   count?: number;
   problem?: { name: string; severity: 1 | 2 | 3 };
   media?: string[];
+  /** Season review: what worked, what didn't, and notes for next year (by crop or general). */
+  review?: { season: number; worked: string; failed: string; next: { cropId?: string; note: string }[] };
 }
 
 export interface Change { kind: 'add' | 'update' | 'remove'; store: string; id: Id; before?: unknown; after?: unknown }
