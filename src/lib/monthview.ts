@@ -3,6 +3,7 @@
 import { isSlowGrowth, seasonLastFrost, seasonFirstFrost, seasonOf } from './climate';
 import { addDays, diffDays, monthEnd, monthStart, type MonthKey } from './dates';
 import { range as fmtRange, t, tn } from './i18n';
+import { gridCells } from './capacity';
 import { areaExists, inMonth, inSpan, monthSpan, OPEN_END, OPEN_START, type AreaMonthState, type Resolved } from './plantings';
 import type { PlanTask } from './tasks';
 import type { Area, Category, Climate, Crop, Planting, Window } from './types';
@@ -19,6 +20,8 @@ export interface Cell {
   draft: boolean;
   /** For row areas: the fill of each row (1-based index - 1). */
   rowFills?: (string | null)[];
+  /** For grid areas: the fill of each square, row by row. */
+  cellFills?: (string | null)[];
   empty: boolean;
   exists: boolean;
   /** Accessible description. */
@@ -124,9 +127,17 @@ export function cellFor(a: Area, s: AreaMonthState | undefined, k: MonthKey | Wi
       return r ? cropFill(r) : null;
     });
   }
+  let cellFills: (string | null)[] | undefined;
+  if (a.kind === 'grid') {
+    const g = gridCells(a);
+    cellFills = Array.from({ length: g.cols * g.rows }, (_, i) => {
+      const r = ordered.find((x) => !x.planting.cells?.length || x.planting.cells.includes(i + 1));
+      return r ? cropFill(r) : null;
+    });
+  }
   const draft = !!s?.hasDraft;
   return {
-    ...base, fill: cropFill(lead), labels: uniq, shortLabels, details, changes: !!s?.changes, draft, rowFills, empty: false,
+    ...base, fill: cropFill(lead), labels: uniq, shortLabels, details, changes: !!s?.changes, draft, rowFills, cellFills, empty: false,
     description: `${a.name}: ${names.join(joiner)}. ${details.join('. ')}${draft ? `. ${t('draft')}` : ''}`,
   };
 }

@@ -33,7 +33,8 @@
   "spacing": {
     "inRowCm": 35,
     "betweenRowsCm": 75,
-    "gridCm": 35
+    "gridCm": 35,
+    "perContainerL": 4
   },
   "seedSaving": {
     "pollination": "insect",

@@ -43,6 +43,7 @@ function blocking(r: Resolved): Window {
 }
 
 function sharesRows(a: Planting, b: Planting): boolean {
+  if (a.cells?.length && b.cells?.length) return a.cells.some((x) => b.cells!.includes(x));
   if (!a.rows?.length || !b.rows?.length) return true;
   return a.rows.some((x) => b.rows!.includes(x));
 }

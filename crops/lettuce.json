@@ -45,7 +45,8 @@
   "spacing": {
     "inRowCm": 25,
     "betweenRowsCm": 25,
-    "gridCm": 25
+    "gridCm": 25,
+    "perContainerL": 3
   },
   "seedLifeYears": 3,
   "seedSaving": {

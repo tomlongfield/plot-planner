@@ -52,6 +52,13 @@ export function rowFit(widthM: number, lengthM: number, inRowCm: number, between
   return { rows, perRow, total: rows * perRow };
 }
 
+/** Columns and rows of cells in a grid area (square-foot style). */
+export function gridCells(area: Area): { cols: number; rows: number; size: number } {
+  const [, , w, h] = rectOf(area);
+  const size = (area.gridCm ?? 30) / 100;
+  return { cols: Math.max(1, Math.floor(w / size + 1e-9)), rows: Math.max(1, Math.floor(h / size + 1e-9)), size };
+}
+
 /** The part of an area a planting can use, allowing for chosen rows. */
 export function usableSize(area: Area, rows?: number[]): { widthM: number; lengthM: number; rowCount?: number } {
   const [, , w, h] = rectOf(area);
@@ -91,7 +98,22 @@ export function capacityFor(p: Planting, area: Area, crop?: Crop): CapacityResul
   if (unit === 'seeds') return undefined;
 
   const spacing = spacingFor(p, crop);
+
+  // Containers: by volume when the crop says how much each plant needs, otherwise by size.
+  if (area.kind === 'container' && area.volumeL && crop?.spacing?.perContainerL) {
+    const fits = Math.max(1, Math.floor(area.volumeL / crop.spacing.perContainerL));
+    return { fits, needed: p.qty, unit, ok: p.qty <= fits, working: `${area.volumeL} L ÷ ${crop.spacing.perContainerL} L` };
+  }
   if (!spacing) return undefined;
+
+  // Square-foot grids: plants per cell from the spacing, times the cells chosen.
+  if (area.kind === 'grid') {
+    const g = gridCells(area);
+    const cells = p.cells?.length ?? g.cols * g.rows;
+    const perSide = Math.max(1, Math.floor((g.size * 100) / spacing + 1e-9));
+    const fits = cells * perSide * perSide;
+    return { fits, needed: p.qty, unit, ok: p.qty <= fits, working: `${cells} × ${perSide * perSide} per square` };
+  }
 
   if (rowCount) {
     // Single rows: one line of plants per chosen row.
