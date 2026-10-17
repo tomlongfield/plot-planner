@@ -3,6 +3,7 @@
   // four sides. Used for the month view, the small multiples and the layout editor.
   import type { Snippet } from 'svelte';
   import { gridCells, rectOf } from '../lib/capacity';
+  import { interiorRect } from '../lib/geometry';
   import { fonts } from '../lib/fonts.svelte';
   import { t } from '../lib/i18n';
   import type { Cell } from '../lib/monthview';
@@ -70,15 +71,22 @@
     return { x: geo.ox + x * geo.s, y: geo.oy + y * geo.s, w: w * geo.s, h: h * geo.s };
   }
 
-  function layout(a: Area, cell: Cell | undefined): { lines: FitLine[]; top: number } {
+  /** Where text can go: the whole box for rectangles, the largest rectangle inside for shapes. */
+  function textBox(a: Area) {
+    if (!a.shape.polygon?.length) return box(a);
+    const [x, y, w, h] = interiorRect(a.shape.polygon);
+    return { x: geo.ox + x * geo.s, y: geo.oy + y * geo.s, w: w * geo.s, h: h * geo.s };
+  }
+
+  function layout(a: Area, cell: Cell | undefined): { lines: FitLine[]; top: number; x: number } {
     void fonts.ready;
-    if (!cell || parents.has(a.id)) return { lines: [], top: 0 };
-    const b = box(a);
+    if (!cell || parents.has(a.id)) return { lines: [], top: 0, x: 0 };
+    const b = textBox(a);
     const pad = mini ? 3 : 6;
     const corner = mini ? 0 : 13;
     const labels = mini ? cell.shortLabels : cell.labels;
     const lines = fitBlock(labels, mini ? [] : cell.details, cell.draft ? t('draft') : null, b.w - 2 * pad, b.h - 2 * pad - corner, style);
-    return { lines, top: b.y + pad + corner };
+    return { lines, top: b.y + pad + corner, x: b.x + pad };
   }
 
   function lineY(lines: FitLine[], i: number): number {
@@ -110,6 +118,8 @@
   }
 
   const interactive = $derived(!!onselect && mode !== 'edit');
+  // Clip-path ids must be unique when several plans are on one page.
+  const uid = Math.random().toString(36).slice(2, 8);
 </script>
 
 <svg
@@ -158,6 +168,7 @@
     {@const exists = cell?.exists ?? true}
     {#if exists}
       {@const fitted = layout(a, cell)}
+      {@const fill = a.kind === 'grid' && cell?.cellFills ? 'var(--c-empty)' : (cell?.fill ?? (a.perennial ? `var(--c-${a.fill ?? 'static'})` : 'var(--c-empty)'))}
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
       <g
         class="area"
@@ -171,7 +182,12 @@
         onkeydown={(e) => interactive && !isParent && keydown(e, a.id)}
         onpointerdown={(e) => onitemdown?.(e, 'area', a.id, geo)}
       >
-        <rect x={b.x} y={b.y} width={b.w} height={b.h} fill={a.kind === 'grid' && cell?.cellFills ? 'var(--c-empty)' : (cell?.fill ?? (a.perennial ? `var(--c-${a.fill ?? 'static'})` : 'var(--c-empty)'))} class="area-shape" class:pot={a.kind === 'container'} rx={a.kind === 'container' ? Math.min(b.w, b.h) / 3 : mini ? 1.5 : 3} />
+        {#if a.shape.polygon?.length}
+          <clipPath id="clip-{uid}-{a.id}"><polygon points={points(a.shape.polygon)} /></clipPath>
+          <polygon points={points(a.shape.polygon)} {fill} class="area-shape" />
+        {:else}
+          <rect x={b.x} y={b.y} width={b.w} height={b.h} {fill} class="area-shape" class:pot={a.kind === 'container'} rx={a.kind === 'container' ? Math.min(b.w, b.h) / 3 : mini ? 1.5 : 3} />
+        {/if}
         {#if cell?.rowFills && a.rows}
           {@const axisX = (a.rowsAxis ?? 'x') === 'x'}
           {#each cell.rowFills as rf, i}
@@ -200,22 +216,29 @@
         {#if a.protection && a.protection !== 'none' && !mini}
           <rect x={b.x + 1} y={b.y + 1} width={b.w - 2} height={b.h - 2} class="protected" rx="3" />
         {/if}
-        {#if cell?.changes}
-          <rect x={b.x + 3} y={b.y + 3} width={Math.max(0, b.w - 6)} height={Math.max(0, b.h - 6)} class="changes" rx="2" />
-        {/if}
-        {#if cell?.draft}
-          {@const inset = cell.changes ? 6.5 : 3}
-          <rect x={b.x + inset} y={b.y + inset} width={Math.max(0, b.w - 2 * inset)} height={Math.max(0, b.h - 2 * inset)} class="draft" rx="2" />
+        {#if a.shape.polygon?.length}
+          <!-- Inner outlines for shapes: a wide stroke clipped to the shape shows only its inside half. -->
+          {#if cell?.changes}<polygon points={points(a.shape.polygon)} class="changes" clip-path="url(#clip-{uid}-{a.id})" style="stroke-width: 6" />{/if}
+          {#if cell?.draft}<polygon points={points(a.shape.polygon)} class="draft" clip-path="url(#clip-{uid}-{a.id})" style="stroke-width: {cell.changes ? 14 : 6}" />{/if}
+        {:else}
+          {#if cell?.changes}
+            <rect x={b.x + 3} y={b.y + 3} width={Math.max(0, b.w - 6)} height={Math.max(0, b.h - 6)} class="changes" rx="2" />
+          {/if}
+          {#if cell?.draft}
+            {@const inset = cell.changes ? 6.5 : 3}
+            <rect x={b.x + inset} y={b.y + inset} width={Math.max(0, b.w - 2 * inset)} height={Math.max(0, b.h - 2 * inset)} class="draft" rx="2" />
+          {/if}
         {/if}
         {#if !mini && !isParent}
-          <text class="bed-name" x={b.x + 6} y={b.y + 13}>{a.name}</text>
+          {@const tb = textBox(a)}
+          <text class="bed-name" x={tb.x + 6} y={tb.y + 13}>{a.name}</text>
         {:else if !mini && isParent}
           <text class="bed-name parent-name" x={b.x + b.w - 5} y={b.y + b.h - 5} text-anchor="end">{a.name}</text>
         {/if}
         {#each fitted.lines as line, i}
           <text
             class="cell-text {line.kind}"
-            x={b.x + (mini ? 3 : 6)}
+            x={fitted.x}
             y={fitted.top + lineY(fitted.lines, i)}
           >{line.text}</text>
         {/each}

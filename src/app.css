@@ -136,6 +136,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); width
 .spread { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
 .stack { display: grid; gap: 12px; }
 
+.stack > .btn, .stack > a.btn { justify-self: start; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
 .ruled > * + * { border-top: 1px solid var(--line); }
 

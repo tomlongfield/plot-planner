@@ -4,6 +4,7 @@
   import PlanSvg from '../components/PlanSvg.svelte';
   import { setProtection } from '../lib/actions';
   import { areaM2, gridFit, rectOf } from '../lib/capacity';
+  import { polygonFit } from '../lib/geometry';
   import { t } from '../lib/i18n';
   import { uid } from '../lib/ids';
   import { app } from '../lib/store.svelte';
@@ -36,7 +37,8 @@
 
   // ── Dragging ──
   type Drag = {
-    mode: 'move' | 'resize' | 'point';
+    mode: 'move' | 'resize' | 'point' | 'vertex';
+    origPoly?: [number, number][];
     handle?: string;
     pointIndex?: number;
     start: [number, number];
@@ -56,7 +58,7 @@
     const kids = kind === 'area' ? descendants(id).map((a) => ({ id: a.id, rect: [...rectOf(a)] as Rect })) : [];
     drag = {
       mode: 'move', start: toMetres(e, g), orig: [...rectOf(item)] as Rect, origLine: item.shape.line?.map((p) => [...p] as [number, number]),
-      kids, before: app.snapshot(), g, moved: false,
+      origPoly: item.shape.polygon?.map((p) => [...p] as [number, number]), kids, before: app.snapshot(), g, moved: false,
     };
     (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
     window.addEventListener('pointermove', onMove);
@@ -75,6 +77,52 @@
     window.addEventListener('pointerup', onUp, { once: true });
   }
 
+  function vertexDown(e: PointerEvent, i: number, g: { s: number; ox: number; oy: number }) {
+    e.stopPropagation();
+    if (!area?.shape.polygon) return;
+    drag = { mode: 'vertex', pointIndex: i, start: toMetres(e, g), orig: [...rectOf(area)] as Rect, origPoly: area.shape.polygon.map((p) => [...p] as [number, number]), kids: [], before: app.snapshot(), g, moved: false };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp, { once: true });
+  }
+
+  function addVertex(i: number) {
+    if (!area?.shape.polygon) return;
+    const poly = area.shape.polygon;
+    const [a, b] = [poly[i], poly[(i + 1) % poly.length]];
+    const id = area.id;
+    app.update(t('layout.cornerAdded'), (d) => {
+      const x = d.areas.find((q) => q.id === id)!;
+      const next = poly.map((p) => [...p] as [number, number]);
+      next.splice(i + 1, 0, [r2(snap((a[0] + b[0]) / 2)), r2(snap((a[1] + b[1]) / 2))]);
+      x.shape = { polygon: next };
+    });
+  }
+
+  function removeVertex(i: number) {
+    if (!area?.shape.polygon || area.shape.polygon.length <= 3) return;
+    const id = area.id;
+    const poly = area.shape.polygon;
+    app.update(t('layout.cornerRemoved'), (d) => {
+      d.areas.find((q) => q.id === id)!.shape = { polygon: poly.filter((_, j) => j !== i).map((p) => [...p] as [number, number]) };
+    });
+  }
+
+  function toShape() {
+    if (!area) return;
+    const [x, y, w, h] = rectOf(area);
+    const id = area.id;
+    app.update(t('layout.madeShape'), (d) => {
+      d.areas.find((q) => q.id === id)!.shape = { polygon: [[x, y], [r2(x + w), y], [r2(x + w), r2(y + h)], [x, r2(y + h)]] };
+    });
+  }
+
+  function toRect() {
+    if (!area) return;
+    const r = rectOf(area);
+    const id = area.id;
+    app.update(t('layout.madeRect'), (d) => { d.areas.find((q) => q.id === id)!.shape = { rect: r.map(r2) as Rect }; });
+  }
+
   function onMove(e: PointerEvent) {
     if (!drag || !selected) return;
     const [mx, my] = toMetres(e, drag.g);
@@ -87,6 +135,20 @@
     const sel = selected;
     app.live((data) => {
       const item = sel.kind === 'area' ? data.areas.find((a) => a.id === sel.id)! : data.features.find((f) => f.id === sel.id)!;
+      if (d.mode === 'vertex' && d.origPoly && d.pointIndex != null) {
+        const poly = d.origPoly.map((p) => [...p] as [number, number]);
+        poly[d.pointIndex] = [r2(clamp(snap(mx), 0, plot.widthM)), r2(clamp(snap(my), 0, plot.lengthM))];
+        item.shape = { polygon: poly };
+        return;
+      }
+      if (d.mode === 'move' && d.origPoly) {
+        // Keep the whole shape on the plot.
+        const [bx, by, bw, bh] = d.orig;
+        const sdx = clamp(snap(dx), -bx, plot.widthM - bx - bw);
+        const sdy = clamp(snap(dy), -by, plot.lengthM - by - bh);
+        item.shape = { polygon: d.origPoly.map(([px, py]) => [r2(px + sdx), r2(py + sdy)]) };
+        return;
+      }
       if (d.mode === 'point' && d.origLine && d.pointIndex != null) {
         const line = d.origLine.map((p) => [...p] as [number, number]);
         line[d.pointIndex] = [r2(clamp(snap(mx), 0, plot.widthM)), r2(clamp(snap(my), 0, plot.lengthM))];
@@ -154,6 +216,7 @@
     app.update(null, (d) => {
       const item = sel.kind === 'area' ? d.areas.find((a) => a.id === sel.id)! : d.features.find((f) => f.id === sel.id)!;
       if (item.shape.line) item.shape = { line: item.shape.line.map(([x, y]) => [r2(x + dx), r2(y + dy)]) };
+      else if (item.shape.polygon) item.shape = { polygon: item.shape.polygon.map(([x, y]) => [r2(x + dx), r2(y + dy)]) };
       else {
         const [x, y, w, h] = rectOf(item);
         item.shape = { rect: [r2(clamp(x + dx, 0, plot.widthM - w)), r2(clamp(y + dy, 0, plot.lengthM - h)), w, h] };
@@ -190,6 +253,18 @@
     const id = uid('area');
     app.update(t('layout.bedAdded'), (d) => {
       d.areas.push({ id, plotId: plot.id, kind: 'bed', name: t('layout.bedName', { n }), shape: { rect: freeSpot(w, h) } });
+    });
+    selected = { kind: 'area', id };
+  }
+
+  function addShapedBed() {
+    const n = app.areas.filter((a) => a.kind === 'bed').length + 1;
+    const [x, y] = freeSpot(1.6, 1.6);
+    const id = uid('area');
+    // An L-shape to start from; drag corners to fit.
+    const L: [number, number][] = [[0, 0], [0.8, 0], [0.8, 0.8], [1.6, 0.8], [1.6, 1.6], [0, 1.6]];
+    app.update(t('layout.bedAdded'), (d) => {
+      d.areas.push({ id, plotId: plot.id, kind: 'bed', name: t('layout.bedName', { n }), shape: { polygon: L.map(([px, py]) => [r2(Math.min(px + x, plot.widthM)), r2(Math.min(py + y, plot.lengthM))]) } });
     });
     selected = { kind: 'area', id };
   }
@@ -308,7 +383,8 @@
 
   const PROTECTIONS: Protection[] = ['none', 'cloche', 'coldframe', 'greenhouse', 'polytunnel', 'heated'];
   const CATS: Category[] = ['fruit', 'herb', 'flower', 'leaf', 'allium'];
-  const fit = $derived(area ? gridFit(rectOf(area)[2], rectOf(area)[3], spacingCalc) : undefined);
+  const fit = $derived(area && !area.shape.polygon?.length ? gridFit(rectOf(area)[2], rectOf(area)[3], spacingCalc) : undefined);
+  const shapeFit = $derived(area?.shape.polygon?.length ? polygonFit(area.shape.polygon, spacingCalc / 100) : undefined);
   const HANDLES = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'];
   function handlePos(hd: string, b: { x: number; y: number; w: number; h: number }): [number, number] {
     const x = hd.includes('w') ? b.x : hd.includes('e') ? b.x + b.w : b.x + b.w / 2;
@@ -324,6 +400,7 @@
     <h1>{t('nav.plan')}</h1>
     <div class="row">
       <button class="btn" onclick={addBed}>{t('layout.addBed')}</button>
+      <button class="btn" onclick={addShapedBed}>{t('layout.addShaped')}</button>
       <button class="btn" onclick={addContainer}>{t('layout.addContainer')}</button>
       <span class="row add-feature">
         <select bind:value={featureType} aria-label={t('layout.featureType')}>
@@ -348,7 +425,16 @@
         title={t('layout.canvas', { name: plot.name })}
       >
         {#snippet overlay(g)}
-          {#if area || (feature && !feature.shape.line)}
+          {#if area?.shape.polygon}
+            {@const poly = area.shape.polygon}
+            {#each poly as [px, py], i}
+              {@const [nx, ny] = poly[(i + 1) % poly.length]}
+              <circle class="mid" cx={g.ox + ((px + nx) / 2) * g.s} cy={g.oy + ((py + ny) / 2) * g.s} r="5" role="presentation" onpointerdown={(e) => { e.stopPropagation(); addVertex(i); }}><title>{t('layout.addCorner')}</title></circle>
+            {/each}
+            {#each poly as [px, py], i}
+              <circle class="handle" cx={g.ox + px * g.s} cy={g.oy + py * g.s} r="7" role="presentation" onpointerdown={(e) => vertexDown(e, i, g)} ondblclick={() => removeVertex(i)}><title>{t('layout.cornerHelp')}</title></circle>
+            {/each}
+          {:else if area || (feature && !feature.shape.line)}
             {@const [x, y, w, h] = rectOf((area ?? feature)!)}
             {@const b = { x: g.ox + x * g.s, y: g.oy + y * g.s, w: w * g.s, h: h * g.s }}
             {#each HANDLES as hd}
@@ -374,15 +460,23 @@
     <aside class="props">
       {#if area}
         {@const [x, y, w, h] = rectOf(area)}
+        {@const shaped = !!area.shape.polygon?.length}
         <section class="stack">
           <p class="eyebrow">{t(`kind.${area.kind}`)}{#if area.parentId}: <button class="linkish" onclick={() => (selected = { kind: 'area', id: area.parentId! })}>{t('layout.inBed', { name: app.areaName(area.parentId) })}</button>{/if}</p>
           <label class="field"><span>{t('layout.name')}</span><input value={area.name} onchange={(e) => editArea((a) => (a.name = e.currentTarget.value))} /></label>
-          <div class="grid4">
-            {#each [['x', x], ['y', y], ['w', w], ['h', h]] as [k, v], i}
-              <label class="field"><span>{t(`layout.${k}`)}</span><input type="number" step="0.01" min="0" value={v} onchange={(e) => setRect(i, Number(e.currentTarget.value))} /></label>
-            {/each}
-          </div>
+          {#if shaped}
+            <p class="small muted">{t('layout.shapeHelp')}</p>
+          {:else}
+            <div class="grid4">
+              {#each [['x', x], ['y', y], ['w', w], ['h', h]] as [k, v], i}
+                <label class="field"><span>{t(`layout.${k}`)}</span><input type="number" step="0.01" min="0" value={v} onchange={(e) => setRect(i, Number(e.currentTarget.value))} /></label>
+              {/each}
+            </div>
+          {/if}
           <p class="small muted">{t('layout.size', { area: fmtArea(areaM2(area), app.units) })}{plantingsIn ? `, ${t('layout.plantingsIn', { n: plantingsIn })}` : ''}</p>
+          {#if area.kind === 'bed' && !children.length}
+            <button class="btn small quiet" onclick={shaped ? toRect : toShape}>{shaped ? t('layout.makeRect') : t('layout.makeShape')}</button>
+          {/if}
           <div class="grid2">
             <label class="field"><span>{t('layout.kind')}</span>
               <select value={area.kind} onchange={(e) => editArea((a) => { a.kind = e.currentTarget.value as AreaKind; if (a.kind === 'rows' && !a.rows) a.rows = 3; })}>
@@ -421,13 +515,13 @@
           </div>
           <p class="help small muted">{t('layout.fromHelp')}</p>
 
-          {#if area.kind === 'bed' && !children.length}
+          {#if area.kind === 'bed' && !children.length && !shaped}
             <div class="row">
               <input type="number" min="2" max="12" bind:value={splitCount} style="width:5em" aria-label={t('layout.sectionCount')} />
               <button class="btn small" onclick={splitSections}>{t('layout.splitButton')}</button>
             </div>
           {/if}
-          {#if (area.kind === 'section' || area.kind === 'bed') && !children.length}
+          {#if (area.kind === 'section' || area.kind === 'bed') && !children.length && !shaped}
             <div class="row">
               <input type="number" min="2" max="40" bind:value={rowCount} style="width:5em" aria-label={t('layout.rowCount')} />
               <button class="btn small" onclick={makeRows}>{t('layout.rowsButton')}</button>
@@ -439,6 +533,7 @@
             <div class="row">
               <input type="number" min="5" bind:value={spacingCalc} style="width:5em" aria-label={t('layout.calcSpacing')} /> <span>cm</span>
               {#if fit}<strong>{t('layout.calcResult', { across: fit.across, along: fit.along, total: fit.total })}</strong>{/if}
+              {#if shapeFit}<strong>{t('layout.calcShape', { total: shapeFit })}</strong>{/if}
             </div>
           </div>
 
@@ -520,6 +615,8 @@
   .add-feature select { width: auto; }
   .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); cursor: pointer; text-decoration: underline; }
   .calc { border-top: 1px solid var(--line); padding-top: 10px; display: grid; gap: 6px; }
+  :global(.mid) { fill: var(--accent); opacity: 0.55; cursor: copy; }
+  :global(.mid:hover) { opacity: 1; }
   :global(.handle) { fill: var(--surface); stroke: var(--accent); stroke-width: 2; cursor: pointer; touch-action: none; }
   :global(.handle.n), :global(.handle.s) { cursor: ns-resize; }
   :global(.handle.e), :global(.handle.w) { cursor: ew-resize; }
