@@ -310,3 +310,26 @@ describe('the example plot', () => {
 
   it('keeps today', () => expect(addDays(NOW, 0)).toBe(NOW));
 });
+
+describe('harvest totals', async () => {
+  const { harvestTotals } = await import('../src/lib/journal');
+  it('adds up by crop, plot and year, and works out yield per square metre', () => {
+    const d = demo();
+    d.entries = [
+      { id: 'e1', date: '2027-06-20', kind: 'harvest', plantingId: 'pl1', grams: 1500 },
+      { id: 'e2', date: '2027-07-01', kind: 'harvest', plantingId: 'pl1', grams: 900 },
+      { id: 'e3', date: '2027-06-20', kind: 'harvest', plantingId: 'pl7', grams: 600, count: 18 },
+      { id: 'e4', date: '2027-03-01', kind: 'harvest', plantingId: 'pl3', grams: 250 },
+      { id: 'e5', date: '2027-03-02', kind: 'note', plantingId: 'pl3', text: 'Looking good' },
+    ];
+    const t = harvestTotals(d.entries, new Map(d.plantings.map((p) => [p.id, p])), new Map(d.areas.map((a) => [a.id, a])), cropOf);
+    expect(t.byCrop[0]).toMatchObject({ key: 'garlic', grams: 3000, count: 18, entries: 3 });
+    expect(t.byYear).toEqual([{ key: '2027', grams: 3250, count: 18, entries: 4 }]);
+    expect(t.byPlot[0]).toMatchObject({ key: 'p1', grams: 3250 });
+    const bedB = t.yieldByPlanting.find((y) => y.plantingId === 'pl1')!;
+    expect(bedB.m2).toBeCloseTo(2.63 * 2.25, 3);
+    expect(bedB.perM2).toBeCloseTo(2400 / (2.63 * 2.25), 3);
+    // Garlic in rows 1, 3 and 5 of 5 uses three fifths of Bed D east.
+    expect(t.yieldByPlanting.find((y) => y.plantingId === 'pl7')!.m2).toBeCloseTo(1.06 * 1.0 * 0.6, 3);
+  });
+});

@@ -2,6 +2,8 @@
   import PlantingEditor from '../components/PlantingEditor.svelte';
   import WarningList from '../components/WarningList.svelte';
   import { acceptDraft, rejectDraft } from '../lib/actions';
+  import { plantingsCSV } from '../lib/exports';
+  import { download, slug } from '../lib/files';
   import { range, t } from '../lib/i18n';
   import { OPEN_END, OPEN_START, type Resolved } from '../lib/plantings';
   import { app } from '../lib/store.svelte';
@@ -67,7 +69,10 @@
 <div class="plantings">
   <div class="spread">
     <h1>{t('nav.plantings')}</h1>
-    <button class="btn primary" onclick={() => app.go('plantings', 'new')}>{t('pe.add')}</button>
+    <span class="row">
+      <button class="btn" onclick={() => download(`${slug(app.plot?.name ?? 'plot')}-plantings.csv`, plantingsCSV(list, app), 'text/csv')}>{t('seeds.export')}</button>
+      <button class="btn primary" onclick={() => app.go('plantings', 'new')}>{t('pe.add')}</button>
+    </span>
   </div>
 
   {#if drafts.length}

@@ -11,6 +11,7 @@
   import Settings from './views/Settings.svelte';
   import Tasks from './views/Tasks.svelte';
   import Help from './views/Help.svelte';
+  import Journal from './views/Journal.svelte';
   import Shared from './views/Shared.svelte';
 
   const NAV: { view: View; icon: string }[] = [
@@ -18,10 +19,16 @@
     { view: 'tasks', icon: 'tasks' },
     { view: 'plantings', icon: 'plantings' },
     { view: 'plan', icon: 'plan' },
+    { view: 'journal', icon: 'journal' },
     { view: 'seeds', icon: 'seeds' },
     { view: 'crops', icon: 'crops' },
     { view: 'settings', icon: 'settings' },
   ];
+  // On phones, four views sit in the bar and the rest go under More.
+  const BAR: View[] = ['month', 'tasks', 'plantings', 'journal'];
+  const MORE = $derived(NAV.filter((n) => !BAR.includes(n.view)));
+  let moreOpen = $state(false);
+  const inMore = $derived(!BAR.includes(app.route.view));
 
   $effect(() => {
     const theme = app.data.settings.theme;
@@ -103,7 +110,7 @@
       {/each}
     </nav>
     <div class="row tools">
-      <a class="btn quiet small" href="#/help" aria-current={app.route.view === 'help' ? 'page' : undefined}>{t('nav.help')}</a>
+      <a class="btn quiet small help-link" href="#/help" aria-current={app.route.view === 'help' ? 'page' : undefined}>{t('nav.help')}</a>
       <button class="btn quiet small" onclick={() => app.undo()} disabled={!app.undoCount} title={t('app.undoHint')}>{t('app.undo')}</button>
       <button class="btn quiet small" onclick={cycleTheme} aria-label={t('app.theme', { theme: t(`theme.${app.data.settings.theme}`) })}>
         <Icon name={app.data.settings.theme === 'dark' ? 'moon' : app.data.settings.theme === 'light' ? 'sun' : 'auto'} />
@@ -135,6 +142,7 @@
     {:else if app.route.view === 'plan'}<Layout />
     {:else if app.route.view === 'plantings'}<Plantings />
     {:else if app.route.view === 'tasks'}<Tasks />
+    {:else if app.route.view === 'journal'}<Journal />
     {:else if app.route.view === 'seeds'}<Seeds />
     {:else if app.route.view === 'crops'}<Crops />
     {:else if app.route.view === 'settings'}<Settings />
@@ -143,13 +151,26 @@
   </main>
 
   <nav class="bottom-nav" aria-label={t('app.nav')}>
-    {#each NAV as n (n.view)}
-      <a href="#/{n.view}" class:on={app.route.view === n.view} aria-current={app.route.view === n.view ? 'page' : undefined}>
+    {#each NAV.filter((n) => BAR.includes(n.view)) as n (n.view)}
+      <a href="#/{n.view}" class:on={app.route.view === n.view} aria-current={app.route.view === n.view ? 'page' : undefined} onclick={() => (moreOpen = false)}>
         <Icon name={n.icon} />
         <span>{t(`nav.short.${n.view}`)}</span>
       </a>
     {/each}
+    <button class:on={inMore || moreOpen} aria-expanded={moreOpen} aria-controls="more-menu" onclick={() => (moreOpen = !moreOpen)}>
+      <Icon name="more" />
+      <span>{t('nav.short.more')}</span>
+    </button>
   </nav>
+  {#if moreOpen}
+    <button class="scrim" aria-label={t('dialog.close')} onclick={() => (moreOpen = false)}></button>
+    <div class="more" id="more-menu">
+      {#each MORE as n (n.view)}
+        <a href="#/{n.view}" class:on={app.route.view === n.view} onclick={() => (moreOpen = false)}><Icon name={n.icon} />{t(`nav.${n.view}`)}</a>
+      {/each}
+      <a href="#/help" class:on={app.route.view === 'help'} onclick={() => (moreOpen = false)}><Icon name="help" />{t('nav.help')}</a>
+    </div>
+  {/if}
 {/if}
 
 {#if app.toast}
@@ -192,19 +213,27 @@
   }
   .toast .btn { color: var(--bg); border-color: color-mix(in srgb, var(--bg) 40%, transparent); }
   @media (max-width: 760px) {
-    .desktop-nav { display: none; }
+    .desktop-nav, .help-link { display: none; }
     main { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
     .bottom-nav {
-      display: grid; grid-template-columns: repeat(7, 1fr);
+      display: grid; grid-template-columns: repeat(5, 1fr);
       position: fixed; left: 0; right: 0; bottom: 0; z-index: 15;
       padding: 4px max(4px, env(safe-area-inset-left)) calc(4px + env(safe-area-inset-bottom)) max(4px, env(safe-area-inset-right));
       background: var(--surface); border-top: 1px solid var(--line);
     }
-    .bottom-nav a {
+    .bottom-nav a, .bottom-nav button { border: 0; background: none; cursor: pointer; font: inherit; }
+    .bottom-nav a, .bottom-nav button {
       display: grid; justify-items: center; gap: 2px; padding: 6px 0 4px; min-height: 48px;
       color: var(--muted); text-decoration: none; font: 500 10px/1.2 var(--font-mono); letter-spacing: 0.04em; border-radius: 8px;
     }
-    .bottom-nav a.on { color: var(--ink); background: var(--bg); }
+    .bottom-nav a.on, .bottom-nav button.on { color: var(--ink); background: var(--bg); }
+    .scrim { position: fixed; inset: 0; z-index: 14; background: rgb(10 16 12 / 0.3); border: 0; }
+    .more {
+      position: fixed; z-index: 16; right: 8px; left: 8px; bottom: calc(66px + env(safe-area-inset-bottom));
+      display: grid; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    }
+    .more a { display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 10px; color: var(--ink); text-decoration: none; font-weight: 500; }
+    .more a.on { background: var(--bg); }
     .toast { bottom: calc(78px + env(safe-area-inset-bottom)); }
   }
 </style>
