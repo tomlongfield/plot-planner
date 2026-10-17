@@ -1,6 +1,7 @@
 // Downloads and file reading. Everything happens in the browser.
 
 import { toBackup } from './backup';
+import { today } from './dates';
 import { t } from './i18n';
 import { app } from './store.svelte';
 
@@ -22,7 +23,7 @@ export function slug(s: string): string {
 
 export function downloadBackup(): void {
   const data = app.snapshot();
-  const stamp = new Date().toISOString().slice(0, 10);
+  const stamp = today();
   download(`plot-planner-backup-${stamp}.json`, JSON.stringify(toBackup(data), null, 1));
   app.update(null, (d) => { d.meta.lastBackupAt = new Date().toISOString(); });
   app.notify(t('toast.backedUp'));

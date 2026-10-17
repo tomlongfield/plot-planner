@@ -27,6 +27,12 @@ export function today(): ISODate {
   return toISO(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
 }
 
+/** The local calendar date of a timestamp (an ISO date-time), not its UTC date. */
+export function localDate(timestamp: string): ISODate {
+  const d = new Date(timestamp);
+  return toISO(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+}
+
 export function minDate(...ds: (ISODate | undefined)[]): ISODate | undefined {
   return ds.filter(Boolean).sort()[0];
 }

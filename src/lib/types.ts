@@ -313,6 +313,8 @@ export interface Settings {
   rotationYears: number;
   monthRange: { mode: 'auto' } | { mode: 'fixed'; from: string; months: number };
   dateFormat: 'dmy' | 'mdy' | 'ymd';
+  /** Optional weather forecast, off unless the grower turns it on. */
+  forecast?: { enabled: boolean; fetchedAt?: string; days?: { date: ISODate; minC: number; maxC: number; rainMm: number; gustKmh: number }[] };
 }
 
 export interface Meta { id: 'meta'; schemaVersion: number; appVersion: string; lastBackupAt?: string; createdAt: string }

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { localDate } from '../lib/dates';
   // A plan opened from a shared link: a read-only preview. Nothing is saved
   // unless the viewer chooses to add it.
   import PlanSvg from '../components/PlanSvg.svelte';
@@ -79,7 +80,7 @@
   {:else}
     <header class="spread">
       <div>
-        <p class="eyebrow">{t('shared.eyebrow', { date: fullDate(payload.sharedAt.slice(0, 10)) })}</p>
+        <p class="eyebrow">{t('shared.eyebrow', { date: fullDate(localDate(payload.sharedAt)) })}</p>
         <h1>{plot.name}</h1>
         <p class="muted small">{payload.site.location.label || payload.site.name}. {t('shared.readOnly')}</p>
       </div>
