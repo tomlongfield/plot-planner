@@ -4,6 +4,10 @@
     "en": [
       "Fennel",
       "Florence fennel"
+    ],
+    "fr": [
+      "Fenouil",
+      "Fenouil bulbeux"
     ]
   },
   "family": "Apiaceae",
@@ -63,7 +67,10 @@
       "id": "florence-fennel--fennel",
       "cropId": "florence-fennel",
       "name": "Fennel",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Fenouil"
+      }
     }
   ],
   "sources": [

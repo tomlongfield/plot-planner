@@ -3,6 +3,10 @@
   "names": {
     "en": [
       "Raspberry"
+    ],
+    "fr": [
+      "Framboisier",
+      "Framboise"
     ]
   },
   "family": "Rosaceae",
@@ -41,13 +45,19 @@
       "id": "raspberry--autumn-bliss",
       "cropId": "raspberry",
       "name": "Autumn raspberry (Autumn Bliss)",
-      "seedType": "unknown"
+      "seedType": "unknown",
+      "names": {
+        "fr": "Framboisier remontant (Autumn Bliss)"
+      }
     },
     {
       "id": "raspberry--glen-ample",
       "cropId": "raspberry",
       "name": "Summer raspberry (Glen Ample)",
-      "seedType": "unknown"
+      "seedType": "unknown",
+      "names": {
+        "fr": "Framboisier non remontant (Glen Ample)"
+      }
     }
   ],
   "sources": [

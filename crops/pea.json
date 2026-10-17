@@ -4,6 +4,10 @@
     "en": [
       "Pea",
       "Garden pea"
+    ],
+    "fr": [
+      "Pois",
+      "Petit pois"
     ]
   },
   "family": "Fabaceae",
@@ -81,13 +85,19 @@
       "id": "pea--sugar-snap",
       "cropId": "pea",
       "name": "Sugar snap pea",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Pois gourmand (sugar snap)"
+      }
     },
     {
       "id": "pea--mangetout",
       "cropId": "pea",
       "name": "Mangetout",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Pois mange-tout"
+      }
     }
   ],
   "sources": [

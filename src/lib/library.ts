@@ -1,5 +1,6 @@
 // The crop library: bundled crop files, with the user's own crops and edits layered on top.
 
+import { locale as currentLocale } from './i18n';
 import type { Crop, Variety } from './types';
 
 export interface Library {
@@ -30,9 +31,22 @@ export function buildLibrary(bundled: Crop[], overrides: Crop[], userVarieties: 
   return { crops, varieties };
 }
 
-export function cropName(c: Crop, locale = 'en'): string {
+/** A crop's name in the current language (or a given one), falling back to English. */
+export function cropName(c: Crop, locale = currentLocale()): string {
   const lang = locale.split('-')[0];
   return c.names[locale]?.[0] ?? c.names[lang]?.[0] ?? c.names.en?.[0] ?? c.id;
+}
+
+/**
+ * A variety's name in the current language. Descriptive varieties can carry
+ * translations; a variety named just like its crop takes the crop's name.
+ */
+export function varietyName(v: Variety, crop: Crop | undefined, locale = currentLocale()): string {
+  const lang = locale.split('-')[0];
+  const own = v.names?.[locale] ?? v.names?.[lang];
+  if (own) return own;
+  if (crop && !lang.startsWith('en') && v.name === crop.names.en?.[0]) return cropName(crop, locale);
+  return v.name;
 }
 
 /** A crop with a variety's overrides applied. */

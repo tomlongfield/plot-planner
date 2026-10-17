@@ -20,9 +20,9 @@ Not comfortable with a pull request? [Open a crop issue](https://github.com/toml
 
 ## Translate
 
-Each language is one file in [`src/i18n/`](src/i18n/), named by language code (`fr.json`, `de.json`, `pt-BR.json`). Copy `en.json`, translate the values (not the keys), and keep `{placeholders}` as they are. Keys ending `.one` and `.other` are plural forms. Missing keys fall back to English, so a partial translation is still useful.
+Each language is one file in [`src/i18n/`](src/i18n/), named by language code (`de.json`, `pt-BR.json`). French (`fr.json`) is a complete example. Copy `en.json`, translate the values (not the keys), and keep `{placeholders}` as they are. Keys ending `.one` and `.other` are plural forms. Missing keys fall back to English, so a partial translation is still useful.
 
-Crop names can be translated in each crop file under `names`, for example `"fr": ["Ail"]`.
+Crop names can be translated in each crop file under `names`, for example `"fr": ["Ail"]`. Descriptive variety names (not cultivar names) can be translated under the variety's `names`, for example `"names": { "fr": "Ail tendre (sans hampe)" }`. A test checks that every translation uses the same `{placeholders}` as English.
 
 ## Code
 

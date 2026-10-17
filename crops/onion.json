@@ -4,6 +4,9 @@
     "en": [
       "Onion",
       "Bulb onion"
+    ],
+    "fr": [
+      "Oignon"
     ]
   },
   "family": "Amaryllidaceae",
@@ -78,13 +81,19 @@
       "id": "onion--bulb",
       "cropId": "onion",
       "name": "Onion",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Oignon"
+      }
     },
     {
       "id": "onion--red",
       "cropId": "onion",
       "name": "Red onion",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Oignon rouge"
+      }
     },
     {
       "id": "onion--sets",
@@ -93,13 +102,19 @@
       "seedType": "unknown",
       "overrides": {
         "moduleDays": 0
+      },
+      "names": {
+        "fr": "Oignon en bulbilles"
       }
     },
     {
       "id": "onion--japanese",
       "cropId": "onion",
       "name": "Japanese overwintering onion",
-      "seedType": "F1"
+      "seedType": "F1",
+      "names": {
+        "fr": "Oignon japonais d’hiver"
+      }
     }
   ],
   "sources": [

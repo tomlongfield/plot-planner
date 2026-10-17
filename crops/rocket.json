@@ -4,6 +4,9 @@
     "en": [
       "Rocket",
       "Arugula"
+    ],
+    "fr": [
+      "Roquette"
     ]
   },
   "family": "Brassicaceae",
@@ -55,13 +58,19 @@
       "id": "rocket--salad",
       "cropId": "rocket",
       "name": "Salad rocket",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Roquette cultivée"
+      }
     },
     {
       "id": "rocket--wild",
       "cropId": "rocket",
       "name": "Wild rocket",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Roquette sauvage"
+      }
     }
   ],
   "sources": [

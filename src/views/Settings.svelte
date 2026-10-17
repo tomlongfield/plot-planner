@@ -13,7 +13,7 @@
   import { clearDataset, isPersisted, requestPersistence } from '../lib/db';
   import { demoDataset } from '../lib/demo';
   import { downloadBackup, pickFile } from '../lib/files';
-  import { fullDate, languages, setLocale, t } from '../lib/i18n';
+  import { fullDate, languages, t } from '../lib/i18n';
   import { uid } from '../lib/ids';
   import { app } from '../lib/store.svelte';
   import type { Climate, Direction, Plot, PlotType } from '../lib/types';
@@ -339,7 +339,7 @@
             <option value="metric">{t('settings.metric')}</option><option value="imperial">{t('settings.imperial')}</option>
           </select></label>
         <label class="field"><span>{t('settings.language')}</span>
-          <select value={site.locale} onchange={(e) => { const v = e.currentTarget.value; editSite((s) => (s.locale = v)); setLocale(v); }}>
+          <select value={site.locale} onchange={(e) => { const v = e.currentTarget.value; editSite((s) => { s.locale = v; }); app.applyLocale(v); }}>
             {#each languages as l}<option value={l.code === 'en' ? 'en-GB' : l.code}>{l.name}</option>{/each}
             {#if site.locale.startsWith('en')}<option value="en-US">English (US dates)</option>{/if}
           </select></label>

@@ -69,6 +69,19 @@ const DYNAMIC: Record<string, string[]> = {
   'help.': ['start.title', 'start.body', 'month.title', 'month.body', 'plantings.title', 'plantings.body', 'drafts.title', 'drafts.body', 'tasks.title', 'tasks.body', 'seeds.title', 'seeds.body', 'backup.title', 'backup.body', 'offline.title', 'offline.body', 'privacy.title', 'privacy.body'],
 };
 
+describe('translations', () => {
+  const dir = 'src/i18n';
+  const ph = (s: string) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort().join(',');
+  for (const file of readdirSync(dir).filter((f: string) => f.endsWith('.json') && f !== 'en.json')) {
+    const tr = JSON.parse(readFileSync(join(dir, file), 'utf8')) as Record<string, string>;
+    it(`${file} only has keys English has, with the same placeholders`, () => {
+      expect(Object.keys(tr).filter((k) => !(k in messages))).toEqual([]);
+      expect(Object.keys(tr).filter((k) => ph(tr[k]) !== ph(messages[k]))).toEqual([]);
+      expect(tr['language.name']).toBeTruthy();
+    });
+  }
+});
+
 describe('messages', () => {
   const src = files('src').map((f) => readFileSync(f, 'utf8')).join('\n');
 

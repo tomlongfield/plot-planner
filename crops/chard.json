@@ -5,6 +5,11 @@
       "Chard",
       "Swiss chard",
       "Perpetual spinach"
+    ],
+    "fr": [
+      "Blette",
+      "Bette",
+      "Poirée"
     ]
   },
   "family": "Amaranthaceae",
@@ -70,7 +75,10 @@
       "id": "chard--perpetual",
       "cropId": "chard",
       "name": "Perpetual spinach",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Épinard perpétuel"
+      }
     }
   ],
   "sources": [

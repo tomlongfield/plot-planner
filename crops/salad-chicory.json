@@ -5,6 +5,12 @@
       "Salad chicory",
       "Radicchio",
       "Endive"
+    ],
+    "fr": [
+      "Chicorée",
+      "Radicchio",
+      "Endive",
+      "Trévise"
     ]
   },
   "family": "Asteraceae",
@@ -64,7 +70,10 @@
       "cropId": "salad-chicory",
       "name": "Salad chicory",
       "seedType": "OP",
-      "notes": "Any red or green salad chicory."
+      "notes": "Any red or green salad chicory.",
+      "names": {
+        "fr": "Chicorée"
+      }
     },
     {
       "id": "salad-chicory--radicchio",
@@ -76,7 +85,10 @@
       "id": "salad-chicory--sugarloaf",
       "cropId": "salad-chicory",
       "name": "Sugarloaf chicory",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Chicorée pain de sucre"
+      }
     }
   ],
   "sources": [

@@ -4,6 +4,10 @@
     "en": [
       "Kale",
       "Borecole"
+    ],
+    "fr": [
+      "Chou kale",
+      "Chou frisé"
     ]
   },
   "family": "Brassicaceae",
@@ -69,7 +73,10 @@
       "id": "kale--cavolo-nero",
       "cropId": "kale",
       "name": "Cavolo nero",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Chou noir de Toscane"
+      }
     },
     {
       "id": "kale--red-russian",
@@ -81,7 +88,10 @@
       "id": "kale--curly",
       "cropId": "kale",
       "name": "Curly kale",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Chou frisé"
+      }
     }
   ],
   "sources": [

@@ -2,6 +2,24 @@
 
 All notable changes are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0] - 2026-10-18
+
+Phase 3.
+
+### Added
+- Merge a backup from another device: see what differs and choose record by record.
+- Export a standalone web page of the plan and jobs for every month, which works offline from a single file.
+- Seed lineage: follow saved seed back through the plantings it came from, and save seed from a planting in one tap.
+- Hand-pollination tasks from the crossing warning.
+- Season reviews, with crop notes that come back when you plan that crop again.
+- Optional place search, frost-date lookup from ten years of local weather (safer and typical dates), and an opt-in forecast with frost, dry, wind and heat nudges, all through Open-Meteo and only when you ask.
+- Shaped (polygon) beds with corner editing, labels fitted inside the shape, and capacity counted within it.
+- French translation, with French crop and variety names in the crop files.
+
+### Fixed
+- Some edits in Settings and the layout editor could replace all data with the edited value. Edit helpers no longer return values, and updates only accept a whole dataset.
+- Timestamps show the local date.
+
 ## [0.2.0] - 2026-10-18
 
 Phase 2.

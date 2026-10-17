@@ -3,6 +3,9 @@
   "names": {
     "en": [
       "Parsley"
+    ],
+    "fr": [
+      "Persil"
     ]
   },
   "family": "Apiaceae",
@@ -61,13 +64,19 @@
       "id": "parsley--flat-leaf",
       "cropId": "parsley",
       "name": "Flat-leaf parsley",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Persil plat"
+      }
     },
     {
       "id": "parsley--curled",
       "cropId": "parsley",
       "name": "Curled parsley",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Persil frisé"
+      }
     }
   ],
   "sources": [

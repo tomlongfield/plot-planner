@@ -3,6 +3,9 @@
   "names": {
     "en": [
       "Spinach"
+    ],
+    "fr": [
+      "Épinard"
     ]
   },
   "family": "Amaranthaceae",
@@ -70,7 +73,10 @@
       "id": "spinach--spinach",
       "cropId": "spinach",
       "name": "Spinach",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Épinard"
+      }
     },
     {
       "id": "spinach--winter",
@@ -80,7 +86,10 @@
       "overrides": {
         "hardiness": "hardy"
       },
-      "notes": "A winter-hardy variety such as Giant Winter."
+      "notes": "A winter-hardy variety such as Giant Winter.",
+      "names": {
+        "fr": "Épinard d’hiver"
+      }
     }
   ],
   "sources": [

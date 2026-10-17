@@ -112,6 +112,14 @@
         },
         "notes": {
           "type": "string"
+        },
+        "names": {
+          "type": "object",
+          "description": "Localised names for descriptive varieties, by language code. Cultivar names usually stay as they are.",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       }
     }

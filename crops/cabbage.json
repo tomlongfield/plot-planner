@@ -3,6 +3,10 @@
   "names": {
     "en": [
       "Cabbage"
+    ],
+    "fr": [
+      "Chou",
+      "Chou pommé"
     ]
   },
   "family": "Brassicaceae",
@@ -67,25 +71,37 @@
       "id": "cabbage--spring",
       "cropId": "cabbage",
       "name": "Spring cabbage",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Chou de printemps"
+      }
     },
     {
       "id": "cabbage--summer",
       "cropId": "cabbage",
       "name": "Summer cabbage",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Chou d’été"
+      }
     },
     {
       "id": "cabbage--savoy",
       "cropId": "cabbage",
       "name": "Savoy cabbage",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Chou de Milan"
+      }
     },
     {
       "id": "cabbage--red",
       "cropId": "cabbage",
       "name": "Red cabbage",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Chou rouge"
+      }
     }
   ],
   "sources": [
