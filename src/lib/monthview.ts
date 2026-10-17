@@ -1,11 +1,11 @@
 // What each area shows in a month: colour, label, detail lines and outlines.
 
 import { isSlowGrowth, seasonLastFrost, seasonFirstFrost, seasonOf } from './climate';
-import { monthEnd, monthStart, type MonthKey } from './dates';
+import { addDays, diffDays, monthEnd, monthStart, type MonthKey } from './dates';
 import { range as fmtRange, t, tn } from './i18n';
-import { areaExists, inMonth, OPEN_END, OPEN_START, type AreaMonthState, type Resolved } from './plantings';
+import { areaExists, inMonth, inSpan, monthSpan, OPEN_END, OPEN_START, type AreaMonthState, type Resolved } from './plantings';
 import type { PlanTask } from './tasks';
-import type { Area, Category, Climate, Crop, Planting } from './types';
+import type { Area, Category, Climate, Crop, Planting, Window } from './types';
 
 export interface Cell {
   areaId: string;
@@ -48,26 +48,33 @@ function abbreviate(s: string): string {
   return s.slice(0, 3);
 }
 
-/** A one-line description of what a planting is doing this month. */
-export function eventText(r: Resolved, k: MonthKey, lat: number): string {
+/** The middle day of a span, used for day-length questions. */
+function midOf(w: Window): string {
+  return addDays(w.from, Math.floor(diffDays(w.to, w.from) / 2));
+}
+
+/** A one-line description of what a planting is doing in a month (or any span). */
+export function eventText(r: Resolved, k: MonthKey | Window, lat: number): string {
+  const span = typeof k === 'string' ? monthSpan(k) : k;
   const w = r.windows;
   const p = r.planting;
   const occ = r.occupancy;
-  if (inMonth(occ.from, k) && occ.from !== OPEN_START) {
+  if (inSpan(occ.from, span) && occ.from !== OPEN_START) {
     const win = p.method === 'direct' || (!w.plantOut && w.sow) ? w.sow : w.plantOut;
     const key = p.method === 'direct' || (!w.plantOut && w.sow) ? 'cell.sow' : p.qtyUnit === 'cloves' || p.qtyUnit === 'sets' || p.qtyUnit === 'tubers' || p.method === 'bought' ? 'cell.plant' : 'cell.plantOut';
     return t(key, { when: win ? fmtRange(win.from, win.to) : '' });
   }
-  if (w.clear && inMonth(w.clear.from, k) && occ.to !== OPEN_END) return t('cell.clear', { when: fmtRange(w.clear.from, w.clear.to) });
-  if (w.harvest && inMonth(w.harvest.from, k)) return t('cell.harvestFrom', { when: fmtRange(w.harvest.from, w.harvest.from) });
-  if (w.harvest && w.harvest.from <= monthEnd(k) && w.harvest.to >= monthStart(k)) return t('cell.harvesting');
-  if (isSlowGrowth(lat, `${k}-15`)) return t('cell.slow');
+  if (w.clear && inSpan(w.clear.from, span) && occ.to !== OPEN_END) return t('cell.clear', { when: fmtRange(w.clear.from, w.clear.to) });
+  if (w.harvest && inSpan(w.harvest.from, span)) return t('cell.harvestFrom', { when: fmtRange(w.harvest.from, w.harvest.from) });
+  if (w.harvest && w.harvest.from <= span.to && w.harvest.to >= span.from) return t('cell.harvesting');
+  if (isSlowGrowth(lat, midOf(span))) return t('cell.slow');
   return t('cell.growing');
 }
 
 /** The colour, labels and outlines for one area in one month. */
-export function cellFor(a: Area, s: AreaMonthState | undefined, k: MonthKey, deps: CellDeps, isParent: boolean): Cell {
-  const exists = areaExists(a, { from: monthStart(k), to: monthEnd(k) });
+export function cellFor(a: Area, s: AreaMonthState | undefined, k: MonthKey | Window, deps: CellDeps, isParent: boolean): Cell {
+  const span = typeof k === 'string' ? monthSpan(k) : k;
+  const exists = areaExists(a, span);
   const ps = s?.plantings ?? [];
   const cropFill = (r: Resolved) => categoryVar(deps.cropOf(r.planting)?.category);
   const base: Cell = {
@@ -102,7 +109,7 @@ export function cellFor(a: Area, s: AreaMonthState | undefined, k: MonthKey, dep
 
   const details: string[] = [];
   for (const r of seq) {
-    const e = eventText(r, k, deps.lat);
+    const e = eventText(r, span, deps.lat);
     const q = qtyText(r.planting);
     if (seq.length === 1) {
       details.push(e);

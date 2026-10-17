@@ -13,7 +13,7 @@ import { propagationLoad } from './propagation';
 import { generatedTasks, manualTasks, type PlanTask } from './tasks';
 import type { Area, Crop, Dataset, Feature, Planting, Plot, Site } from './types';
 
-export type View = 'month' | 'plan' | 'plantings' | 'tasks' | 'journal' | 'propagation' | 'seeds' | 'crops' | 'settings' | 'help';
+export type View = 'month' | 'timeline' | 'rotation' | 'plan' | 'plantings' | 'tasks' | 'journal' | 'propagation' | 'seeds' | 'crops' | 'settings' | 'help';
 export interface Route { view: View; arg?: string }
 
 const BUNDLED = bundledCrops();
@@ -22,7 +22,7 @@ const UNDO_LIMIT = 40;
 
 function parseHash(h: string): Route {
   const [view, arg] = h.replace(/^#\/?/, '').split('/');
-  const views: View[] = ['month', 'plan', 'plantings', 'tasks', 'journal', 'propagation', 'seeds', 'crops', 'settings', 'help'];
+  const views: View[] = ['month', 'timeline', 'rotation', 'plan', 'plantings', 'tasks', 'journal', 'propagation', 'seeds', 'crops', 'settings', 'help'];
   return views.includes(view as View) ? { view: view as View, arg: arg ? decodeURIComponent(arg) : undefined } : { view: 'month' };
 }
 

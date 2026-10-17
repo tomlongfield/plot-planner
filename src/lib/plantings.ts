@@ -116,12 +116,21 @@ export function inMonth(d: ISODate | undefined, k: MonthKey): boolean {
   return !!d && d >= monthStart(k) && d <= monthEnd(k);
 }
 
-/**
- * The state of every area in a month. Plantings in a section also count towards
- * their parent bed, but are drawn in the section.
- */
+export function inSpan(d: ISODate | undefined, w: Window): boolean {
+  return !!d && d >= w.from && d <= w.to;
+}
+
+export function monthSpan(k: MonthKey): Window {
+  return { from: monthStart(k), to: monthEnd(k) };
+}
+
+/** The state of every area in a month. */
 export function monthState(areas: Area[], resolved: Resolved[], k: MonthKey): Map<string, AreaMonthState> {
-  const month: Window = { from: monthStart(k), to: monthEnd(k) };
+  return spanState(areas, resolved, monthSpan(k));
+}
+
+/** The state of every area over any span of dates, such as a month or a week. */
+export function spanState(areas: Area[], resolved: Resolved[], month: Window): Map<string, AreaMonthState> {
   const out = new Map<string, AreaMonthState>();
   for (const a of areas) out.set(a.id, { areaId: a.id, plantings: [], events: [], changes: false, hasDraft: false });
   for (const r of resolved) {
@@ -130,10 +139,10 @@ export function monthState(areas: Area[], resolved: Resolved[], k: MonthKey): Ma
     const w = r.windows;
     if (overlaps(r.occupancy, month)) s.plantings.push(r);
     const ev: MonthEvent[] = [];
-    if (inMonth(r.occupancy.from, k)) ev.push('new');
-    if (inMonth(w.harvest?.from, k)) ev.push('harvest');
-    if (inMonth(w.clear?.from, k) && r.occupancy.to !== DUSK) ev.push('clear');
-    if (r.planting.method === 'module' && inMonth(w.sow?.from, k)) ev.push('sow');
+    if (inSpan(r.occupancy.from, month)) ev.push('new');
+    if (inSpan(w.harvest?.from, month)) ev.push('harvest');
+    if (inSpan(w.clear?.from, month) && r.occupancy.to !== DUSK) ev.push('clear');
+    if (r.planting.method === 'module' && inSpan(w.sow?.from, month)) ev.push('sow');
     for (const e of ev) s.events.push({ planting: r, event: e });
     if (ev.some((e) => e === 'new' || e === 'harvest' || e === 'clear')) s.changes = true;
     if (r.planting.agreement === 'draft' && (overlaps(r.occupancy, month) || ev.length)) s.hasDraft = true;

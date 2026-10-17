@@ -13,6 +13,8 @@
   import Help from './views/Help.svelte';
   import Journal from './views/Journal.svelte';
   import Propagation from './views/Propagation.svelte';
+  import Rotation from './views/Rotation.svelte';
+  import Timeline from './views/Timeline.svelte';
   import Shared from './views/Shared.svelte';
 
   const NAV: { view: View; icon: string }[] = [
@@ -30,7 +32,9 @@
   const BAR: View[] = ['month', 'tasks', 'plantings', 'journal'];
   const MORE = $derived(NAV.filter((n) => !BAR.includes(n.view)));
   let moreOpen = $state(false);
-  const inMore = $derived(!BAR.includes(app.route.view));
+  // Timeline and rotation are other ways of looking at the month view.
+  const current = $derived(app.route.view === 'timeline' || app.route.view === 'rotation' ? 'month' : app.route.view);
+  const inMore = $derived(!BAR.includes(current));
 
   $effect(() => {
     const theme = app.data.settings.theme;
@@ -105,7 +109,7 @@
     </div>
     <nav class="tabs desktop-nav" aria-label={t('app.nav')}>
       {#each NAV as n (n.view)}
-        <a class="pill" class:on={app.route.view === n.view} aria-current={app.route.view === n.view ? 'page' : undefined} href="#/{n.view}">
+        <a class="pill" class:on={current === n.view} aria-current={current === n.view ? 'page' : undefined} href="#/{n.view}">
           {t(`nav.${n.view}`)}
           {#if n.view === 'plantings' && openWarnings}<span class="badge" aria-label={t('app.warnings', { n: openWarnings })}>{openWarnings}</span>{/if}
         </a>
@@ -141,6 +145,8 @@
         <a class="btn primary" href="#/settings">{t('app.makePlot')}</a>
       </div>
     {:else if app.route.view === 'month'}<MonthView />
+    {:else if app.route.view === 'timeline'}<Timeline />
+    {:else if app.route.view === 'rotation'}<Rotation />
     {:else if app.route.view === 'plan'}<Layout />
     {:else if app.route.view === 'plantings'}<Plantings />
     {:else if app.route.view === 'tasks'}<Tasks />
@@ -155,7 +161,7 @@
 
   <nav class="bottom-nav" aria-label={t('app.nav')}>
     {#each NAV.filter((n) => BAR.includes(n.view)) as n (n.view)}
-      <a href="#/{n.view}" class:on={app.route.view === n.view} aria-current={app.route.view === n.view ? 'page' : undefined} onclick={() => (moreOpen = false)}>
+      <a href="#/{n.view}" class:on={current === n.view} aria-current={current === n.view ? 'page' : undefined} onclick={() => (moreOpen = false)}>
         <Icon name={n.icon} />
         <span>{t(`nav.short.${n.view}`)}</span>
       </a>
