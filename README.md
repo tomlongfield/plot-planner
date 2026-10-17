@@ -12,6 +12,7 @@ Draw your plot to scale, say what you'll grow where, and the planner works out w
 - **Checks.** Overcrowded beds, overlapping crops, rotation, crops that won't fit your season, plants left too long in modules, and runs past the end of a tenancy.
 - **Tasks.** Generated from your plantings, plus your own jobs. Export them to any calendar app.
 - **Seeds.** An inventory with viability warnings, and import from the spreadsheet you already keep.
+- **In your language.** English and French so far; adding a language is one file.
 - **Yours.** No accounts, no tracking, no third-party requests. Data stays in your browser. Back it up as one JSON file.
 
 It's a static site: there's nothing to run and nothing to pay for. Host it on any static host, or use it from a downloaded copy.

@@ -74,6 +74,7 @@
 
 <a class="skip" href="#main">{t('app.skip')}</a>
 
+{#key app.localeKey}
 {#if !app.ready}
   <div class="loading" aria-busy="true">{t('app.loading')}</div>
 {:else if app.shareFragment}
@@ -181,6 +182,8 @@
     </div>
   {/if}
 {/if}
+
+{/key}
 
 {#if app.toast}
   <div class="toast" role="status">

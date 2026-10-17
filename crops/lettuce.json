@@ -3,6 +3,10 @@
   "names": {
     "en": [
       "Lettuce"
+    ],
+    "fr": [
+      "Laitue",
+      "Salade"
     ]
   },
   "family": "Asteraceae",
@@ -64,19 +68,28 @@
       "id": "lettuce--butterhead",
       "cropId": "lettuce",
       "name": "Butterhead lettuce",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Laitue pommée"
+      }
     },
     {
       "id": "lettuce--cos",
       "cropId": "lettuce",
       "name": "Cos lettuce",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Laitue romaine"
+      }
     },
     {
       "id": "lettuce--loose-leaf",
       "cropId": "lettuce",
       "name": "Loose-leaf lettuce",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Laitue à couper"
+      }
     },
     {
       "id": "lettuce--winter-density",

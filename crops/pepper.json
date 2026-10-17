@@ -5,6 +5,10 @@
       "Pepper",
       "Chilli",
       "Sweet pepper"
+    ],
+    "fr": [
+      "Poivron",
+      "Piment"
     ]
   },
   "family": "Solanaceae",
@@ -60,7 +64,10 @@
       "id": "pepper--sweet",
       "cropId": "pepper",
       "name": "Sweet pepper",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Poivron"
+      }
     },
     {
       "id": "pepper--jalapeno",

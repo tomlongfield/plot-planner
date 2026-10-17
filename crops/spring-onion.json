@@ -5,6 +5,11 @@
       "Spring onion",
       "Scallion",
       "Salad onion"
+    ],
+    "fr": [
+      "Oignon blanc",
+      "Cébette",
+      "Oignon nouveau"
     ]
   },
   "family": "Amaryllidaceae",
@@ -81,7 +86,10 @@
       "overrides": {
         "hardiness": "hardy"
       },
-      "notes": "Winter-hardy type for late summer sowing."
+      "notes": "Winter-hardy type for late summer sowing.",
+      "names": {
+        "fr": "Oignon blanc d’hiver"
+      }
     }
   ],
   "sources": [

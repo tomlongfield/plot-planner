@@ -4,6 +4,9 @@
     "en": [
       "Broad bean",
       "Fava bean"
+    ],
+    "fr": [
+      "Fève"
     ]
   },
   "family": "Fabaceae",
@@ -75,7 +78,10 @@
       "id": "broad-bean--broad-bean",
       "cropId": "broad-bean",
       "name": "Broad bean",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Fève"
+      }
     },
     {
       "id": "broad-bean--aquadulce",

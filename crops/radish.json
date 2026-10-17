@@ -3,6 +3,9 @@
   "names": {
     "en": [
       "Radish"
+    ],
+    "fr": [
+      "Radis"
     ]
   },
   "family": "Brassicaceae",
@@ -52,7 +55,10 @@
       "id": "radish--winter",
       "cropId": "radish",
       "name": "Winter radish (mooli)",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Radis d’hiver (daïkon)"
+      }
     }
   ],
   "sources": [

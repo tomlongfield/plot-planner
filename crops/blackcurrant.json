@@ -4,6 +4,10 @@
     "en": [
       "Blackcurrant",
       "Currant"
+    ],
+    "fr": [
+      "Cassis",
+      "Groseillier"
     ]
   },
   "family": "Grossulariaceae",
@@ -51,6 +55,9 @@
       "seedType": "unknown",
       "overrides": {
         "species": "Ribes rubrum"
+      },
+      "names": {
+        "fr": "Groseillier rouge"
       }
     }
   ],

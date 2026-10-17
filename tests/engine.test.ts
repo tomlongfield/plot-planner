@@ -459,3 +459,20 @@ describe('shaped beds', async () => {
     expect(capacityFor(p, area, lib.crops.get('kale'))).toMatchObject({ fits: 12, ok: true });
   });
 });
+
+describe('localised names', async () => {
+  const { setLocale } = await import('../src/lib/i18n');
+  const { cropName, varietyName } = await import('../src/lib/library');
+  it('names crops and descriptive varieties in the chosen language', () => {
+    setLocale('fr');
+    try {
+      expect(cropName(lib.crops.get('broad-bean')!)).toBe('Fève');
+      expect(varietyName(lib.varieties.get('garlic--softneck')!, lib.crops.get('garlic'))).toBe('Ail tendre (sans hampe)');
+      expect(varietyName(lib.varieties.get('tomato--sungold')!, lib.crops.get('tomato'))).toBe('Sungold');
+      expect(varietyName(lib.varieties.get('salad-chicory--mixed')!, lib.crops.get('salad-chicory'))).toBe('Chicorée');
+    } finally {
+      setLocale('en-GB');
+    }
+    expect(cropName(lib.crops.get('broad-bean')!)).toBe('Broad bean');
+  });
+});

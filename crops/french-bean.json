@@ -6,6 +6,12 @@
       "Green bean",
       "Dwarf bean",
       "Climbing bean"
+    ],
+    "fr": [
+      "Haricot",
+      "Haricot vert",
+      "Haricot nain",
+      "Haricot à rames"
     ]
   },
   "family": "Fabaceae",
@@ -69,13 +75,19 @@
       "id": "french-bean--dwarf",
       "cropId": "french-bean",
       "name": "Dwarf French bean",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Haricot nain"
+      }
     },
     {
       "id": "french-bean--climbing",
       "cropId": "french-bean",
       "name": "Climbing French bean",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Haricot à rames"
+      }
     },
     {
       "id": "french-bean--borlotti",

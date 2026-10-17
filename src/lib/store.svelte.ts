@@ -7,7 +7,7 @@ import { addMonths, monthKey, today } from './dates';
 import { loadDataset, requestPersistence, saveDataset } from './db';
 import { demoDataset } from './demo';
 import { setLocale, t } from './i18n';
-import { buildLibrary, bundledCrops, cropForVariety, cropName, type Library } from './library';
+import { buildLibrary, bundledCrops, cropForVariety, cropName, varietyName, type Library } from './library';
 import { planSpan, resolvePlantings, type Resolved } from './plantings';
 import { propagationLoad } from './propagation';
 import { generatedTasks, manualTasks, type PlanTask } from './tasks';
@@ -44,6 +44,8 @@ class App {
   /** How many steps can be undone (the stack itself isn't reactive, to keep snapshots cheap). */
   undoCount = $state(0);
   today = $state(today());
+  /** Changes when the language changes, so everything that's translated re-renders. */
+  localeKey = $state('');
   /** Set when the stored data fails to load, so we never overwrite it. */
   loadError = $state<string | null>(null);
 
@@ -79,7 +81,11 @@ class App {
 
   cropOf = (p: Pick<Planting, 'varietyId'>): Crop | undefined => cropForVariety(this.lib, p.varietyId);
   cropOfVariety = (varietyId: string): Crop | undefined => cropForVariety(this.lib, varietyId);
-  varietyName = (varietyId: string): string => this.lib.varieties.get(varietyId)?.name ?? varietyId;
+  varietyName = (varietyId: string): string => {
+    void this.localeKey;
+    const v = this.lib.varieties.get(varietyId);
+    return v ? varietyName(v, this.lib.crops.get(v.cropId)) : varietyId;
+  };
   nameOf = (p: Pick<Planting, 'varietyId'>): string => this.varietyName(p.varietyId);
   /** A short name for tight spaces: the crop name. */
   shortNameOf = (p: Pick<Planting, 'varietyId'>): string => {
@@ -109,7 +115,7 @@ class App {
       this.loadError = String(e);
       this.data = demoDataset(buildLibrary(BUNDLED, [], []));
     }
-    setLocale(this.site?.locale ?? navigator.language ?? 'en-GB');
+    this.applyLocale(this.site?.locale ?? navigator.language ?? 'en-GB');
     this.ready = true;
     requestPersistence();
     this.refreshForecast();
@@ -164,7 +170,13 @@ class App {
   /** Replace everything, e.g. on restore. */
   replace(d: Dataset, label: string): void {
     this.update(label, () => d);
-    setLocale(this.site?.locale ?? 'en-GB');
+    this.applyLocale(this.site?.locale ?? 'en-GB');
+  }
+
+  applyLocale(locale: string): void {
+    setLocale(locale);
+    if (typeof document !== 'undefined') document.documentElement.lang = locale;
+    this.localeKey = locale;
   }
 
   undo(): void {
@@ -215,7 +227,7 @@ class App {
     const plotIds = new Set(this.plots.map((p) => p.id));
     const gen = generatedTasks(
       [...this.resolved.values()],
-      { areas: new Map(this.data.areas.map((a) => [a.id, a])), climate: this.site.climate, cropOf: this.cropOf, nameOf: this.nameOf, t, lat: this.site.location.lat },
+      { areas: new Map(this.data.areas.map((a) => [a.id, a])), climate: this.site.climate, cropOf: this.cropOf, nameOf: this.nameOf, t, lat: this.site.location.lat, locale: this.localeKey || 'en' },
       this.data.taskStates,
     );
     const range = { from: `${addMonths(monthKey(this.today), -12)}-01`, to: `${addMonths(monthKey(this.today), 24)}-01` };

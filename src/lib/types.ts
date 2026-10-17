@@ -165,6 +165,8 @@ export interface Variety {
   cropId: Id;
   name: string;
   seedType: 'OP' | 'F1' | 'unknown';
+  /** Localised names for descriptive varieties, by language code. */
+  names?: Record<string, string>;
   overrides?: Partial<Omit<Crop, 'id' | 'varieties'>>;
   notes?: string;
 }

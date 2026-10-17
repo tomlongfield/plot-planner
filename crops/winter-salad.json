@@ -4,6 +4,10 @@
     "en": [
       "Winter salad mix",
       "Winter salad"
+    ],
+    "fr": [
+      "Mélange de salades d’hiver",
+      "Salades d’hiver"
     ]
   },
   "family": "Mixed",
@@ -60,7 +64,10 @@
       "id": "winter-salad--mix",
       "cropId": "winter-salad",
       "name": "Winter salad mix",
-      "seedType": "OP"
+      "seedType": "OP",
+      "names": {
+        "fr": "Mélange de salades d’hiver"
+      }
     }
   ],
   "sources": [

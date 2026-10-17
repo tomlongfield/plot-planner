@@ -3,6 +3,9 @@
   "names": {
     "en": [
       "Potato"
+    ],
+    "fr": [
+      "Pomme de terre"
     ]
   },
   "family": "Solanaceae",
@@ -52,6 +55,9 @@
       "seedType": "unknown",
       "overrides": {
         "daysToHarvest": 80
+      },
+      "names": {
+        "fr": "Pomme de terre primeur"
       }
     },
     {
@@ -61,6 +67,9 @@
       "seedType": "unknown",
       "overrides": {
         "daysToHarvest": 100
+      },
+      "names": {
+        "fr": "Pomme de terre demi-hâtive"
       }
     },
     {
@@ -70,6 +79,9 @@
       "seedType": "unknown",
       "overrides": {
         "daysToHarvest": 130
+      },
+      "names": {
+        "fr": "Pomme de terre de conservation"
       }
     }
   ],

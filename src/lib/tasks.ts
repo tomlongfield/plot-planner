@@ -40,6 +40,8 @@ interface GenContext {
   t: Translate;
   /** Latitude, so jobs that depend on growth wait out the short days. */
   lat?: number;
+  /** Language, for plural forms. */
+  locale?: string;
 }
 
 /** Move a job that needs active growth past any short-day lull. */
@@ -59,9 +61,6 @@ const DONE_BY_STATUS: Record<Planting['status'], GenKind[]> = {
   failed: ['sow', 'sowDirect', 'potOn', 'hardenOff', 'plantOut', 'fleece', 'net', 'mesh', 'thin', 'support', 'earthUp', 'pinchOut', 'chit', 'harvest', 'cure', 'clear'],
 };
 
-function plural(n: number | undefined, unit: string | undefined): string {
-  return n != null ? `${n} ${unit ?? ''}`.trim() : '';
-}
 
 /** Tasks a planting implies, given its resolved windows. */
 export function tasksForPlanting(r: Resolved, ctx: GenContext): PlanTask[] {
@@ -73,6 +72,7 @@ export function tasksForPlanting(r: Resolved, ctx: GenContext): PlanTask[] {
   const area = ctx.areas.get(p.areaId);
   const out: PlanTask[] = [];
   const stock = p.qtyUnit === 'cloves' || p.qtyUnit === 'sets' || p.qtyUnit === 'tubers';
+  const qtyText = p.qty != null ? ctx.t(`unit.${p.qtyUnit ?? 'plants'}.${new Intl.PluralRules(ctx.locale ?? 'en').select(p.qty) === 'one' ? 'one' : 'other'}`, { n: p.qty }) : undefined;
   const add = (kind: GenKind, place: TaskPlace, type: TaskType, window: Window | undefined, qty?: string, details?: string) => {
     if (!window || window.from === OPEN_START) return;
     const key = kind === 'plantOut' && (stock || p.method === 'bought') ? 'task.plant' : `task.${kind}`;
@@ -92,14 +92,14 @@ export function tasksForPlanting(r: Resolved, ctx: GenContext): PlanTask[] {
     add('potOn', 'propagation', 'job', w.potOn);
     add('hardenOff', 'home', 'job', w.hardenOff);
   } else if (p.method === 'direct' || (!w.plantOut && w.sow)) {
-    add('sowDirect', 'plot', 'sow', w.sow, plural(p.qty, p.qtyUnit));
+    add('sowDirect', 'plot', 'sow', w.sow, qtyText);
     if (care.has('thin') && w.sow) add('thin', 'plot', 'job', { from: addDays(w.sow.from, 21), to: addDays(w.sow.to, 35) });
     if (care.has('mesh') && w.sow) add('mesh', 'plot', 'job', { from: w.sow.from, to: w.sow.from });
   }
   if (care.has('chit') && w.plantOut) add('chit', 'home', 'job', { from: addDays(w.plantOut.from, -42), to: addDays(w.plantOut.from, -28) });
   if (w.plantOut && (p.method !== 'direct' || !w.sow)) {
     if (care.has('support')) add('support', 'plot', 'job', whenGrowing({ from: addDays(w.plantOut.from, -7), to: w.plantOut.from }, ctx.lat));
-    add('plantOut', 'plot', 'plant', w.plantOut, plural(p.qty, p.qtyUnit));
+    add('plantOut', 'plot', 'plant', w.plantOut, qtyText);
     if (care.has('net')) add('net', 'plot', 'job', { from: w.plantOut.from, to: addDays(w.plantOut.to, 1) });
     if (care.has('mesh')) add('mesh', 'plot', 'job', { from: w.plantOut.from, to: addDays(w.plantOut.to, 1) });
     if (care.has('earth-up')) add('earthUp', 'plot', 'job', whenGrowing({ from: addDays(w.plantOut.from, 28), to: addDays(w.plantOut.to, 56) }, ctx.lat));
