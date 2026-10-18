@@ -39,6 +39,7 @@
     const span = planSpan(resolved);
     const from = span ? monthKey(span.from) : monthKey(today());
     let to = span ? monthKey(span.to) : addMonths(from, 11);
+    if (to < addMonths(from, 11)) to = addMonths(from, 11);
     if (to > addMonths(from, 17)) to = addMonths(from, 17);
     const out: string[] = [];
     for (let k = from; k <= to; k = addMonths(k, 1)) out.push(k);

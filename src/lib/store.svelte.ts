@@ -276,13 +276,13 @@ class App {
   private computeMonths(): string[] {
     const r = this.data.settings.monthRange;
     if (r.mode === 'fixed') return Array.from({ length: Math.max(1, Math.min(36, r.months)) }, (_, i) => addMonths(r.from, i));
-    // Auto: from this month (or the plan's start, if later) to the end of the plan, at least 6 and at most 18 months.
+    // Auto: from this month (or the plan's start, if later) to the end of the plan: a full year at least, 18 months at most.
     const span = planSpan(this.plotResolved.filter((x) => x.occupancy.to >= this.today || x.windows.clear?.to == null));
     const now = monthKey(this.today);
     let from = now;
     if (span && monthKey(span.from) > now) from = monthKey(span.from);
     let to = span ? monthKey(span.to) : addMonths(from, 11);
-    if (to < addMonths(from, 5)) to = addMonths(from, 5);
+    if (to < addMonths(from, 11)) to = addMonths(from, 11);
     if (to > addMonths(from, 17)) to = addMonths(from, 17);
     const out: string[] = [];
     for (let k = from; k <= to; k = addMonths(k, 1)) out.push(k);
