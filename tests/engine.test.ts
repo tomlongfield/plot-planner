@@ -461,9 +461,10 @@ describe('shaped beds', async () => {
 });
 
 describe('localised names', async () => {
-  const { setLocale } = await import('../src/lib/i18n');
+  const { loadLocale, setLocale } = await import('../src/lib/i18n');
   const { cropName, varietyName } = await import('../src/lib/library');
-  it('names crops and descriptive varieties in the chosen language', () => {
+  it('names crops and descriptive varieties in the chosen language', async () => {
+    await loadLocale('fr');
     setLocale('fr');
     try {
       expect(cropName(lib.crops.get('broad-bean')!)).toBe('Fève');

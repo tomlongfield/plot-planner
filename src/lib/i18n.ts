@@ -4,19 +4,44 @@
 import en from '../i18n/en.json';
 
 type Messages = Record<string, string>;
-const catalogs = import.meta.glob<Messages>('../i18n/*.json', { eager: true, import: 'default' });
+// English is built in; other languages load when chosen (and are precached for offline use).
+const loaders = import.meta.glob<Messages>(['../i18n/*.json', '!../i18n/en.json'], { import: 'default' });
+const loaded = new Map<string, Messages>([['../i18n/en.json', en]]);
 
-export const languages: { code: string; name: string }[] = Object.entries(catalogs)
-  .map(([path, m]) => ({ code: path.match(/([\w-]+)\.json$/)![1], name: m['language.name'] ?? path }))
+const codeOf = (path: string) => path.match(/([\w-]+)\.json$/)![1];
+
+/** Languages available, named in their own language. */
+export const languages: { code: string; name: string }[] = ['../i18n/en.json', ...Object.keys(loaders)]
+  .map((path) => {
+    const code = codeOf(path);
+    let name = code === 'en' ? 'English' : code;
+    try {
+      const n = new Intl.DisplayNames([code], { type: 'language' }).of(code);
+      if (n) name = n.charAt(0).toUpperCase() + n.slice(1);
+    } catch {}
+    return { code, name };
+  })
   .sort((a, b) => a.name.localeCompare(b.name));
 
 let current: Messages = en;
 let currentLocale = 'en-GB';
 
+function pathFor(locale: string): string | undefined {
+  const lang = locale.split('-')[0];
+  return [`../i18n/${locale}.json`, `../i18n/${lang}.json`].find((p) => p in loaders || loaded.has(p));
+}
+
+/** Load a language's messages if needed. Call before setLocale for anything but English. */
+export async function loadLocale(locale: string): Promise<void> {
+  const path = pathFor(locale);
+  if (path && !loaded.has(path) && loaders[path]) loaded.set(path, await loaders[path]());
+}
+
+/** Switch language. Messages must already be loaded (see loadLocale); otherwise English is used. */
 export function setLocale(locale: string): void {
   currentLocale = locale;
-  const lang = locale.split('-')[0];
-  current = catalogs[`../i18n/${locale}.json`] ?? catalogs[`../i18n/${lang}.json`] ?? en;
+  const path = pathFor(locale);
+  current = (path && loaded.get(path)) || en;
 }
 
 export function locale(): string {
