@@ -41,10 +41,8 @@
 </script>
 
 <div class="rotation-view">
-  <div class="spread">
-    <h1>{t('views.rotation')}</h1>
-    <ViewSwitch />
-  </div>
+  <div class="top"><ViewSwitch /></div>
+  <h1 class="sr-only">{t('views.rotation')}</h1>
   <p class="muted small intro">{t('rot.intro', { years: app.data.settings.rotationYears })}</p>
 
   <div class="wrap">
@@ -76,7 +74,8 @@
 </div>
 
 <style>
-  .rotation-view { display: grid; gap: 12px; }
+  .rotation-view { display: grid; gap: 16px; }
+  .top { min-height: 36px; }
   .intro { max-width: 70ch; }
   .wrap { overflow-x: auto; }
   table { border-collapse: collapse; width: 100%; min-width: 420px; table-layout: fixed; }

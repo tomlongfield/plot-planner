@@ -67,10 +67,8 @@
 </script>
 
 <div class="timeline-view">
-  <div class="spread">
-    <h1>{t('views.timeline')}</h1>
-    <ViewSwitch />
-  </div>
+  <div class="top"><ViewSwitch /></div>
+  <h1 class="sr-only">{t('views.timeline')}</h1>
 
   <div class="tl" role="table" aria-label={t('tl.aria', { plot: app.plot?.name ?? '' })}>
     <div class="tl-row head" role="row">
@@ -127,7 +125,8 @@
 </div>
 
 <style>
-  .timeline-view { display: grid; gap: 14px; }
+  .timeline-view { display: grid; gap: 16px; }
+  .top { min-height: 36px; }
   .tl { display: grid; --lane: 26px; border-top: 1px solid var(--line); }
   .tl-row { display: grid; grid-template-columns: minmax(70px, 140px) 1fr; gap: 8px; border-bottom: 1px solid var(--line); min-height: calc(var(--lanes, 1) * var(--lane) + 8px); }
   .tl-row.header { min-height: 26px; background: color-mix(in srgb, var(--surface) 60%, transparent); }

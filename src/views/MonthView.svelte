@@ -217,7 +217,7 @@
 
 <style>
   .month-view { display: grid; gap: 16px; }
-  .top { gap: 8px; }
+  .top { gap: 8px; min-height: 36px; }
   .nudges { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
   .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 360px)); gap: 20px; }
   .compare figure { margin: 0; display: grid; gap: 6px; }
