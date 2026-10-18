@@ -6,7 +6,7 @@ import { allPlotWarnings, seedWarnings, type Warning } from './checks';
 import { addMonths, monthKey, today } from './dates';
 import { loadDataset, requestPersistence, saveDataset } from './db';
 import { demoDataset } from './demo';
-import { setLocale, t } from './i18n';
+import { loadLocale, setLocale, t } from './i18n';
 import { buildLibrary, bundledCrops, cropForVariety, cropName, varietyName, type Library } from './library';
 import { planSpan, resolvePlantings, type Resolved } from './plantings';
 import { propagationLoad } from './propagation';
@@ -115,7 +115,7 @@ class App {
       this.loadError = String(e);
       this.data = demoDataset(buildLibrary(BUNDLED, [], []));
     }
-    this.applyLocale(this.site?.locale ?? navigator.language ?? 'en-GB');
+    await this.applyLocale(this.site?.locale ?? navigator.language ?? 'en-GB');
     this.ready = true;
     requestPersistence();
     this.refreshForecast();
@@ -170,10 +170,15 @@ class App {
   /** Replace everything, e.g. on restore. */
   replace(d: Dataset, label: string): void {
     this.update(label, () => d);
-    this.applyLocale(this.site?.locale ?? 'en-GB');
+    void this.applyLocale(this.site?.locale ?? 'en-GB');
   }
 
-  applyLocale(locale: string): void {
+  async applyLocale(locale: string): Promise<void> {
+    try {
+      await loadLocale(locale);
+    } catch {
+      // Offline before the language was ever cached: English it is.
+    }
     setLocale(locale);
     if (typeof document !== 'undefined') document.documentElement.lang = locale;
     this.localeKey = locale;

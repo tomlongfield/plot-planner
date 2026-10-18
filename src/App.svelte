@@ -3,19 +3,25 @@
   import { downloadBackup } from './lib/files';
   import { t } from './lib/i18n';
   import { app, type View } from './lib/store.svelte';
-  import Crops from './views/Crops.svelte';
-  import Layout from './views/Layout.svelte';
+  import type { Component } from 'svelte';
   import MonthView from './views/MonthView.svelte';
-  import Plantings from './views/Plantings.svelte';
-  import Seeds from './views/Seeds.svelte';
-  import Settings from './views/Settings.svelte';
-  import Tasks from './views/Tasks.svelte';
-  import Help from './views/Help.svelte';
-  import Journal from './views/Journal.svelte';
-  import Propagation from './views/Propagation.svelte';
-  import Rotation from './views/Rotation.svelte';
-  import Timeline from './views/Timeline.svelte';
-  import Shared from './views/Shared.svelte';
+
+  // The month view loads with the app; other views load when first opened.
+  // The service worker precaches them all, so they still work offline.
+  const LAZY: Record<string, () => Promise<{ default: Component }>> = {
+    timeline: () => import('./views/Timeline.svelte'),
+    rotation: () => import('./views/Rotation.svelte'),
+    plan: () => import('./views/Layout.svelte'),
+    plantings: () => import('./views/Plantings.svelte'),
+    tasks: () => import('./views/Tasks.svelte'),
+    journal: () => import('./views/Journal.svelte'),
+    propagation: () => import('./views/Propagation.svelte'),
+    seeds: () => import('./views/Seeds.svelte'),
+    crops: () => import('./views/Crops.svelte'),
+    settings: () => import('./views/Settings.svelte'),
+    help: () => import('./views/Help.svelte'),
+  };
+  const loadShared = () => import('./views/Shared.svelte');
 
   const NAV: { view: View; icon: string }[] = [
     { view: 'month', icon: 'month' },
@@ -78,7 +84,7 @@
 {#if !app.ready}
   <div class="loading" aria-busy="true">{t('app.loading')}</div>
 {:else if app.shareFragment}
-  <Shared fragment={app.shareFragment} />
+  {#await loadShared() then m}<m.default fragment={app.shareFragment} />{/await}
 {:else}
   <header class="top">
     <div class="brand">
@@ -146,17 +152,12 @@
         <a class="btn primary" href="#/settings">{t('app.makePlot')}</a>
       </div>
     {:else if app.route.view === 'month'}<MonthView />
-    {:else if app.route.view === 'timeline'}<Timeline />
-    {:else if app.route.view === 'rotation'}<Rotation />
-    {:else if app.route.view === 'plan'}<Layout />
-    {:else if app.route.view === 'plantings'}<Plantings />
-    {:else if app.route.view === 'tasks'}<Tasks />
-    {:else if app.route.view === 'journal'}<Journal />
-    {:else if app.route.view === 'propagation'}<Propagation />
-    {:else if app.route.view === 'seeds'}<Seeds />
-    {:else if app.route.view === 'crops'}<Crops />
-    {:else if app.route.view === 'settings'}<Settings />
-    {:else if app.route.view === 'help'}<Help />
+    {:else if LAZY[app.route.view]}
+      {#await LAZY[app.route.view]()}
+        <p class="muted">{t('app.loading')}</p>
+      {:then m}
+        <m.default />
+      {/await}
     {/if}
   </main>
 
